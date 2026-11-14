@@ -1,0 +1,40 @@
+{
+  "fe": {
+    "version": "26.5.0",
+    "commit": "3dab95f8eebdccf9a2382bb59a33f7bbd03540ca",
+    "release_url": "https://github.com/argotorg/fe/releases/tag/v26.5.0",
+    "assets": {
+      "fe_linux_amd64": {
+        "url": "https://github.com/argotorg/fe/releases/download/v26.5.0/fe_linux_amd64",
+        "digest": "sha256:3732fbe8a6e9d2ea3925d02d0e3a1478bc1e01d742c2be75d3ea7300c46c45f0"
+      },
+      "fe_linux_arm64": {
+        "url": "https://github.com/argotorg/fe/releases/download/v26.5.0/fe_linux_arm64",
+        "digest": "sha256:ccd600ed1e532e327612ccd06f74890f54f0d5b39d1f4eb95d3dde0934022fa7"
+      },
+      "fe_mac_amd64": {
+        "url": "https://github.com/argotorg/fe/releases/download/v26.5.0/fe_mac_amd64",
+        "digest": "sha256:551a635be33013239a2fcefdbe5372f23b23fa998d32a98d15ef40cd5aeab3b3"
+      },
+      "fe_mac_arm64": {
+        "url": "https://github.com/argotorg/fe/releases/download/v26.5.0/fe_mac_arm64",
+        "digest": "sha256:4968711c5bc02c1a3151cfaea0d81a48dc74803ea208362022af467c2a523fed"
+      },
+      "fe_windows_amd64.exe": {
+        "url": "https://github.com/argotorg/fe/releases/download/v26.5.0/fe_windows_amd64.exe",
+        "digest": "sha256:d86ca3c6fdadeb8335f7033e3a68fdb7d2aab4eafd22c1e23bec047d2a8b2674"
+      }
+    }
+  },
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "foundry": {
+    "version": "1.5.1-stable",
+    "commit": "b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2"
+  },
+  "evm_fork": "osaka",
+  "solidity_version": null,
+  "status": "Workspace bootstrap; project-specific execution settings remain Phase 0 work."
+}

@@ -1,0 +1,14 @@
+.DS_Store
+.tools/
+.env
+.env.*
+!.env.example
+**/out/
+**/cache/
+**/target/
+**/debug-output/
+**/node_modules/
+*.log
+__pycache__/
+*.pyc
+failure-report*.tar.gz
