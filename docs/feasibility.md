@@ -772,7 +772,11 @@ locating the bug.
   `provenance.json` (treasury spec and Fe treasury). Every Solidity file is
   SPDX MIT. No tracked file contains an absolute home path.
 - **Fresh clone.** A `git clone` of HEAD, with no `.tools/` or build outputs.
-  Inside it, the gate bootstraps the pinned Fe and solc, builds, and runs:
+  By default the gate bootstraps the pinned Fe and solc inside it. The
+  recorded run used `--reuse-tools` instead, pointing the clone at the
+  already-installed compilers, which are still digest-checked. The host disk
+  had about 135 MiB free, and the in-clone download failed with curl's
+  "failure writing output". Inside the clone the gate builds and runs:
   - `verify-phase4.py`, which runs every gate from Phase 0 to 4;
   - `scripts/demo.py`;
   - the scripted exercise dry run.
@@ -792,6 +796,7 @@ The recorded run is in [evidence/phase5.json](evidence/phase5.json).
    `docs/tester-guide.md`, and their real observations go into
    `docs/reviewer-feedback.md`.
 2. **Linux.** It is untested.
-3. **Publishing.** A remote, a push, and a contest submission all need the
+3. **A run with in-clone bootstrapping.** It needs about 100 MB of free disk.
+4. **Publishing.** A remote, a push, and a contest submission all need the
    owner. Whether this project can be submitted also depends on its contest
    registration.

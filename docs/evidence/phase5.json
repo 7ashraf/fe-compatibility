@@ -1,0 +1,121 @@
+{
+  "format": "fe-compatibility-phase5-gate-v1",
+  "result": "Phase 5 release checks passed from a clean clone; outside-user exercise pending",
+  "verified_at_utc": "2026-11-21T15:26:00.436224+00:00",
+  "host": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6",
+  "fe": {
+    "version": "fe 26.5.0 (3dab95f)",
+    "sha256": "4968711c5bc02c1a3151cfaea0d81a48dc74803ea208362022af467c2a523fed"
+  },
+  "solc": {
+    "version": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "sha256": "f5a243d6b2dd8fba307e36c5fefa2d8eb3ae74ba81036d1c17c971b5d346ade9"
+  },
+  "summary": {
+    "vendored_files": 11,
+    "solidity_sources": 5,
+    "tracked_files": 143,
+    "commit": "37a7f6e7a909c5095115d72854d3260f7b87e710",
+    "tools": "reused pinned compilers",
+    "exercise_dry_run": {
+      "planted": [
+        "    if amount > context.available {",
+        "    if amount >= context.available {"
+      ],
+      "located": "insufficient-funds-3 status",
+      "timing": {
+        "started_utc": "2026-11-21T15:25:55.607623+00:00",
+        "checks": 2,
+        "first_mismatch_at_seconds": 0.7,
+        "first_mismatch": {
+          "insufficient-funds": {
+            "action": "insufficient-funds-3",
+            "category": "status",
+            "what": "one implementation succeeded and the other reverted"
+          }
+        },
+        "passing_again_at_seconds": 3.0,
+        "fix_seconds_after_first_mismatch": 2.3
+      }
+    },
+    "demo": "1) Solidity treasury vs Fe treasury, frozen v0 corpus\n   no mismatch observed on 85 actions in 11 scenarios: status, exact returndata, exact events, and 12 state fields after every action, decided by the Fe checker\n\n2) Fe port with a seeded inclusive-expiry check (now > expiresAt instead of >=)\n   first divergence: action expiry-equality-4, spend at exactly the expiry second\n   status: Solidity revert Expired(uint256,uint256) / Fe port success\n\n3) Fe storage layout with paused written one byte too high\n   getter-only comparison of the same 19 actions: match (the bug is invisible)\n   layout mode: neighbor: action 1 (setPaused(bool)) changed byte 21 of slot 0, outside the written field paused\n\nPASS demo\n",
+    "outside_user": "pending"
+  },
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/build.py"
+      ],
+      "exit": 0,
+      "seconds": 8.7,
+      "stdout": "PASS solc --evm-version osaka --optimize --optimize-runs 200 --bin --bin-runtime --abi -o .tools/build/solidity contracts/solidity/Meter.sol contracts/solidity/Codec.sol contracts/solidity/Treasury.sol contracts/solidity/Harness.sol contracts/solidity/PackedLayout.sol\nPASS solc --evm-version osaka --storage-layout -o .tools/build/solidity/storage-layout contracts/solidity/PackedLayout.sol\nPASS fe build contracts/fe/layout --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-layout\nPASS fe build .tools/build/sources/fe-layout-shifted --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-layout-shifted\nPASS fe build .tools/build/sources/fe-layout-wrong-root --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-layout-wrong-root\nPASS fe build .tools/build/sources/fe-layout-clobber --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-layout-clobber\nPASS fe build contracts/fe/treasury/treasury --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-treasury\nPASS fe build .tools/build/sources/treasury-inclusive-expiry/treasury --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-inclusive-expiry\nPASS fe build .tools/build/sources/treasury-cap-off-by-one/treasury --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-cap-off-by-one\nPASS fe build .tools/build/sources/treasury-unindexed-delegate/treasury --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-unindexed-delegate\nPASS fe build .tools/build/sources/treasury-auth-after-active/treasury --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-auth-after-active\nPASS fe build .tools/build/sources/treasury-revoke-event-twice/treasury --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-revoke-event-twice\nPASS fe build .tools/build/sources/treasury-no-reserve/treasury --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-no-reserve\nPASS fe build contracts/fe/meter --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe\nPASS fe build contracts/fe/codec --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-codec\nPASS fe build .tools/build/sources/meter-faulty --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-faulty\nPASS fe build .tools/build/sources/meter-state --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-state\nPASS fe build .tools/build/sources/meter-unindexed --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-unindexed\nPASS fe build .tools/build/sources/meter-extra-log --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-extra-log\nPASS fe build .tools/build/sources/meter-wrong-error --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-wrong-error\nPASS fe build .tools/build/sources/meter-no-empty-check --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-no-empty-check\nPASS fe build host/checker-native --backend native --emit executable -O 1\nPASS build stamp .tools/build/build.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify-phase4.py"
+      ],
+      "exit": 0,
+      "seconds": 55.8,
+      "stdout": "PASS python3 scripts/verify-phase3.py\nPASS fe test .\nPASS fe test . --backend native\nPASS 6 Phase 4 layout tests (30 total) on the EVM and native backends\nPASS reviewed schema equals solc 0.8.31 --storage-layout for the Solidity reference\nPASS layout ABIs equal apart from one recorded finding: Fe emits the 4 RawStorage getters as nonpayable, Solidity as view\nPASS python3 host/layout.py\nPASS Solidity and Fe both conform to the schema on 19 actions (neighbors, field values, 3 keys, write sets) and match each other on raw slots and getter returns\nPASS 19 known slot-0 vectors hold on both implementations, including all-maximal 0xffffffffffffffffffffff01ffffffffffffffffffffffffffffffffffffffff (max address, true, 2^88-1); slot 1 stays zero\nPASS python3 host/layout.py --right fe-layout-shifted\nPASS python3 host/layout.py --right fe-layout-wrong-root\nPASS python3 host/layout.py --right fe-layout-clobber\nPASS shifted offset (neighbor, action 1, byte 21), wrong mapping root (entry, action 9) and slot clobber (neighbor, action 3, byte 20) detected; the first two are invisible to a getter-only comparison of the same actions\nPASS 9 invalid schema descriptions rejected by Fe with specific categories\nPASS Phase 4 exit gate: explicit layout validated in Fe over slots 0-1 and 3 declared keys\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/demo.py"
+      ],
+      "exit": 0,
+      "seconds": 2.4,
+      "stdout": "1) Solidity treasury vs Fe treasury, frozen v0 corpus\n   no mismatch observed on 85 actions in 11 scenarios: status, exact returndata, exact events, and 12 state fields after every action, decided by the Fe checker\n\n2) Fe port with a seeded inclusive-expiry check (now > expiresAt instead of >=)\n   first divergence: action expiry-equality-4, spend at exactly the expiry second\n   status: Solidity revert Expired(uint256,uint256) / Fe port success\n\n3) Fe storage layout with paused written one byte too high\n   getter-only comparison of the same 19 actions: match (the bug is invisible)\n   layout mode: neighbor: action 1 (setPaused(bool)) changed byte 21 of slot 0, outside the written field paused\n\nPASS demo\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/port-exercise.py",
+        "start"
+      ],
+      "exit": 0,
+      "seconds": 0.0,
+      "stdout": "Copied the reviewed Fe treasury port to exercise/. Edit the .fe files there, then run `python3 scripts/port-exercise.py check`.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/port-exercise.py",
+        "check"
+      ],
+      "exit": 1,
+      "seconds": 2.3,
+      "stdout": "MISMATCH: your port differs from the Solidity reference in 1 of 11 scenarios. The first divergence in each:\n\n  insufficient-funds: action insufficient-funds-3 (spend(uint256,uint256) [\"1\", \"5\"] from delegate)\n      status: one implementation succeeded and the other reverted\n      Solidity reference: success    your port: revert InsufficientBalance(uint256,uint256)\n      (4 of 7 actions differ in this scenario)\n\nFull report (raw bytes and every listed mismatch): exercise/report-1.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/port-exercise.py",
+        "check"
+      ],
+      "exit": 0,
+      "seconds": 2.3,
+      "stdout": "PASS: no mismatch observed on 85 actions in 11 scenarios (status, returndata, events, and 12 state fields after every action). Full report: exercise/report-2.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/port-exercise.py",
+        "status"
+      ],
+      "exit": 0,
+      "seconds": 0.0,
+      "stdout": "{\n  \"started_utc\": \"2026-11-21T15:25:55.607623+00:00\",\n  \"checks\": 2,\n  \"first_mismatch_at_seconds\": 0.7,\n  \"first_mismatch\": {\n    \"insufficient-funds\": {\n      \"action\": \"insufficient-funds-3\",\n      \"category\": \"status\",\n      \"what\": \"one implementation succeeded and the other reverted\"\n    }\n  },\n  \"passing_again_at_seconds\": 3.0,\n  \"fix_seconds_after_first_mismatch\": 2.3\n}\n",
+      "stderr": ""
+    }
+  ]
+}
