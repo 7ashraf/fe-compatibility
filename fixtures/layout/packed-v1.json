@@ -1,0 +1,224 @@
+{
+  "format": "fe-compatibility-layout",
+  "schema_version": 1,
+  "spec": "spec/layout-v1.md revision 1",
+  "schema": {
+    "fields": [
+      {
+        "name": "owner",
+        "slot": "0",
+        "offset": 0,
+        "bytes": 20,
+        "kind": "address"
+      },
+      {
+        "name": "paused",
+        "slot": "0",
+        "offset": 20,
+        "bytes": 1,
+        "kind": "bool"
+      },
+      {
+        "name": "limit",
+        "slot": "0",
+        "offset": 21,
+        "bytes": 11,
+        "kind": "uint"
+      }
+    ],
+    "mappings": [
+      {
+        "name": "balances",
+        "root": "1",
+        "key": "address",
+        "value": "uint256"
+      }
+    ]
+  },
+  "keys": [
+    "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "0x0000000000000000000000000000000000000000",
+    "0xffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "actions": [
+    {
+      "call": "setOwner(address)",
+      "args": [
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+      ],
+      "writes": "owner",
+      "set": {
+        "owner": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+      }
+    },
+    {
+      "call": "setPaused(bool)",
+      "args": [
+        "true"
+      ],
+      "writes": "paused",
+      "set": {
+        "paused": "1"
+      }
+    },
+    {
+      "call": "setLimit(uint88)",
+      "args": [
+        "309485009821345068724781055"
+      ],
+      "writes": "limit",
+      "set": {
+        "limit": "309485009821345068724781055"
+      }
+    },
+    {
+      "call": "setOwner(address)",
+      "args": [
+        "0xffffffffffffffffffffffffffffffffffffffff"
+      ],
+      "writes": "owner",
+      "set": {
+        "owner": "0xffffffffffffffffffffffffffffffffffffffff"
+      }
+    },
+    {
+      "call": "setPaused(bool)",
+      "args": [
+        "false"
+      ],
+      "writes": "paused",
+      "set": {
+        "paused": "0"
+      }
+    },
+    {
+      "call": "setLimit(uint88)",
+      "args": [
+        "0"
+      ],
+      "writes": "limit",
+      "set": {
+        "limit": "0"
+      }
+    },
+    {
+      "call": "setLimit(uint88)",
+      "args": [
+        "1"
+      ],
+      "writes": "limit",
+      "set": {
+        "limit": "1"
+      }
+    },
+    {
+      "call": "setOwner(address)",
+      "args": [
+        "0x0000000000000000000000000000000000000000"
+      ],
+      "writes": "owner",
+      "set": {
+        "owner": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "call": "setPaused(bool)",
+      "args": [
+        "true"
+      ],
+      "writes": "paused",
+      "set": {
+        "paused": "1"
+      }
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "args": [
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+        "5"
+      ],
+      "writes": "entry",
+      "set": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "5"
+      }
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "args": [
+        "0x0000000000000000000000000000000000000000",
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      ],
+      "writes": "entry",
+      "set": {
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      }
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "args": [
+        "0xffffffffffffffffffffffffffffffffffffffff",
+        "1"
+      ],
+      "writes": "entry",
+      "set": {
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      }
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "args": [
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+        "0"
+      ],
+      "writes": "entry",
+      "set": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0"
+      }
+    },
+    {
+      "call": "owner()",
+      "args": [],
+      "writes": null,
+      "set": {}
+    },
+    {
+      "call": "paused()",
+      "args": [],
+      "writes": null,
+      "set": {}
+    },
+    {
+      "call": "limit()",
+      "args": [],
+      "writes": null,
+      "set": {}
+    },
+    {
+      "call": "balanceOf(address)",
+      "args": [
+        "0x0000000000000000000000000000000000000000"
+      ],
+      "writes": null,
+      "set": {}
+    },
+    {
+      "call": "balanceOf(address)",
+      "args": [
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+      ],
+      "writes": null,
+      "set": {}
+    },
+    {
+      "call": "setLimit(uint88)",
+      "args": [
+        "154742504910672534362390528"
+      ],
+      "writes": "limit",
+      "set": {
+        "limit": "154742504910672534362390528"
+      }
+    }
+  ],
+  "provenance": "Written by hand from spec/layout-v1.md; expected values follow from each setter writing exactly its own field or entry."
+}

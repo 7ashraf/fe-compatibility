@@ -1,0 +1,175 @@
+// Phase 4 layout tests for the reviewed schema in spec/layout-v1.md:
+// slot 0: address at byte 0 (20 bytes), bool at 20 (1), uint88 at 21 (11); root 1.
+use super::{
+    PackedField,
+    FieldKind,
+    Schema,
+    LayoutStep,
+    LayoutResult,
+    SlotWord,
+    Entry,
+    NO_FIELD,
+    layout_code,
+    empty_schema,
+    empty_layout_step,
+    field_value,
+    validate_schema,
+    check_step,
+}
+
+const OWNER: u256 = 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+
+fn schema() -> Schema {
+    var s = empty_schema()
+    s.fields = 3
+    s.field[0] = PackedField { slot: 0, offset: 0, bytes: 20, kind: FieldKind::Address }
+    s.field[1] = PackedField { slot: 0, offset: 20, bytes: 1, kind: FieldKind::Bool }
+    s.field[2] = PackedField { slot: 0, offset: 21, bytes: 11, kind: FieldKind::Uint }
+    s.roots = 1
+    s.root[0] = 1
+    s
+}
+
+fn code(_ r: LayoutResult) -> u256 {
+    layout_code(r.category)
+}
+
+fn pack(owner: u256, paused: u256, limit: u256) -> u256 {
+    owner | (paused << 160) | (limit << 168)
+}
+
+// One write: `written` changes slot 0 from `before` to `after`; expected values follow.
+fn step(written: usize, before: u256, after: u256, owner: u256, paused: u256, limit: u256) -> LayoutStep {
+    var s = empty_layout_step()
+    s.words = 1
+    s.word[0] = SlotWord { slot: 0, before, after }
+    s.written = written
+    s.expected[0] = owner
+    s.expected[1] = paused
+    s.expected[2] = limit
+    s.writes = 1
+    s.write[0] = 0
+    s
+}
+
+#[test]
+fn reviewed_schema_is_valid() {
+    assert!(code(validate_schema(schema())) == 0)
+}
+
+#[test]
+fn overlapping_and_out_of_range_descriptions_are_rejected() {
+    var overlap = schema()
+    overlap.field[2].offset = 20
+    let o = validate_schema(overlap)
+    assert!(code(o) == 4 && o.index == 2 && o.left == 1)
+    var past = schema()
+    past.field[2].offset = 22
+    let p = validate_schema(past)
+    assert!(code(p) == 3 && p.index == 2)
+    var beyond = schema()
+    beyond.field[1].offset = 32
+    assert!(code(validate_schema(beyond)) == 3)
+    var short_address = schema()
+    short_address.field[0].bytes = 19
+    assert!(code(validate_schema(short_address)) == 2)
+    var wide_bool = schema()
+    wide_bool.field[1].bytes = 2
+    assert!(code(validate_schema(wide_bool)) == 2)
+    var wide_uint = schema()
+    wide_uint.field[2].bytes = 33
+    assert!(code(validate_schema(wide_uint)) == 2)
+    var empty_uint = schema()
+    empty_uint.field[2].bytes = 0
+    assert!(code(validate_schema(empty_uint)) == 2)
+    var reserved = schema()
+    reserved.root[0] = 0
+    assert!(code(validate_schema(reserved)) == 5)
+    var twice = schema()
+    twice.roots = 2
+    twice.root[1] = 1
+    assert!(code(validate_schema(twice)) == 6)
+    var many = schema()
+    many.fields = 9
+    assert!(code(validate_schema(many)) == 1)
+    // The same field in another slot is fine.
+    var other = schema()
+    other.field[2].slot = 2
+    other.field[2].offset = 20
+    assert!(code(validate_schema(other)) == 0)
+}
+
+#[test]
+fn each_write_preserves_its_neighbours() {
+    let s = schema()
+    let full = pack(owner: OWNER, paused: 1, limit: 12345)
+    // Writing `paused` from 1 to 0 changes only byte 20.
+    let after = pack(owner: OWNER, paused: 0, limit: 12345)
+    assert!(code(check_step(schema: s, step: step(written: 1, before: full, after, owner: OWNER, paused: 0,
+                                                  limit: 12345))) == 0)
+    // A write of `owner` that also clears `limit` changes byte 21.
+    let clobbered = pack(owner: 0xabc, paused: 1, limit: 0)
+    let r = check_step(schema: s, step: step(written: 0, before: full, after: clobbered, owner: 0xabc, paused: 1,
+                                             limit: 12345))
+    assert!(code(r) == 8 && r.index == 21)
+    // A change with no written field at all.
+    let none = check_step(schema: s, step: step(written: NO_FIELD, before: full, after: pack(owner: OWNER, paused: 1,
+                                                limit: 12346), owner: OWNER, paused: 1, limit: 12346))
+    assert!(code(none) == 8 && none.index == 21)
+}
+
+#[test]
+fn boundary_width_values_round_trip() {
+    let s = schema()
+    let max_owner: u256 = (1 << 160) - 1
+    let max_limit: u256 = (1 << 88) - 1
+    let word = pack(owner: max_owner, paused: 1, limit: max_limit)
+    assert!(word == !(0 as u256) - 0xfe * (1 << 160))
+    assert!(field_value(word, field: s.field[0]) == max_owner)
+    assert!(field_value(word, field: s.field[1]) == 1)
+    assert!(field_value(word, field: s.field[2]) == max_limit)
+    assert!(code(check_step(schema: s, step: step(written: 2, before: pack(owner: max_owner, paused: 1, limit: 0),
+                                                  after: word, owner: max_owner, paused: 1, limit: max_limit))) == 0)
+}
+
+#[test]
+fn shifted_offset_is_detected() {
+    let s = schema()
+    let before = pack(owner: OWNER, paused: 0, limit: 8)
+    // `paused = true` written one byte too high, at 21: the write breaks into
+    // `limit`, and `paused` still reads false.
+    let shifted = before | (1 << 168)
+    let r = check_step(schema: s, step: step(written: 1, before, after: shifted, owner: OWNER, paused: 1, limit: 8))
+    assert!(code(r) == 8 && r.index == 21)
+    // With neighbour preservation satisfied by luck (an unchanged byte), the field value still catches it.
+    let r2 = check_step(schema: s, step: step(written: 1, before, after: before, owner: OWNER, paused: 1, limit: 8))
+    assert!(code(r2) == 9 && r2.index == 1 && r2.left == 1 && r2.right == 0)
+}
+
+#[test]
+fn mapping_entries_and_write_set() {
+    let s = schema()
+    let word = pack(owner: OWNER, paused: 0, limit: 0)
+    var ok = step(written: NO_FIELD, before: word, after: word, owner: OWNER, paused: 0, limit: 0)
+    ok.entries = 2
+    ok.entry[0] = Entry { slot: 0xaaa, observed: 5, expected: 5 }
+    ok.entry[1] = Entry { slot: 0xbbb, observed: 0, expected: 0 }
+    ok.writes = 1
+    ok.write[0] = 0xaaa
+    assert!(code(check_step(schema: s, step: ok)) == 0)
+    // Distinct keys stay independent: the other key's entry changed.
+    var leaked = ok
+    leaked.entry[1].observed = 5
+    let l = check_step(schema: s, step: leaked)
+    assert!(code(l) == 10 && l.index == 1 && l.left == 0 && l.right == 5)
+    // A write to a slot the schema doesn't declare (for example, a wrong mapping root).
+    var stray = ok
+    stray.writes = 2
+    stray.write[1] = 0xccc
+    let w = check_step(schema: s, step: stray)
+    assert!(code(w) == 11 && w.index == 1 && w.right == 0xccc)
+    // A missing observation of a schema slot is not silently accepted.
+    var missing = ok
+    missing.words = 0
+    assert!(code(check_step(schema: s, step: missing)) == 7)
+}

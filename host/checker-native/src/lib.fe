@@ -59,6 +59,17 @@ use compat::{
     malformation_code,
     abi_code,
     validate,
+    PackedField,
+    FieldKind,
+    Schema,
+    LayoutResult,
+    SlotWord,
+    Entry,
+    empty_schema,
+    empty_layout_step,
+    validate_schema,
+    check_step,
+    layout_code,
 }
 
 struct Parser { bad: bool, chars: usize }
@@ -251,7 +262,74 @@ fn read_layout() -> Layout uses (input: mut Read, parser: mut Parser) {
     layout
 }
 
-struct Reply { kind: u256, steps: usize, progress: compat::Progress, abi: AbiResult }
+struct Reply { kind: u256, steps: usize, progress: compat::Progress, abi: AbiResult, layout: LayoutResult }
+
+// Counts above the schema limits (8 fields, 2 roots) are read but not stored,
+// so Fe reports them as too many instead of rejecting the frame.
+fn read_schema() -> Schema uses (input: mut Read, parser: mut Parser) {
+    var schema = empty_schema()
+    schema.fields = read_small(limit: 64)
+    var i: usize = 0
+    while i < schema.fields && !parser.bad {
+        let slot = read_number()
+        let offset = read_small(limit: 255)
+        let bytes = read_small(limit: 255)
+        let tag = read_small(limit: 2)
+        let kind = if tag == 0 { FieldKind::Uint } else if tag == 1 { FieldKind::Address } else { FieldKind::Bool }
+        if i < 8 {
+            schema.field[i] = PackedField { slot, offset, bytes, kind }
+        }
+        i += 1
+    }
+    schema.roots = read_small(limit: 64)
+    var r: usize = 0
+    while r < schema.roots && !parser.bad {
+        let root = read_number()
+        if r < 2 {
+            schema.root[r] = root
+        }
+        r += 1
+    }
+    schema
+}
+
+fn read_layout_step(fields: usize) -> compat::LayoutStep uses (input: mut Read, parser: mut Parser) {
+    var step = empty_layout_step()
+    step.words = read_small(limit: 4)
+    var i: usize = 0
+    while i < step.words && !parser.bad {
+        let slot = read_number()
+        let before = read_number()
+        let after = read_number()
+        step.word[i] = SlotWord { slot, before, after }
+        i += 1
+    }
+    step.written = read_small(limit: 255)
+    var f: usize = 0
+    while f < fields && !parser.bad {
+        let value = read_number()
+        if f < 8 {
+            step.expected[f] = value
+        }
+        f += 1
+    }
+    step.entries = read_small(limit: 4)
+    var e: usize = 0
+    while e < step.entries && !parser.bad {
+        let slot = read_number()
+        let observed = read_number()
+        let expected = read_number()
+        step.entry[e] = Entry { slot, observed, expected }
+        e += 1
+    }
+    step.writes = read_small(limit: 8)
+    var w: usize = 0
+    while w < step.writes && !parser.bad {
+        step.write[w] = read_number()
+        w += 1
+    }
+    step
+}
 
 fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
     let left_table = empty_table()
@@ -260,6 +338,7 @@ fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
         steps: 0,
         progress: compat::begin(),
         abi: validate(payload: empty_payload(), layout: empty_layout(), selector: 0, with_selector: false),
+        layout: validate_schema(empty_schema()),
     }
     if read_number() != 3 {
         parser.bad = true
@@ -291,6 +370,21 @@ fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
         let selector = read_number()
         let payload = read_payload()
         reply.abi = validate(payload, layout, selector, with_selector)
+    } else if reply.kind == 4 {
+        let schema = read_schema()
+        var current = validate_schema(schema)
+        let count = read_small(limit: 64)
+        var s: usize = 0
+        while s < count && !parser.bad {
+            let step = read_layout_step(fields: schema.fields)
+            if layout_code(current.category) == 0 {
+                current = check_step(schema, step)
+                current.step = s
+            }
+            s += 1
+        }
+        reply.steps = count
+        reply.layout = current
     } else {
         parser.bad = true
     }
@@ -336,6 +430,15 @@ fn write_record(m: Mismatch) uses (output: mut Write) {
 fn write_reply(reply: Reply) uses (output: mut Write) {
     number(3)
     number(reply.kind)
+    if reply.kind == 4 {
+        number(layout_code(reply.layout.category))
+        number(reply.layout.step as u256)
+        number(reply.layout.index as u256)
+        number(reply.layout.left)
+        number(reply.layout.right)
+        output.write_char(c: 10)
+        return
+    }
     if reply.kind == 2 {
         number(abi_code(reply.abi.category))
         number(reply.abi.index as u256)

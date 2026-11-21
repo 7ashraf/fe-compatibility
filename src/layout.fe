@@ -1,0 +1,284 @@
+// Explicit layout conformance: a bounded schema of packed fields and mapping
+// roots, its validation, and per-action checks over raw slot words.
+//
+// A schema lists up to 8 packed fields (slot, byte offset from the low end of
+// the word, width in bytes, kind) and up to 2 mapping roots. The validator
+// rejects:
+//   * widths that don't fit the kind (address 20, bool 1, uint 1..32);
+//   * fields that run past the word (offset + width > 32);
+//   * overlapping fields in one slot;
+//   * a mapping root that is also a packed-field slot, or a repeated root.
+// A layout step carries the observed words of the schema's slots before and
+// after one action, the field that action wrote, the expected field values,
+// mapping entries (slot derived by the host's independent encoder, observed
+// and expected values), and every slot the transaction wrote. The checks run
+// in a fixed order:
+//   1. neighbor preservation: bits outside the written field must not change;
+//   2. field values: each field decodes to its expected value;
+//   3. mapping entries;
+//   4. write set: every written slot is a schema slot or a declared entry slot.
+// A passing result covers exactly the schema slots and the declared keys.
+
+pub const MAX_FIELDS: usize = 8
+pub const MAX_ROOTS: usize = 2
+pub const MAX_SLOTS_OBSERVED: usize = 4
+pub const MAX_ENTRIES: usize = 4
+pub const MAX_WRITES: usize = 8
+pub const NO_FIELD: usize = 255
+
+pub enum FieldKind {
+    Uint,
+    Address,
+    Bool,
+}
+impl Copy for FieldKind {}
+
+pub struct PackedField { pub slot: u256, pub offset: usize, pub bytes: usize, pub kind: FieldKind }
+impl Copy for PackedField {}
+
+pub struct Schema { pub fields: usize, pub field: [PackedField; 8], pub roots: usize, pub root: [u256; 2] }
+impl Copy for Schema {}
+
+pub enum LayoutCategory {
+    Valid,
+    TooMany,
+    Width,
+    OutOfRange,
+    Overlap,
+    RootReserved,
+    DuplicateRoot,
+    MissingSlot,
+    Neighbor,
+    FieldValue,
+    MappingEntry,
+    UndeclaredWrite,
+}
+impl Copy for LayoutCategory {}
+
+// `index`: the field, root, entry, or write index; for Neighbor, the lowest
+// changed byte (from the low end). `left`/`right`: expected vs observed values
+// (for Neighbor, the old and new words).
+pub struct LayoutResult { pub category: LayoutCategory, pub step: usize, pub index: usize, pub left: u256, pub right: u256 }
+impl Copy for LayoutResult {}
+
+pub struct SlotWord { pub slot: u256, pub before: u256, pub after: u256 }
+impl Copy for SlotWord {}
+
+pub struct Entry { pub slot: u256, pub observed: u256, pub expected: u256 }
+impl Copy for Entry {}
+
+pub struct LayoutStep {
+    pub words: usize,
+    pub word: [SlotWord; 4],
+    pub written: usize,
+    pub expected: [u256; 8],
+    pub entries: usize,
+    pub entry: [Entry; 4],
+    pub writes: usize,
+    pub write: [u256; 8],
+}
+impl Copy for LayoutStep {}
+
+pub fn layout_code(_ c: LayoutCategory) -> u256 {
+    match c {
+        LayoutCategory::Valid => 0,
+        LayoutCategory::TooMany => 1,
+        LayoutCategory::Width => 2,
+        LayoutCategory::OutOfRange => 3,
+        LayoutCategory::Overlap => 4,
+        LayoutCategory::RootReserved => 5,
+        LayoutCategory::DuplicateRoot => 6,
+        LayoutCategory::MissingSlot => 7,
+        LayoutCategory::Neighbor => 8,
+        LayoutCategory::FieldValue => 9,
+        LayoutCategory::MappingEntry => 10,
+        LayoutCategory::UndeclaredWrite => 11,
+    }
+}
+
+pub fn empty_field() -> PackedField {
+    PackedField { slot: 0, offset: 0, bytes: 32, kind: FieldKind::Uint }
+}
+
+pub fn empty_schema() -> Schema {
+    Schema { fields: 0, field: [empty_field(); 8], roots: 0, root: [0; 2] }
+}
+
+pub fn empty_layout_step() -> LayoutStep {
+    LayoutStep {
+        words: 0,
+        word: [SlotWord { slot: 0, before: 0, after: 0 }; 4],
+        written: NO_FIELD,
+        expected: [0; 8],
+        entries: 0,
+        entry: [Entry { slot: 0, observed: 0, expected: 0 }; 4],
+        writes: 0,
+        write: [0; 8],
+    }
+}
+
+fn result(category: LayoutCategory, index: usize, left: u256, right: u256) -> LayoutResult {
+    LayoutResult { category, step: 0, index, left, right }
+}
+
+fn valid() -> LayoutResult {
+    result(category: LayoutCategory::Valid, index: 0, left: 0, right: 0)
+}
+
+fn is_valid(_ r: LayoutResult) -> bool {
+    match r.category {
+        LayoutCategory::Valid => true,
+        _ => false,
+    }
+}
+
+// In-word mask of a validated field.
+pub fn field_mask(field: PackedField) -> u256 {
+    let bits = field.bytes * 8
+    let low: u256 = if bits == 256 { !(0 as u256) } else { (1 << (bits as u256)) - 1 }
+    low << ((field.offset * 8) as u256)
+}
+
+pub fn field_value(word: u256, field: PackedField) -> u256 {
+    (word & field_mask(field)) >> ((field.offset * 8) as u256)
+}
+
+pub fn validate_schema(_ schema: Schema) -> LayoutResult {
+    if schema.fields > MAX_FIELDS || schema.roots > MAX_ROOTS {
+        return result(category: LayoutCategory::TooMany, index: 0, left: schema.fields as u256, right: schema.roots as u256)
+    }
+    var i: usize = 0
+    while i < schema.fields {
+        let f = schema.field[i]
+        let width_ok = match f.kind {
+            FieldKind::Address => f.bytes == 20,
+            FieldKind::Bool => f.bytes == 1,
+            FieldKind::Uint => f.bytes >= 1 && f.bytes <= 32,
+        }
+        if !width_ok {
+            return result(category: LayoutCategory::Width, index: i, left: f.bytes as u256, right: 0)
+        }
+        if f.offset >= 32 || f.offset + f.bytes > 32 {
+            return result(category: LayoutCategory::OutOfRange, index: i, left: f.offset as u256,
+                          right: f.bytes as u256)
+        }
+        var j: usize = 0
+        while j < i {
+            let g = schema.field[j]
+            if g.slot == f.slot && f.offset < g.offset + g.bytes && g.offset < f.offset + f.bytes {
+                return result(category: LayoutCategory::Overlap, index: i, left: j as u256, right: f.slot)
+            }
+            j += 1
+        }
+        i += 1
+    }
+    var r: usize = 0
+    while r < schema.roots {
+        var k: usize = 0
+        while k < schema.fields {
+            if schema.field[k].slot == schema.root[r] {
+                return result(category: LayoutCategory::RootReserved, index: r, left: schema.root[r], right: k as u256)
+            }
+            k += 1
+        }
+        if r == 1 && schema.root[0] == schema.root[1] {
+            return result(category: LayoutCategory::DuplicateRoot, index: r, left: schema.root[r], right: 0)
+        }
+        r += 1
+    }
+    valid()
+}
+
+fn observed_word(step: LayoutStep, slot: u256) -> (bool, SlotWord) {
+    var i: usize = 0
+    while i < step.words {
+        if step.word[i].slot == slot {
+            return (true, step.word[i])
+        }
+        i += 1
+    }
+    (false, SlotWord { slot, before: 0, after: 0 })
+}
+
+fn lowest_changed_byte(_ x: u256) -> usize {
+    var b: usize = 0
+    while b < 32 && ((x >> ((b * 8) as u256)) & 255) == 0 {
+        b += 1
+    }
+    b
+}
+
+// Checks one action. The schema must already be valid.
+pub fn check_step(schema: Schema, step: LayoutStep) -> LayoutResult {
+    if step.words > MAX_SLOTS_OBSERVED || step.entries > MAX_ENTRIES || step.writes > MAX_WRITES
+        || (step.written != NO_FIELD && step.written >= schema.fields) {
+        return result(category: LayoutCategory::TooMany, index: 0, left: step.words as u256, right: step.entries as u256)
+    }
+    var i: usize = 0
+    while i < schema.fields {
+        let (found, _) = observed_word(step, slot: schema.field[i].slot)
+        if !found {
+            return result(category: LayoutCategory::MissingSlot, index: i, left: schema.field[i].slot, right: 0)
+        }
+        i += 1
+    }
+    // 1. Neighbor preservation: only the written field's bits may change.
+    var w: usize = 0
+    while w < step.words {
+        let sw = step.word[w]
+        var allowed: u256 = 0
+        if step.written != NO_FIELD && schema.field[step.written].slot == sw.slot {
+            allowed = field_mask(field: schema.field[step.written])
+        }
+        let changed = (sw.before ^ sw.after) & !allowed
+        if changed != 0 {
+            return result(category: LayoutCategory::Neighbor, index: lowest_changed_byte(changed), left: sw.before,
+                          right: sw.after)
+        }
+        w += 1
+    }
+    // 2. Every declared field decodes to its expected value.
+    var f: usize = 0
+    while f < schema.fields {
+        let (_, sw) = observed_word(step, slot: schema.field[f].slot)
+        let value = field_value(word: sw.after, field: schema.field[f])
+        if value != step.expected[f] {
+            return result(category: LayoutCategory::FieldValue, index: f, left: step.expected[f], right: value)
+        }
+        f += 1
+    }
+    // 3. Mapping entries at their independently derived slots.
+    var e: usize = 0
+    while e < step.entries {
+        if step.entry[e].observed != step.entry[e].expected {
+            return result(category: LayoutCategory::MappingEntry, index: e, left: step.entry[e].expected,
+                          right: step.entry[e].observed)
+        }
+        e += 1
+    }
+    // 4. Write set: no slot outside the schema's slots and the declared entry slots.
+    var s: usize = 0
+    while s < step.writes {
+        let slot = step.write[s]
+        var declared = false
+        var k: usize = 0
+        while k < schema.fields {
+            if schema.field[k].slot == slot {
+                declared = true
+            }
+            k += 1
+        }
+        var n: usize = 0
+        while n < step.entries {
+            if step.entry[n].slot == slot {
+                declared = true
+            }
+            n += 1
+        }
+        if !declared {
+            return result(category: LayoutCategory::UndeclaredWrite, index: s, left: 0, right: slot)
+        }
+        s += 1
+    }
+    valid()
+}

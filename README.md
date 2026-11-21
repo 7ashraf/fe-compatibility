@@ -5,8 +5,9 @@ raw EVM observations (status, exact returndata or revert bytes, and ordered
 logs), and let a **Fe checker** decide whether they match. When they don't, it
 reports the first divergence.
 
-**Status: Phase 0–3 exit gates passed** ([feasibility](docs/feasibility.md)).
-Phases 4–5 (layout mode and an outside user) are not started. Passing means "no mismatch
+**Status: Phase 0–4 exit gates passed** ([feasibility](docs/feasibility.md)).
+Phase 5 (a second integration with an outside user, and the release) is not
+started. Passing means "no mismatch
 observed for this corpus under this configuration". It never means the
 contracts are equivalent.
 
@@ -29,7 +30,19 @@ python3 scripts/verify-phase2.py                            # Phase 2 gate (incl
 python3 host/treasury.py                                    # treasury v0: Solidity vs Fe over 85 actions
 python3 host/treasury.py --right fe-inclusive-expiry        # a seeded porting mistake, located
 python3 scripts/verify-phase3.py                            # Phase 3 gate (includes 0-2), about 46 s
+python3 host/layout.py --right fe-layout-shifted            # layout mode: a shifted packed offset, located
+python3 scripts/verify-phase4.py                            # Phase 4 gate (includes 0-3), about 59 s
 ```
+
+**Layout mode** ([spec/layout-v1.md](spec/layout-v1.md)) checks an explicit
+packed layout: an address, a bool, and a `uint88` in slot 0, and a mapping at
+slot 1. The Fe adapter uses only `SolSlot`, `SolWord`, and `SolMapping`. The
+Fe validator (`src/layout.fe`) rejects overlapping or out-of-range schemas.
+For every action it checks that bits outside the written field are untouched,
+that each field decodes correctly, that entries at independently derived
+slots hold their values, and that every slot written was declared. A shifted
+offset and a wrong mapping root are caught by layout mode, while a getter-only
+comparison of the same actions sees nothing.
 
 The treasury corpus (`fixtures/behavior/treasury-v0.json`,
 [spec/scenarios.md](spec/scenarios.md)) has 11 scenarios. They cover the cap

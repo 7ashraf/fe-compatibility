@@ -1,0 +1,1089 @@
+{
+  "format": "fe-compatibility-raw-execution",
+  "version": 2,
+  "implementation": "solidity-layout",
+  "target": {
+    "creation": "solidity/PackedLayout.bin",
+    "runtime": "solidity/PackedLayout.bin-runtime",
+    "abi": "solidity/PackedLayout.abi",
+    "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+    "storage_layout": "solidity/storage-layout/PackedLayout_storage.json",
+    "creation_sha256": "e69fea0e3f26f4dd4b0b7a21c9a3ad50c7d2b77ec59923585f75c6269affca7d",
+    "runtime_sha256": "f7929b9fa9f56fd4fcb084f891e1d17fed3fae4b4717943f2089bff974dbb38b"
+  },
+  "tools": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "world": {
+    "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+    "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "zero": "0x0000000000000000000000000000000000000000",
+    "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3"
+  },
+  "deployment": {
+    "success": true,
+    "returndata": "0x608060405234801561000f575f5ffd5b5060043610610085575f3560e01c806370a082311161005857806370a082311461013b5780638da5cb5b14610171578063a4d66daf1461018b578063e30443bc146101b5575f5ffd5b806313af40351461008957806316c38b3c146100ba5780635c975abb146100e5578063651b529c14610106575b5f5ffd5b6100b86100973660046101f9565b5f80546001600160a01b0319166001600160a01b0392909216919091179055565b005b6100b86100c8366004610219565b5f8054911515600160a01b0260ff60a01b19909216919091179055565b5f54600160a01b900460ff1660405190151581526020015b60405180910390f35b6100b8610114366004610238565b5f80546001600160581b03909216600160a81b026001600160a81b03909216919091179055565b6101636101493660046101f9565b6001600160a01b03165f9081526001602052604090205490565b6040519081526020016100fd565b5f546040516001600160a01b0390911681526020016100fd565b5f54600160a81b90046001600160581b03166040516001600160581b0390911681526020016100fd565b6100b86101c336600461025e565b6001600160a01b039091165f90815260016020526040902055565b80356001600160a01b03811681146101f4575f5ffd5b919050565b5f60208284031215610209575f5ffd5b610212826101de565b9392505050565b5f60208284031215610229575f5ffd5b81358015158114610212575f5ffd5b5f60208284031215610248575f5ffd5b81356001600160581b0381168114610212575f5ffd5b5f5f6040838503121561026f575f5ffd5b610278836101de565b94602093909301359350505056fea2646970667358221220a0337077869b4faf8b28713c45ae9671e56f017838ba356c7486117352c5fff564736f6c634300081f0033",
+    "returndata_via_eth_call": "0x608060405234801561000f575f5ffd5b5060043610610085575f3560e01c806370a082311161005857806370a082311461013b5780638da5cb5b14610171578063a4d66daf1461018b578063e30443bc146101b5575f5ffd5b806313af40351461008957806316c38b3c146100ba5780635c975abb146100e5578063651b529c14610106575b5f5ffd5b6100b86100973660046101f9565b5f80546001600160a01b0319166001600160a01b0392909216919091179055565b005b6100b86100c8366004610219565b5f8054911515600160a01b0260ff60a01b19909216919091179055565b5f54600160a01b900460ff1660405190151581526020015b60405180910390f35b6100b8610114366004610238565b5f80546001600160581b03909216600160a81b026001600160a81b03909216919091179055565b6101636101493660046101f9565b6001600160a01b03165f9081526001602052604090205490565b6040519081526020016100fd565b5f546040516001600160a01b0390911681526020016100fd565b5f54600160a81b90046001600160581b03166040516001600160581b0390911681526020016100fd565b6100b86101c336600461025e565b6001600160a01b039091165f90815260016020526040902055565b80356001600160a01b03811681146101f4575f5ffd5b919050565b5f60208284031215610209575f5ffd5b610212826101de565b9392505050565b5f60208284031215610229575f5ffd5b81358015158114610212575f5ffd5b5f60208284031215610248575f5ffd5b81356001600160581b0381168114610212575f5ffd5b5f5f6040838503121561026f575f5ffd5b610278836101de565b94602093909301359350505056fea2646970667358221220a0337077869b4faf8b28713c45ae9671e56f017838ba356c7486117352c5fff564736f6c634300081f0033",
+    "logs": [],
+    "gas_used": 204647,
+    "block": 1,
+    "timestamp": 1700000001,
+    "runtime_code_sha256": "f7929b9fa9f56fd4fcb084f891e1d17fed3fae4b4717943f2089bff974dbb38b",
+    "checker_returndata": "0x",
+    "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3"
+  },
+  "entry_slots": {
+    "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+    "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+    "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+  },
+  "steps": [
+    {
+      "call": "setOwner(address)",
+      "argument": "[\"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\"]",
+      "calldata": "0x13af403500000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+      "written": "owner",
+      "before": {
+        "0": "0",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+        "paused": "0",
+        "limit": "0"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 43889,
+      "block": 2,
+      "timestamp": 1700000002,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "642829559307850963015472508762062935916233390536"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setPaused(bool)",
+      "argument": "[\"true\"]",
+      "calldata": "0x16c38b3c0000000000000000000000000000000000000000000000000000000000000001",
+      "written": "paused",
+      "before": {
+        "0": "642829559307850963015472508762062935916233390536",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+        "paused": "1",
+        "limit": "0"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26532,
+      "block": 3,
+      "timestamp": 1700000003,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "2104331196638753881219157341478345955572165933512"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setLimit(uint88)",
+      "argument": "[\"309485009821345068724781055\"]",
+      "calldata": "0x651b529c000000000000000000000000000000000000000000ffffffffffffffffffffff",
+      "written": "limit",
+      "before": {
+        "0": "2104331196638753881219157341478345955572165933512",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+        "paused": "1",
+        "limit": "309485009821345068724781055"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26726,
+      "block": 4,
+      "timestamp": 1700000004,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "115792089237316195423570984636647819893197591486716404205567476931566564571592"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setOwner(address)",
+      "argument": "[\"0xffffffffffffffffffffffffffffffffffffffff\"]",
+      "calldata": "0x13af4035000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+      "written": "owner",
+      "before": {
+        "0": "115792089237316195423570984636647819893197591486716404205567476931566564571592",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0xffffffffffffffffffffffffffffffffffffffff",
+        "paused": "1",
+        "limit": "309485009821345068724781055"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26789,
+      "block": 5,
+      "timestamp": 1700000005,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "115792089237316195423570984637466491971220643441904616529521697015306263724031"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setPaused(bool)",
+      "argument": "[\"false\"]",
+      "calldata": "0x16c38b3c0000000000000000000000000000000000000000000000000000000000000000",
+      "written": "paused",
+      "before": {
+        "0": "115792089237316195423570984637466491971220643441904616529521697015306263724031",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0xffffffffffffffffffffffffffffffffffffffff",
+        "paused": "0",
+        "limit": "309485009821345068724781055"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26520,
+      "block": 6,
+      "timestamp": 1700000006,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "115792089237316195423570984636004990333889740523700931696805413995650331181055"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setLimit(uint88)",
+      "argument": "[\"0\"]",
+      "calldata": "0x651b529c0000000000000000000000000000000000000000000000000000000000000000",
+      "written": "limit",
+      "before": {
+        "0": "115792089237316195423570984636004990333889740523700931696805413995650331181055",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0xffffffffffffffffffffffffffffffffffffffff",
+        "paused": "0",
+        "limit": "0"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26594,
+      "block": 7,
+      "timestamp": 1700000007,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "1461501637330902918203684832716283019655932542975"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setLimit(uint88)",
+      "argument": "[\"1\"]",
+      "calldata": "0x651b529c0000000000000000000000000000000000000000000000000000000000000001",
+      "written": "limit",
+      "before": {
+        "0": "1461501637330902918203684832716283019655932542975",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0xffffffffffffffffffffffffffffffffffffffff",
+        "paused": "0",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26606,
+      "block": 8,
+      "timestamp": 1700000008,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544831"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setOwner(address)",
+      "argument": "[\"0x0000000000000000000000000000000000000000\"]",
+      "calldata": "0x13af40350000000000000000000000000000000000000000000000000000000000000000",
+      "written": "owner",
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544831",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "0",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26549,
+      "block": 9,
+      "timestamp": 1700000009,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "374144419156711147060143317175368453031918731001856"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setPaused(bool)",
+      "argument": "[\"true\"]",
+      "calldata": "0x16c38b3c0000000000000000000000000000000000000000000000000000000000000001",
+      "written": "paused",
+      "before": {
+        "0": "374144419156711147060143317175368453031918731001856",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26532,
+      "block": 10,
+      "timestamp": 1700000010,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "argument": "[\"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\", \"5\"]",
+      "calldata": "0xe30443bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000005",
+      "written": "entry",
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "5",
+        "0x0000000000000000000000000000000000000000": "0",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 44138,
+      "block": 11,
+      "timestamp": 1700000011,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "5"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "argument": "[\"0x0000000000000000000000000000000000000000\", \"115792089237316195423570985008687907853269984665640564039457584007913129639935\"]",
+      "calldata": "0xe30443bc0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "written": "entry",
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "5",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "0"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 44270,
+      "block": 12,
+      "timestamp": 1700000012,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "5"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "argument": "[\"0xffffffffffffffffffffffffffffffffffffffff\", \"1\"]",
+      "calldata": "0xe30443bc000000000000000000000000ffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000001",
+      "written": "entry",
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "5",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 44138,
+      "block": 13,
+      "timestamp": 1700000013,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "5"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "call": "setBalance(address,uint256)",
+      "argument": "[\"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\", \"0\"]",
+      "calldata": "0xe30443bc00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000000",
+      "written": "entry",
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 22400,
+      "block": 14,
+      "timestamp": 1700000014,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "call": "owner()",
+      "argument": "[]",
+      "calldata": "0x8da5cb5b",
+      "written": null,
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "returndata_via_eth_call": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "logs": [],
+      "gas_used": 23385,
+      "block": 15,
+      "timestamp": 1700000015,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "call": "paused()",
+      "argument": "[]",
+      "calldata": "0x5c975abb",
+      "written": null,
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "returndata_via_eth_call": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "logs": [],
+      "gas_used": 23405,
+      "block": 16,
+      "timestamp": 1700000016,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "call": "limit()",
+      "argument": "[]",
+      "calldata": "0xa4d66daf",
+      "written": null,
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "returndata_via_eth_call": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "logs": [],
+      "gas_used": 23442,
+      "block": 17,
+      "timestamp": 1700000017,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "call": "balanceOf(address)",
+      "argument": "[\"0x0000000000000000000000000000000000000000\"]",
+      "calldata": "0x70a082310000000000000000000000000000000000000000000000000000000000000000",
+      "written": null,
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "returndata_via_eth_call": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "logs": [],
+      "gas_used": 23726,
+      "block": 18,
+      "timestamp": 1700000018,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "call": "balanceOf(address)",
+      "argument": "[\"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\"]",
+      "calldata": "0x70a0823100000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+      "written": null,
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "1"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "returndata_via_eth_call": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "logs": [],
+      "gas_used": 23966,
+      "block": 19,
+      "timestamp": 1700000019,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "375605920794042049978347002008084736051574663544832"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "call": "setLimit(uint88)",
+      "argument": "[\"154742504910672534362390528\"]",
+      "calldata": "0x651b529c0000000000000000000000000000000000000000008000000000000000000000",
+      "written": "limit",
+      "before": {
+        "0": "375605920794042049978347002008084736051574663544832",
+        "1": "0"
+      },
+      "sstore_slots": [],
+      "expected_fields": {
+        "owner": "0x0000000000000000000000000000000000000000",
+        "paused": "1",
+        "limit": "154742504910672534362390528"
+      },
+      "expected_entries": {
+        "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0",
+        "0x0000000000000000000000000000000000000000": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "0xffffffffffffffffffffffffffffffffffffffff": "1"
+      },
+      "success": true,
+      "returndata": "0x",
+      "returndata_via_eth_call": "0x",
+      "logs": [],
+      "gas_used": 26606,
+      "block": 20,
+      "timestamp": 1700000020,
+      "state": [
+        {
+          "name": "slot0",
+          "kind": "word",
+          "value": "57896044618658097711785492505805455563965895251023966852445075023612497362944"
+        },
+        {
+          "name": "slot1",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x70997970c51812dc3a010c7d01b50e0d17dc79c8] @ 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "kind": "word",
+          "value": "0"
+        },
+        {
+          "name": "balances[0x0000000000000000000000000000000000000000] @ 0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "kind": "word",
+          "value": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        },
+        {
+          "name": "balances[0xffffffffffffffffffffffffffffffffffffffff] @ 0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362",
+          "kind": "word",
+          "value": "1"
+        }
+      ]
+    }
+  ]
+}

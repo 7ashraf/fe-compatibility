@@ -1,0 +1,443 @@
+{
+  "fe-layout-clobber": {
+    "getter_only_comparison": {
+      "checker": "native Fe compat_checker protocol 3",
+      "first_divergence": {
+        "category": "returndata-byte",
+        "deployment": false,
+        "index": 31,
+        "left": "1",
+        "log": 0,
+        "right": "0",
+        "slot": 0,
+        "step": 15
+      },
+      "frame_words": 213,
+      "listed": 1,
+      "mismatches": [
+        {
+          "category": "returndata-byte",
+          "deployment": false,
+          "index": 31,
+          "left": "1",
+          "log": 0,
+          "right": "0",
+          "slot": 0,
+          "step": 15
+        }
+      ],
+      "mismatching_steps": 1,
+      "steps_compared": 19,
+      "truncated": false,
+      "verdict": "mismatch"
+    },
+    "layout": {
+      "category": "neighbor",
+      "checker": "native Fe compat_checker protocol 3, kind 4",
+      "explanation": "action 3 (setOwner(address)) changed byte 20 of slot 0, outside the written field owner",
+      "index": 20,
+      "left": "115792089237316195423570984636647819893197591486716404205567476931566564571592",
+      "right": "1461501637330902918203684832716283019655932542975",
+      "scope": {
+        "actions": 19,
+        "fields": [
+          "owner: slot 0 offset 0 width 20 (address)",
+          "paused: slot 0 offset 20 width 1 (bool)",
+          "limit: slot 0 offset 21 width 11 (uint)"
+        ],
+        "mapping_keys": {
+          "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+        },
+        "slots": [
+          0,
+          1
+        ]
+      },
+      "step": 3,
+      "verdict": "violation"
+    },
+    "layout_differential": {
+      "checker": "native Fe compat_checker protocol 3",
+      "first_divergence": {
+        "category": "state-value",
+        "deployment": false,
+        "index": 0,
+        "left": "115792089237316195423570984637466491971220643441904616529521697015306263724031",
+        "log": 0,
+        "right": "1461501637330902918203684832716283019655932542975",
+        "slot": 0,
+        "step": 3
+      },
+      "frame_words": 593,
+      "listed": 8,
+      "mismatches": [
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "115792089237316195423570984637466491971220643441904616529521697015306263724031",
+          "log": 0,
+          "right": "1461501637330902918203684832716283019655932542975",
+          "slot": 0,
+          "step": 3
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "115792089237316195423570984636004990333889740523700931696805413995650331181055",
+          "log": 0,
+          "right": "1461501637330902918203684832716283019655932542975",
+          "slot": 0,
+          "step": 4
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "374144419156711147060143317175368453031918731001856",
+          "log": 0,
+          "right": "0",
+          "slot": 0,
+          "step": 7
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "1461501637330902918203684832716283019655932542976",
+          "slot": 0,
+          "step": 8
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "1461501637330902918203684832716283019655932542976",
+          "slot": 0,
+          "step": 9
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "1461501637330902918203684832716283019655932542976",
+          "slot": 0,
+          "step": 10
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "1461501637330902918203684832716283019655932542976",
+          "slot": 0,
+          "step": 11
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "1461501637330902918203684832716283019655932542976",
+          "slot": 0,
+          "step": 12
+        }
+      ],
+      "mismatching_steps": 13,
+      "steps_compared": 19,
+      "truncated": true,
+      "verdict": "mismatch"
+    }
+  },
+  "fe-layout-shifted": {
+    "getter_only_comparison": {
+      "checker": "native Fe compat_checker protocol 3",
+      "frame_words": 213,
+      "listed": 0,
+      "mismatches": [],
+      "mismatching_steps": 0,
+      "steps_compared": 19,
+      "truncated": false,
+      "verdict": "match"
+    },
+    "layout": {
+      "category": "neighbor",
+      "checker": "native Fe compat_checker protocol 3, kind 4",
+      "explanation": "action 1 (setPaused(bool)) changed byte 21 of slot 0, outside the written field paused",
+      "index": 21,
+      "left": "642829559307850963015472508762062935916233390536",
+      "right": "374787248716018998023158789684130515967834964392392",
+      "scope": {
+        "actions": 19,
+        "fields": [
+          "owner: slot 0 offset 0 width 20 (address)",
+          "paused: slot 0 offset 20 width 1 (bool)",
+          "limit: slot 0 offset 21 width 11 (uint)"
+        ],
+        "mapping_keys": {
+          "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+        },
+        "slots": [
+          0,
+          1
+        ]
+      },
+      "step": 1,
+      "verdict": "violation"
+    },
+    "layout_differential": {
+      "checker": "native Fe compat_checker protocol 3",
+      "first_divergence": {
+        "category": "state-value",
+        "deployment": false,
+        "index": 0,
+        "left": "2104331196638753881219157341478345955572165933512",
+        "log": 0,
+        "right": "374787248716018998023158789684130515967834964392392",
+        "slot": 0,
+        "step": 1
+      },
+      "frame_words": 593,
+      "listed": 8,
+      "mismatches": [
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "2104331196638753881219157341478345955572165933512",
+          "log": 0,
+          "right": "374787248716018998023158789684130515967834964392392",
+          "slot": 0,
+          "step": 1
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "115792089237316195423570984636647819893197591486716404205567476931566564571592",
+          "log": 0,
+          "right": "115792089237316195423570984635186318255866688568512719372851193911910632028616",
+          "slot": 0,
+          "step": 2
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "115792089237316195423570984637466491971220643441904616529521697015306263724031",
+          "log": 0,
+          "right": "115792089237316195423570984636004990333889740523700931696805413995650331181055",
+          "slot": 0,
+          "step": 3
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "115792089237316195423570984636004990333889740523700931696805413995650331181055",
+          "log": 0,
+          "right": "115792089237316195423570889229178105372547240187155051977849890856373925707775",
+          "slot": 0,
+          "step": 4
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "374144419156711147060143317175368453031918731001856",
+          "slot": 0,
+          "step": 8
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "374144419156711147060143317175368453031918731001856",
+          "slot": 0,
+          "step": 9
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "374144419156711147060143317175368453031918731001856",
+          "slot": 0,
+          "step": 10
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 0,
+          "left": "375605920794042049978347002008084736051574663544832",
+          "log": 0,
+          "right": "374144419156711147060143317175368453031918731001856",
+          "slot": 0,
+          "step": 11
+        }
+      ],
+      "mismatching_steps": 15,
+      "steps_compared": 19,
+      "truncated": true,
+      "verdict": "mismatch"
+    }
+  },
+  "fe-layout-wrong-root": {
+    "getter_only_comparison": {
+      "checker": "native Fe compat_checker protocol 3",
+      "frame_words": 213,
+      "listed": 0,
+      "mismatches": [],
+      "mismatching_steps": 0,
+      "steps_compared": 19,
+      "truncated": false,
+      "verdict": "match"
+    },
+    "layout": {
+      "category": "mapping-entry",
+      "checker": "native Fe compat_checker protocol 3, kind 4",
+      "explanation": "entry for key 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 at 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5 holds 0, expected 5, after action 9",
+      "index": 0,
+      "left": "5",
+      "right": "0",
+      "scope": {
+        "actions": 19,
+        "fields": [
+          "owner: slot 0 offset 0 width 20 (address)",
+          "paused: slot 0 offset 20 width 1 (bool)",
+          "limit: slot 0 offset 21 width 11 (uint)"
+        ],
+        "mapping_keys": {
+          "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+        },
+        "slots": [
+          0,
+          1
+        ]
+      },
+      "step": 9,
+      "verdict": "violation"
+    },
+    "layout_differential": {
+      "checker": "native Fe compat_checker protocol 3",
+      "first_divergence": {
+        "category": "state-value",
+        "deployment": false,
+        "index": 2,
+        "left": "5",
+        "log": 0,
+        "right": "0",
+        "slot": 2,
+        "step": 9
+      },
+      "frame_words": 593,
+      "listed": 8,
+      "mismatches": [
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 2,
+          "left": "5",
+          "log": 0,
+          "right": "0",
+          "slot": 2,
+          "step": 9
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 2,
+          "left": "5",
+          "log": 0,
+          "right": "0",
+          "slot": 2,
+          "step": 10
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 2,
+          "left": "5",
+          "log": 0,
+          "right": "0",
+          "slot": 2,
+          "step": 11
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 3,
+          "left": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "log": 0,
+          "right": "0",
+          "slot": 3,
+          "step": 12
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 3,
+          "left": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "log": 0,
+          "right": "0",
+          "slot": 3,
+          "step": 13
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 3,
+          "left": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "log": 0,
+          "right": "0",
+          "slot": 3,
+          "step": 14
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 3,
+          "left": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "log": 0,
+          "right": "0",
+          "slot": 3,
+          "step": 15
+        },
+        {
+          "category": "state-value",
+          "deployment": false,
+          "index": 3,
+          "left": "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+          "log": 0,
+          "right": "0",
+          "slot": 3,
+          "step": 16
+        }
+      ],
+      "mismatching_steps": 10,
+      "steps_compared": 19,
+      "truncated": true,
+      "verdict": "mismatch"
+    }
+  }
+}

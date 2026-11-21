@@ -1,0 +1,100 @@
+// Fe adapter for spec/layout-v1.md: an explicit Solidity-compatible storage
+// layout, written only through the pinned raw-layout APIs.
+//
+//   slot 0: owner (address) at byte offset 0, paused (bool) at 20, limit (uint88) at 21,
+//           with offsets counted from the low end of the word
+//   slot 1: root of mapping(address => uint256) balances; entry slot keccak256(key . 1)
+//
+// UNSAFE INVARIANT, relied on by every raw access below: this contract declares no
+// fields, so nothing the compiler allocates can use slot 0, slot 1, or any
+// keccak-derived entry slot. All of its storage lives in these declared places.
+// The Phase 4 runner checks this at run time: every SSTORE slot in every
+// transaction must be slot 0 or a declared key's entry slot.
+use std::abi::sol
+use std::evm::{Address, RawStorage, SolSlot, SolPacked, SolMapping}
+use std::abi::Uint88
+use core::num::IntDowncast
+
+pub const STATE_SLOT: u256 = 0
+pub const OWNER_OFFSET: u256 = 0
+pub const PAUSED_OFFSET: u256 = 20
+pub const LIMIT_OFFSET: u256 = 21
+pub const BALANCES_ROOT: u256 = 1
+
+// An 11-byte unsigned field. The pinned std has no 88-bit SolPacked type, so
+// this implements the public trait. Only the low 88 bits are ever stored.
+pub struct U88 { pub value: u128 }
+
+impl SolPacked for U88 {
+    const BITS: u256 = 88
+    fn to_packed(own self) -> u256 {
+        (self.value as u256) & ((1 << 88) - 1)
+    }
+    fn from_packed(_ bits: u256) -> Self {
+        U88 { value: (bits & ((1 << 88) - 1)).downcast_truncate() }
+    }
+}
+
+pub msg LayoutMsg {
+    #[selector = sol("setOwner(address)")]
+    SetOwner { value: Address },
+    #[selector = sol("setPaused(bool)")]
+    SetPaused { value: bool },
+    #[selector = sol("setLimit(uint88)")]
+    SetLimit { value: Uint88 },
+    #[selector = sol("setBalance(address,uint256)")]
+    SetBalance { key: Address, value: u256 },
+    #[selector = sol("owner()")]
+    Owner -> Address,
+    #[selector = sol("paused()")]
+    Paused -> bool,
+    #[selector = sol("limit()")]
+    Limit -> Uint88,
+    #[selector = sol("balanceOf(address)")]
+    BalanceOf { key: Address } -> u256,
+}
+
+fn entry_slot(key: Address) -> u256 {
+    // Safety: see the module invariant; root 1 is reserved for this mapping.
+    unsafe { SolMapping::at(BALANCES_ROOT) }.slot_of(key)
+}
+
+pub contract PackedLayout uses (storage: mut RawStorage) {
+    recv LayoutMsg {
+        SetOwner { value } uses (mut storage) {
+            // Safety: slot 0 is the declared packed slot (module invariant).
+            let slot = unsafe { mut SolSlot::at(STATE_SLOT) }
+            slot.write(offset: OWNER_OFFSET, value)
+        }
+        SetPaused { value } uses (mut storage) {
+            let slot = unsafe { mut SolSlot::at(STATE_SLOT) }
+            slot.write(offset: PAUSED_OFFSET, value)
+        }
+        SetLimit { value } uses (mut storage) {
+            let slot = unsafe { mut SolSlot::at(STATE_SLOT) }
+            slot.write(offset: LIMIT_OFFSET, value: U88 { value: value.val })
+        }
+        SetBalance { key, value } uses (mut storage) {
+            // Safety: the entry slot derives from reserved root 1 (module invariant).
+            let slot = unsafe { mut SolSlot::at(entry_slot(key)) }
+            slot.write(offset: 0, value)
+        }
+        Owner -> Address uses (storage) {
+            let slot = unsafe { SolSlot::at(STATE_SLOT) }
+            slot.read(offset: OWNER_OFFSET)
+        }
+        Paused -> bool uses (storage) {
+            let slot = unsafe { SolSlot::at(STATE_SLOT) }
+            slot.read(offset: PAUSED_OFFSET)
+        }
+        Limit -> Uint88 uses (storage) {
+            let slot = unsafe { SolSlot::at(STATE_SLOT) }
+            let packed: U88 = slot.read(offset: LIMIT_OFFSET)
+            Uint88 { val: packed.value }
+        }
+        BalanceOf { key } -> u256 uses (storage) {
+            let slot = unsafe { SolSlot::at(entry_slot(key)) }
+            slot.read(offset: 0)
+        }
+    }
+}

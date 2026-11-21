@@ -47,3 +47,24 @@ pub use normalize::{
     normalize,
 }
 pub use abi::{MAX_SLOTS, SlotKind, Slot, Layout, AbiCategory, AbiResult, empty_layout, abi_code, validate}
+pub use layout::{
+    MAX_FIELDS,
+    MAX_ROOTS,
+    NO_FIELD,
+    FieldKind,
+    PackedField,
+    Schema,
+    LayoutCategory,
+    LayoutResult,
+    SlotWord,
+    Entry,
+    LayoutStep,
+    layout_code,
+    empty_field,
+    empty_schema,
+    empty_layout_step,
+    field_mask,
+    field_value,
+    validate_schema,
+    check_step,
+}

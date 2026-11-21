@@ -6,7 +6,8 @@
 | 1: Specification, schemas, and golden vectors | Passed, 21 November 2026 ([below](#phase-1--specification-schemas-and-golden-vectors-21-november-2026)) |
 | 2: Reusable Fe conformance engine | Passed, 21 November 2026 ([below](#phase-2--reusable-fe-conformance-engine-21-november-2026)) |
 | 3: Differential treasury execution | Passed, 21 November 2026 ([below](#phase-3--differential-treasury-execution-21-november-2026)) |
-| 4–5 | Not started |
+| 4: Bounded layout adapter and validator | Passed, 21 November 2026 ([below](#phase-4--bounded-layout-adapter-and-validator-21-november-2026)) |
+| 5 | Not started |
 
 # Phase 0 feasibility — full observation path (21 November 2026)
 
@@ -580,3 +581,128 @@ storage fixture: an address, a bool, and a `uint88` packed in slot 0, and a
 mapping rooted at slot 1. It needs neighbor-preservation tests, a shifted
 offset that is detected, and overlapping or out-of-range field descriptions
 that are rejected.
+
+
+# Phase 4 — bounded layout adapter and validator (21 November 2026)
+
+**Result: Phase 4 exit gate passed** (`scripts/verify-phase4.py`, about 59 s,
+including the Phase 0–3 gates). It uses the same pinned toolchain.
+
+## What was built
+
+| Piece | Path |
+| --- | --- |
+| Frozen layout spec and scope statement | `spec/layout-v1.md` |
+| Schema plus 19-action corpus with the expected field and entry model | `fixtures/layout/packed-v1.json` |
+| Solidity reference, whose own layout rules give the reviewed positions | `contracts/solidity/PackedLayout.sol` |
+| Fe adapter (`SolSlot`/`SolWord`/`SolMapping`, `RawStorage` effect, no contract fields) | `contracts/fe/layout/` |
+| Fe layout validator (284 lines) and 6 pure tests | `src/layout.fe`, `src/phase4_tests.fe` |
+| Native request kind 4 and runner | `host/checker-native/`, `host/layout.py` |
+
+**The pinned raw-layout APIs.** I read them from the std source embedded in
+the pinned compiler.
+
+- `SolSlot::at(slot)` and `SolMapping::at(root)` are `unsafe`. Their contract
+  is that nothing the compiler allocates may use the slot or the slots derived
+  from it.
+- `SolSlot::read`/`write` address a `SolPacked` field by its byte offset from
+  the low end of the word, preserving the neighbors.
+- `SolMapping::slot_of(key)` is `keccak256(abi.encode(key, root))`.
+- Raw storage authority is the sealed `RawStorage` effect. `unsafe` only
+  asserts the invariant; it grants no authority.
+- **Gap found:** the pinned std has no 88-bit `SolPacked` type. The adapter
+  implements the public trait for a local `U88` (88-bit mask), and its
+  boundary values round-trip in the tests below.
+
+**The unsafe invariant at each raw access.** The adapter declares no contract
+fields, so nothing the compiler allocates can alias slot 0, slot 1, or an
+entry slot. Each `unsafe` block carries a comment saying so. The runner checks
+this at run time: every `SSTORE` that either implementation executes, taken
+from the opcode trace, must be slot 0 or a declared entry slot.
+
+## Exit tests
+
+- **The schema is independent of both implementations.** The reviewed schema
+  equals `solc --storage-layout` for the Solidity reference: `_owner` slot 0
+  offset 0, `_paused` 0/20, `_limit` 0/21 (`t_uint88`), `_balances` slot 1.
+- **The correct pair conforms.** Over 19 actions, both the Solidity reference
+  and the Fe adapter conform to the schema, as decided by Fe. For each action:
+  - only the written field's bits change;
+  - all three fields decode to their expected values;
+  - all three keys' entries hold their expected values at the slots `cast index`
+    derives;
+  - the write set is declared.
+
+  The two implementations also match each other step by step on raw slots 0
+  and 1, the three entry words, and getter returndata.
+- **Individual writes preserve unrelated bits.** Neighbor preservation passes
+  on every action of both. Fe unit tests cover a clobbering write (`neighbor`
+  at byte 21) and a change with no written field. The seeded clobber below is
+  the end-to-end negative.
+- **Boundary-width values round-trip.** Slot 0 after action 3 is exactly
+  `0xffffffffffffffffffffff01ffffffffffffffffffffffffffffffffffffffff`: the
+  maximal address, `true`, and 2^88−1. All 19 known slot-0 vectors hold on
+  both implementations, and slot 1 stays zero.
+- **Distinct keys stay independent.** The entries for the three keys (the
+  caller, the zero address, and the maximal address, with values up to
+  2^256−1) are checked after every action. Writing one key never changes
+  another.
+- **An intentionally shifted offset is detected.** Three seeded Fe adapters
+  were tested:
+
+  | Seeded fault | Fe layout result | Getter-only comparison of the same 19 actions |
+  | --- | --- | --- |
+  | `paused` stored at byte 21, not 20 | `neighbor`, action 1 (`setPaused`), byte 21 | **match**: invisible |
+  | Mapping rooted at slot 2, not 1 | `mapping-entry`, action 9: key's entry holds 0, expected 5 | **match**: invisible |
+  | `setOwner` clears the slot first | `neighbor`, action 3, byte 20 | mismatch only at action 15 (`limit()`) |
+
+  The first two keep the contract's own getters self-consistent. A behavioral
+  comparison can't see them, and only layout mode catches them.
+- **Overlapping or out-of-range descriptions are rejected.** Fe rejects 9
+  invalid schemas with specific categories, before any action is checked:
+  - overlap (limit at offset 20);
+  - out of range (limit at 22; paused at 32);
+  - width (19-byte address, 33-byte uint, 2-byte bool);
+  - a root on the packed slot;
+  - a repeated root;
+  - nine fields.
+- **The scope statement.** Every passing result names its scope: slots
+  [0, 1]; the fields and their positions; the three keys with their entry
+  slots; and 19 actions.
+
+**A declaration finding.** The ABIs are identical except for state mutability.
+Fe 26.5.0 emits the four read-only getters, which read through the
+`RawStorage` effect, as `nonpayable`, where Solidity emits them as `view`.
+This is recorded, not hidden. It doesn't affect layout or behavior in this
+corpus.
+
+Bytecode SHA-256 (creation / runtime):
+
+- Solidity: `e69fea0e…` / `f7929b9f…`
+- Fe: `a968543a…` / `eb1c4587…`
+
+Evidence is in [evidence/phase4/](evidence/phase4/): `correct-pair.json`,
+`seeded.json` (layout results and getter-only comparisons), `gate.json`
+(scope, known vectors, solc storage layout, schema rejections, declaration
+finding), and both raw records.
+
+## Limitations
+
+- **One packed slot and one flat mapping.** Nested mappings, arrays,
+  `bytes`/`string`, inheritance, and proxies are out of scope.
+- **Exact scope.** The result covers exactly the declared slots and three
+  keys. It says nothing about other storage, and it makes no upgrade-safety
+  claim.
+- **The expected model is hand-written.** It's trivial (each setter writes its
+  own field), but it's still written in the host.
+- **The write-set check traces the target's own frame only.** No nested calls
+  happen in this fixture.
+- Verified on macOS arm64 only, and all runs are the implementing agent's own.
+
+## Next gate
+
+Phase 5: a second integration, a user test, and the release. That means
+another developer introduces a porting mistake and locates it from the
+report, plus a clean-checkout verification and submission materials. An
+outside user is required. If none is available, that limitation must be
+stated, not worked around.

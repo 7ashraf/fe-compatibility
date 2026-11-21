@@ -11,7 +11,7 @@ import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'host'))
-from common import (ROOT, BUILD, STAMP, CHECKER, VARIANTS, TREASURY_VARIANTS, InfrastructureError, sha, hex_sha,
+from common import (ROOT, BUILD, STAMP, CHECKER, VARIANTS, TREASURY_VARIANTS, LAYOUT_VARIANTS, InfrastructureError, sha, hex_sha,
                     fe_compiler, solc_compiler, source_manifest)
 
 
@@ -34,7 +34,22 @@ def main():
     solidity = BUILD / 'solidity'
     run([solc, '--evm-version', 'osaka', '--optimize', '--optimize-runs', '200', '--bin', '--bin-runtime', '--abi',
          '-o', solidity, 'contracts/solidity/Meter.sol', 'contracts/solidity/Codec.sol',
-         'contracts/solidity/Treasury.sol', 'contracts/solidity/Harness.sol'])
+         'contracts/solidity/Treasury.sol', 'contracts/solidity/Harness.sol', 'contracts/solidity/PackedLayout.sol'])
+    run([solc, '--evm-version', 'osaka', '--storage-layout', '-o', solidity / 'storage-layout',
+         'contracts/solidity/PackedLayout.sol'])
+    layout_builds = [('fe-layout', ROOT / 'contracts/fe/layout')]
+    for variant, edits in LAYOUT_VARIANTS.items():
+        source = BUILD / 'sources' / variant
+        shutil.copytree(ROOT / 'contracts/fe/layout', source, ignore=shutil.ignore_patterns('out'))
+        for path, old, new in edits:
+            text = (source / path).read_text()
+            if text.count(old) != 1:
+                raise InfrastructureError(f'{variant}: seeded mutation no longer applies exactly once')
+            (source / path).write_text(text.replace(old, new))
+        layout_builds.append((variant, source))
+    for variant, path in layout_builds:
+        run([fe, 'build', path, '--backend', 'sonatina', '--profile', 'release', '-O', '1',
+             '--emit', 'bytecode,runtime-bytecode,abi,metadata', '--out-dir', BUILD / variant])
     vendored = ROOT / 'contracts/fe/treasury'
     provenance = json.loads((vendored / 'provenance.json').read_text())
     for path, digest in provenance['files'].items():
@@ -101,6 +116,17 @@ def main():
         if variant in TREASURY_VARIANTS:
             targets[variant]['fault'] = 'intentional: ' + ' / '.join(
                 new.split('INTENTIONAL ')[1].split('\n')[0] for _, _, new in TREASURY_VARIANTS[variant])
+    targets['solidity-layout'] = {'creation': 'solidity/PackedLayout.bin', 'runtime': 'solidity/PackedLayout.bin-runtime',
+                                  'abi': 'solidity/PackedLayout.abi', 'compiler': solc_info['version'],
+                                  'settings': targets['solidity']['settings'],
+                                  'storage_layout': 'solidity/storage-layout/PackedLayout_storage.json'}
+    for variant in ('fe-layout', *LAYOUT_VARIANTS):
+        targets[variant] = {'creation': f'{variant}/PackedLayout.bin', 'runtime': f'{variant}/PackedLayout.runtime.bin',
+                            'abi': f'{variant}/PackedLayout.abi.json', 'compiler': fe_info['version'],
+                            'settings': targets['fe']['settings']}
+        if variant in LAYOUT_VARIANTS:
+            targets[variant]['fault'] = 'intentional: ' + ' / '.join(
+                new.split('INTENTIONAL ')[1].split('\n')[0] for _, _, new in LAYOUT_VARIANTS[variant])
     for name in ('RejectingRecipient', 'ReentrantRecipient', 'Batcher'):
         targets[f'harness-{name}'] = {'creation': f'solidity/{name}.bin', 'runtime': f'solidity/{name}.bin-runtime',
                                       'abi': f'solidity/{name}.abi', 'compiler': solc_info['version'],

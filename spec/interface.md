@@ -4,6 +4,7 @@
 | --- | --- | --- | --- |
 | Meter v0 | Phase 0 | [meter-v0.md](meter-v0.md) | Observation-path proof |
 | Codec v1 | 1 (21 November 2026) | [codec-v1.md](codec-v1.md), [codec-v1.abi.json](codec-v1.abi.json) | ABI conformance (Phase 1) |
+| Layout v1 | 1 (21 November 2026) | [layout-v1.md](layout-v1.md), `fixtures/layout/packed-v1.json` | Explicit layout conformance (Phase 4) |
 | Treasury v0 | 1 (14 November 2026) | [vendor/treasury-v0/](vendor/treasury-v0/), vendored from Fe Capabilities at `ba6893c` | Behavioral corpus (Phase 3), [scenarios](scenarios.md) |
 
 The treasury specification is vendored unchanged, and its SHA-256 hashes are

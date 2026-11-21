@@ -97,11 +97,12 @@ def main():
                     'listing_is_bounded_ordered_and_counted')
     for backend in ([], ['--backend', 'native']):
         result = checked([fe, 'test', '.', *backend], ['fe', 'test', '.', *backend])
-        if not re.search(r'test result: ok\. 24 passed; 0 failed', result.stdout) or \
+        count = re.search(r'test result: ok\. ([0-9]+) passed; 0 failed', result.stdout)
+        if not count or int(count.group(1)) < 24 or \
                 any(f'PASS  [' not in line for t in phase2_tests for line in result.stdout.splitlines()
                     if line.endswith(' ' + t)):
-            raise RuntimeError('Expected all 24 Fe tests, including the 10 Phase 2 tests, to pass')
-    print('PASS 10 Phase 2 engine tests (24 total) on the EVM and native backends', flush=True)
+            raise RuntimeError('Expected at least 24 Fe tests, including the 10 Phase 2 tests, to pass with none failing')
+    print('PASS 10 Phase 2 engine tests (all Fe tests pass) on the EVM and native backends', flush=True)
 
     # Real EVM corpus: the Solidity reference against the correct and six seeded Fe ports.
     reports = {}

@@ -1,0 +1,62 @@
+{
+  "differential": {
+    "checker": "native Fe compat_checker protocol 3",
+    "frame_words": 593,
+    "listed": 0,
+    "mismatches": [],
+    "mismatching_steps": 0,
+    "steps_compared": 19,
+    "truncated": false,
+    "verdict": "match"
+  },
+  "fixture_sha256": "f298aac4e2653cae862ced976fe02e5ecbb6af8528f795111f0557005cf3983a",
+  "format": "fe-compatibility-layout-run-v1",
+  "layout": {
+    "left": {
+      "category": "valid",
+      "checker": "native Fe compat_checker protocol 3, kind 4",
+      "scope": {
+        "actions": 19,
+        "fields": [
+          "owner: slot 0 offset 0 width 20 (address)",
+          "paused: slot 0 offset 20 width 1 (bool)",
+          "limit: slot 0 offset 21 width 11 (uint)"
+        ],
+        "mapping_keys": {
+          "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+        },
+        "slots": [
+          0,
+          1
+        ]
+      },
+      "verdict": "conforms"
+    },
+    "right": {
+      "category": "valid",
+      "checker": "native Fe compat_checker protocol 3, kind 4",
+      "scope": {
+        "actions": 19,
+        "fields": [
+          "owner: slot 0 offset 0 width 20 (address)",
+          "paused: slot 0 offset 20 width 1 (bool)",
+          "limit: slot 0 offset 21 width 11 (uint)"
+        ],
+        "mapping_keys": {
+          "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+          "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+        },
+        "slots": [
+          0,
+          1
+        ]
+      },
+      "verdict": "conforms"
+    }
+  },
+  "left": "solidity-layout",
+  "right": "fe-layout"
+}

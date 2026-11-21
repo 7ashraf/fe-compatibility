@@ -1,0 +1,398 @@
+{
+  "format": "fe-compatibility-phase4-gate-v1",
+  "result": "Phase 4 exit gate passed",
+  "verified_at_utc": "2026-11-21T15:16:12.463348+00:00",
+  "host": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6",
+  "fe": {
+    "version": "fe 26.5.0 (3dab95f)",
+    "sha256": "4968711c5bc02c1a3151cfaea0d81a48dc74803ea208362022af467c2a523fed"
+  },
+  "solc": {
+    "version": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "sha256": "f5a243d6b2dd8fba307e36c5fefa2d8eb3ae74ba81036d1c17c971b5d346ade9"
+  },
+  "targets": {
+    "solidity-layout": {
+      "creation": "solidity/PackedLayout.bin",
+      "runtime": "solidity/PackedLayout.bin-runtime",
+      "abi": "solidity/PackedLayout.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "storage_layout": "solidity/storage-layout/PackedLayout_storage.json",
+      "creation_sha256": "e69fea0e3f26f4dd4b0b7a21c9a3ad50c7d2b77ec59923585f75c6269affca7d",
+      "runtime_sha256": "f7929b9fa9f56fd4fcb084f891e1d17fed3fae4b4717943f2089bff974dbb38b"
+    },
+    "fe-layout": {
+      "creation": "fe-layout/PackedLayout.bin",
+      "runtime": "fe-layout/PackedLayout.runtime.bin",
+      "abi": "fe-layout/PackedLayout.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "creation_sha256": "a968543a8cfef086a00f391ab3313f99b7b80b58d971c30b4d0b32a9ca2f84b1",
+      "runtime_sha256": "eb1c45874746a5b9f75bdf49f9037bd37e4560a6297e473e1a796455d71944ba"
+    },
+    "fe-layout-shifted": {
+      "creation": "fe-layout-shifted/PackedLayout.bin",
+      "runtime": "fe-layout-shifted/PackedLayout.runtime.bin",
+      "abi": "fe-layout-shifted/PackedLayout.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 4 FAULT: paused one byte too high",
+      "creation_sha256": "5c66fe9a17d1c8b83f8eb64124ce6bd13f6d523aa4f82e85fbae9a1adafa570c",
+      "runtime_sha256": "45c54424879ca994784e1918f98a004144ec9cf201700bd59ad6db02fc3a09a6"
+    },
+    "fe-layout-wrong-root": {
+      "creation": "fe-layout-wrong-root/PackedLayout.bin",
+      "runtime": "fe-layout-wrong-root/PackedLayout.runtime.bin",
+      "abi": "fe-layout-wrong-root/PackedLayout.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 4 FAULT: wrong mapping root",
+      "creation_sha256": "5f3dceb05cc0ffaec205c1c844918f10fce57f80b5367a13c00f0693fab77f97",
+      "runtime_sha256": "08af354245b49b7359c3f9cbabbe746f3000e96e142b0cb86a3a05ee06cd3d2a"
+    },
+    "fe-layout-clobber": {
+      "creation": "fe-layout-clobber/PackedLayout.bin",
+      "runtime": "fe-layout-clobber/PackedLayout.runtime.bin",
+      "abi": "fe-layout-clobber/PackedLayout.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 4 FAULT: setOwner clears the slot first",
+      "creation_sha256": "07c60f6d6d8b2d48841b813968b9c8708d82c87f29e9da394fa0928660ff4717",
+      "runtime_sha256": "c3d709fe2cf22a045f83d7857564ac8f174061103a1a1675b55856444864d1fb"
+    }
+  },
+  "scope": {
+    "actions": 19,
+    "fields": [
+      "owner: slot 0 offset 0 width 20 (address)",
+      "paused: slot 0 offset 20 width 1 (bool)",
+      "limit: slot 0 offset 21 width 11 (uint)"
+    ],
+    "mapping_keys": {
+      "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+      "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+      "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+    },
+    "slots": [
+      0,
+      1
+    ]
+  },
+  "known_slot0_vectors": [
+    "0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "0x00000000000000000000000170997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "0xffffffffffffffffffffff0170997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "0xffffffffffffffffffffff01ffffffffffffffffffffffffffffffffffffffff",
+    "0xffffffffffffffffffffff00ffffffffffffffffffffffffffffffffffffffff",
+    "0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff",
+    "0x000000000000000000000100ffffffffffffffffffffffffffffffffffffffff",
+    "0x0000000000000000000001000000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x0000000000000000000001010000000000000000000000000000000000000000",
+    "0x8000000000000000000000010000000000000000000000000000000000000000"
+  ],
+  "solc_storage_layout": [
+    {
+      "astId": 4,
+      "contract": "contracts/solidity/PackedLayout.sol:PackedLayout",
+      "label": "_owner",
+      "offset": 0,
+      "slot": "0",
+      "type": "t_address"
+    },
+    {
+      "astId": 6,
+      "contract": "contracts/solidity/PackedLayout.sol:PackedLayout",
+      "label": "_paused",
+      "offset": 20,
+      "slot": "0",
+      "type": "t_bool"
+    },
+    {
+      "astId": 8,
+      "contract": "contracts/solidity/PackedLayout.sol:PackedLayout",
+      "label": "_limit",
+      "offset": 21,
+      "slot": "0",
+      "type": "t_uint88"
+    },
+    {
+      "astId": 12,
+      "contract": "contracts/solidity/PackedLayout.sol:PackedLayout",
+      "label": "_balances",
+      "offset": 0,
+      "slot": "1",
+      "type": "t_mapping(t_address,t_uint256)"
+    }
+  ],
+  "declaration_finding": [
+    "[\"function\", \"balanceOf\", [[\"address\", false]], [\"uint256\"], \"nonpayable\", null]",
+    "[\"function\", \"balanceOf\", [[\"address\", false]], [\"uint256\"], \"view\", null]",
+    "[\"function\", \"limit\", [], [\"uint88\"], \"nonpayable\", null]",
+    "[\"function\", \"limit\", [], [\"uint88\"], \"view\", null]",
+    "[\"function\", \"owner\", [], [\"address\"], \"nonpayable\", null]",
+    "[\"function\", \"owner\", [], [\"address\"], \"view\", null]",
+    "[\"function\", \"paused\", [], [\"bool\"], \"nonpayable\", null]",
+    "[\"function\", \"paused\", [], [\"bool\"], \"view\", null]"
+  ],
+  "schema_rejections": [
+    {
+      "name": "limit overlaps paused (offset 20)",
+      "category": "overlap",
+      "index": 2
+    },
+    {
+      "name": "limit runs past the word (offset 22)",
+      "category": "out-of-range",
+      "index": 2
+    },
+    {
+      "name": "paused at offset 32",
+      "category": "out-of-range",
+      "index": 1
+    },
+    {
+      "name": "19-byte address",
+      "category": "width",
+      "index": 0
+    },
+    {
+      "name": "33-byte uint",
+      "category": "width",
+      "index": 2
+    },
+    {
+      "name": "2-byte bool",
+      "category": "width",
+      "index": 1
+    },
+    {
+      "name": "mapping root on the packed slot",
+      "category": "root-reserved",
+      "index": 0
+    },
+    {
+      "name": "repeated mapping root",
+      "category": "duplicate-root",
+      "index": 1
+    },
+    {
+      "name": "nine fields",
+      "category": "too-many",
+      "index": 0
+    }
+  ],
+  "seeded": {
+    "fe-layout-shifted": {
+      "layout": {
+        "category": "neighbor",
+        "checker": "native Fe compat_checker protocol 3, kind 4",
+        "explanation": "action 1 (setPaused(bool)) changed byte 21 of slot 0, outside the written field paused",
+        "index": 21,
+        "left": "642829559307850963015472508762062935916233390536",
+        "right": "374787248716018998023158789684130515967834964392392",
+        "scope": {
+          "actions": 19,
+          "fields": [
+            "owner: slot 0 offset 0 width 20 (address)",
+            "paused: slot 0 offset 20 width 1 (bool)",
+            "limit: slot 0 offset 21 width 11 (uint)"
+          ],
+          "mapping_keys": {
+            "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+            "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+            "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+          },
+          "slots": [
+            0,
+            1
+          ]
+        },
+        "step": 1,
+        "verdict": "violation"
+      },
+      "getter_only": "match"
+    },
+    "fe-layout-wrong-root": {
+      "layout": {
+        "category": "mapping-entry",
+        "checker": "native Fe compat_checker protocol 3, kind 4",
+        "explanation": "entry for key 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 at 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5 holds 0, expected 5, after action 9",
+        "index": 0,
+        "left": "5",
+        "right": "0",
+        "scope": {
+          "actions": 19,
+          "fields": [
+            "owner: slot 0 offset 0 width 20 (address)",
+            "paused: slot 0 offset 20 width 1 (bool)",
+            "limit: slot 0 offset 21 width 11 (uint)"
+          ],
+          "mapping_keys": {
+            "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+            "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+            "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+          },
+          "slots": [
+            0,
+            1
+          ]
+        },
+        "step": 9,
+        "verdict": "violation"
+      },
+      "getter_only": "match"
+    },
+    "fe-layout-clobber": {
+      "layout": {
+        "category": "neighbor",
+        "checker": "native Fe compat_checker protocol 3, kind 4",
+        "explanation": "action 3 (setOwner(address)) changed byte 20 of slot 0, outside the written field owner",
+        "index": 20,
+        "left": "115792089237316195423570984636647819893197591486716404205567476931566564571592",
+        "right": "1461501637330902918203684832716283019655932542975",
+        "scope": {
+          "actions": 19,
+          "fields": [
+            "owner: slot 0 offset 0 width 20 (address)",
+            "paused: slot 0 offset 20 width 1 (bool)",
+            "limit: slot 0 offset 21 width 11 (uint)"
+          ],
+          "mapping_keys": {
+            "0x0000000000000000000000000000000000000000": "0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49",
+            "0x70997970c51812dc3a010c7d01b50e0d17dc79c8": "0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5",
+            "0xffffffffffffffffffffffffffffffffffffffff": "0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362"
+          },
+          "slots": [
+            0,
+            1
+          ]
+        },
+        "step": 3,
+        "verdict": "violation"
+      },
+      "getter_only": "mismatch"
+    }
+  },
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/verify-phase3.py"
+      ],
+      "exit": 0,
+      "stdout": "PASS python3 scripts/verify-phase2.py\nPASS python3 scripts/make-corpus.py --check\nPASS Solidity and Fe treasury ABIs equal the frozen treasury v0 ABI (functions, errors, events, fallback, mutability)\nPASS python3 host/treasury.py\nPASS correct pair: Solidity and Fe each meet the spec oracle on 85 actions in 11 scenarios, and match each other step by step (12 state fields)\nPASS python3 host/treasury.py\nPASS treasury run output and reports are byte-identical across runs\nPASS python3 host/treasury.py --right fe-inclusive-expiry\nPASS python3 host/treasury.py --right fe-cap-off-by-one\nPASS python3 host/treasury.py --right fe-unindexed-delegate\nPASS python3 host/treasury.py --right fe-auth-after-active\nPASS python3 host/treasury.py --right fe-revoke-event-twice\nPASS python3 host/treasury.py --right fe-no-reserve\nPASS 6 seeded Fe treasury faults each detected at the intended step and category in exactly the scenarios that exercise them; all other scenarios match\nPASS unpersisted accounting is caught by typed state at the spend itself, while return values and events still match there (spec oracle notices 1-7 actions later)\nPASS a tampered expected error argument fails the spec oracle on both implementations (error-argument at the right step); an inconsistent schedule is rejected\nPASS Phase 3 exit gate: the correct pair passes the treasury corpus; every seeded fault is caught at its earliest relevant observation\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        "."
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.0001s] dynamic_bytes_rules\nPASS  [0.0002s] canonical_payloads_pass\nPASS  [0.0002s] each_write_preserves_its_neighbours\nPASS  [0.0003s] boundary_width_values_round_trip\nPASS  [0.0003s] changed_indexed_value\nPASS  [0.0003s] address_state_is_normalized_by_type_only\nPASS  [0.0003s] earlier_observation_classes_win_within_a_step\nPASS  [0.0003s] failed_deployment_is_never_a_match\nPASS  [0.0004s] identical_observations_match\nPASS  [0.0006s] compiler_rejection_scope_compares_status_and_logs_only\nPASS  [0.0004s] invalid_tables_and_allowlists_are_malformed\nPASS  [0.0001s] mapping_entries_and_write_set\nPASS  [0.0004s] log_differences_are_classified\nPASS  [0.0003s] malformed_reasons_are_specific\nPASS  [0.0001s] overlapping_and_out_of_range_descriptions_are_rejected\nPASS  [0.0000s] reviewed_schema_is_valid\nPASS  [0.0000s] shifted_offset_is_detected\nPASS  [0.0005s] malformed_observations_are_not_comparable\nPASS  [0.0001s] positive_controls_match\nPASS  [0.0003s] one_byte_in_revert_payload_is_located\nPASS  [0.0001s] success_versus_revert\nPASS  [0.0002s] state_mismatch_behind_matching_return_and_logs\nPASS  [0.0001s] wrong_selector_type_and_length_are_categorized\nPASS  [0.0003s] status_and_length_differences\nPASS  [0.0003s] values_beyond_float_precision_are_exact\nPASS  [0.0002s] wrong_custom_error_and_payload\nPASS  [0.0007s] missing_extra_and_reordered_logs\nPASS  [0.0007s] normalization_touches_only_allowlisted_fields\nPASS  [0.0013s] listing_is_bounded_ordered_and_counted\nPASS  [0.0067s] first_divergent_step_is_reported\n\ntest result: ok. 30 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        ".",
+        "--backend",
+        "native"
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.1750s] normalization_touches_only_allowlisted_fields\nPASS  [0.1750s] wrong_selector_type_and_length_are_categorized\nPASS  [0.1757s] failed_deployment_is_never_a_match\nPASS  [0.1757s] compiler_rejection_scope_compares_status_and_logs_only\nPASS  [0.1757s] canonical_payloads_pass\nPASS  [0.1757s] invalid_tables_and_allowlists_are_malformed\nPASS  [0.1764s] dynamic_bytes_rules\nPASS  [0.0065s] missing_extra_and_reordered_logs\nPASS  [0.0057s] success_versus_revert\nPASS  [0.0065s] positive_controls_match\nPASS  [0.0057s] wrong_custom_error_and_payload\nPASS  [0.0057s] changed_indexed_value\nPASS  [0.0063s] state_mismatch_behind_matching_return_and_logs\nPASS  [0.0060s] earlier_observation_classes_win_within_a_step\nPASS  [0.0040s] overlapping_and_out_of_range_descriptions_are_rejected\nPASS  [0.0040s] malformed_reasons_are_specific\nPASS  [0.0040s] each_write_preserves_its_neighbours\nPASS  [0.0046s] listing_is_bounded_ordered_and_counted\nPASS  [0.0040s] boundary_width_values_round_trip\nPASS  [0.1865s] values_beyond_float_precision_are_exact\nPASS  [0.0065s] reviewed_schema_is_valid\nPASS  [0.0028s] shifted_offset_is_detected\nPASS  [0.0041s] mapping_entries_and_write_set\nPASS  [0.0034s] one_byte_in_revert_payload_is_located\nPASS  [0.0042s] log_differences_are_classified\nPASS  [0.0063s] identical_observations_match\nPASS  [0.0060s] status_and_length_differences\nPASS  [0.0044s] first_divergent_step_is_reported\nPASS  [0.0047s] malformed_observations_are_not_comparable\nPASS  [0.0147s] address_state_is_normalized_by_type_only\n\ntest result: ok. 30 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/layout.py"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"differential\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"frame_words\": 593,\n    \"listed\": 0,\n    \"mismatches\": [],\n    \"mismatching_steps\": 0,\n    \"steps_compared\": 19,\n    \"truncated\": false,\n    \"verdict\": \"match\"\n  },\n  \"fixture_sha256\": \"f298aac4e2653cae862ced976fe02e5ecbb6af8528f795111f0557005cf3983a\",\n  \"format\": \"fe-compatibility-layout-run-v1\",\n  \"layout\": {\n    \"left\": {\n      \"category\": \"valid\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"verdict\": \"conforms\"\n    },\n    \"right\": {\n      \"category\": \"valid\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"verdict\": \"conforms\"\n    }\n  },\n  \"left\": \"solidity-layout\",\n  \"right\": \"fe-layout\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/layout.py",
+        "--right",
+        "fe-layout-shifted"
+      ],
+      "exit": 1,
+      "stdout": "right\": \"115792089237316195423570984636004990333889740523700931696805413995650331181055\",\n        \"slot\": 0,\n        \"step\": 3\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"115792089237316195423570984636004990333889740523700931696805413995650331181055\",\n        \"log\": 0,\n        \"right\": \"115792089237316195423570889229178105372547240187155051977849890856373925707775\",\n        \"slot\": 0,\n        \"step\": 4\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"374144419156711147060143317175368453031918731001856\",\n        \"slot\": 0,\n        \"step\": 8\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"374144419156711147060143317175368453031918731001856\",\n        \"slot\": 0,\n        \"step\": 9\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"374144419156711147060143317175368453031918731001856\",\n        \"slot\": 0,\n        \"step\": 10\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"374144419156711147060143317175368453031918731001856\",\n        \"slot\": 0,\n        \"step\": 11\n      }\n    ],\n    \"mismatching_steps\": 15,\n    \"steps_compared\": 19,\n    \"truncated\": true,\n    \"verdict\": \"mismatch\"\n  },\n  \"fixture_sha256\": \"f298aac4e2653cae862ced976fe02e5ecbb6af8528f795111f0557005cf3983a\",\n  \"format\": \"fe-compatibility-layout-run-v1\",\n  \"layout\": {\n    \"left\": {\n      \"category\": \"valid\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"verdict\": \"conforms\"\n    },\n    \"right\": {\n      \"category\": \"neighbor\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"explanation\": \"action 1 (setPaused(bool)) changed byte 21 of slot 0, outside the written field paused\",\n      \"index\": 21,\n      \"left\": \"642829559307850963015472508762062935916233390536\",\n      \"right\": \"374787248716018998023158789684130515967834964392392\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"step\": 1,\n      \"verdict\": \"violation\"\n    }\n  },\n  \"left\": \"solidity-layout\",\n  \"right\": \"fe-layout-shifted\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/layout.py",
+        "--right",
+        "fe-layout-wrong-root"
+      ],
+      "exit": 1,
+      "stdout": "ex\": 2,\n        \"left\": \"5\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 2,\n        \"step\": 10\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 2,\n        \"left\": \"5\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 2,\n        \"step\": 11\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 3,\n        \"left\": \"115792089237316195423570985008687907853269984665640564039457584007913129639935\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 3,\n        \"step\": 12\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 3,\n        \"left\": \"115792089237316195423570985008687907853269984665640564039457584007913129639935\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 3,\n        \"step\": 13\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 3,\n        \"left\": \"115792089237316195423570985008687907853269984665640564039457584007913129639935\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 3,\n        \"step\": 14\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 3,\n        \"left\": \"115792089237316195423570985008687907853269984665640564039457584007913129639935\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 3,\n        \"step\": 15\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 3,\n        \"left\": \"115792089237316195423570985008687907853269984665640564039457584007913129639935\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 3,\n        \"step\": 16\n      }\n    ],\n    \"mismatching_steps\": 10,\n    \"steps_compared\": 19,\n    \"truncated\": true,\n    \"verdict\": \"mismatch\"\n  },\n  \"fixture_sha256\": \"f298aac4e2653cae862ced976fe02e5ecbb6af8528f795111f0557005cf3983a\",\n  \"format\": \"fe-compatibility-layout-run-v1\",\n  \"layout\": {\n    \"left\": {\n      \"category\": \"valid\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"verdict\": \"conforms\"\n    },\n    \"right\": {\n      \"category\": \"mapping-entry\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"explanation\": \"entry for key 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 at 0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5 holds 0, expected 5, after action 9\",\n      \"index\": 0,\n      \"left\": \"5\",\n      \"right\": \"0\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"step\": 9,\n      \"verdict\": \"violation\"\n    }\n  },\n  \"left\": \"solidity-layout\",\n  \"right\": \"fe-layout-wrong-root\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/layout.py",
+        "--right",
+        "fe-layout-clobber"
+      ],
+      "exit": 1,
+      "stdout": " \"index\": 0,\n        \"left\": \"374144419156711147060143317175368453031918731001856\",\n        \"log\": 0,\n        \"right\": \"0\",\n        \"slot\": 0,\n        \"step\": 7\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"1461501637330902918203684832716283019655932542976\",\n        \"slot\": 0,\n        \"step\": 8\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"1461501637330902918203684832716283019655932542976\",\n        \"slot\": 0,\n        \"step\": 9\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"1461501637330902918203684832716283019655932542976\",\n        \"slot\": 0,\n        \"step\": 10\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"1461501637330902918203684832716283019655932542976\",\n        \"slot\": 0,\n        \"step\": 11\n      },\n      {\n        \"category\": \"state-value\",\n        \"deployment\": false,\n        \"index\": 0,\n        \"left\": \"375605920794042049978347002008084736051574663544832\",\n        \"log\": 0,\n        \"right\": \"1461501637330902918203684832716283019655932542976\",\n        \"slot\": 0,\n        \"step\": 12\n      }\n    ],\n    \"mismatching_steps\": 13,\n    \"steps_compared\": 19,\n    \"truncated\": true,\n    \"verdict\": \"mismatch\"\n  },\n  \"fixture_sha256\": \"f298aac4e2653cae862ced976fe02e5ecbb6af8528f795111f0557005cf3983a\",\n  \"format\": \"fe-compatibility-layout-run-v1\",\n  \"layout\": {\n    \"left\": {\n      \"category\": \"valid\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"verdict\": \"conforms\"\n    },\n    \"right\": {\n      \"category\": \"neighbor\",\n      \"checker\": \"native Fe compat_checker protocol 3, kind 4\",\n      \"explanation\": \"action 3 (setOwner(address)) changed byte 20 of slot 0, outside the written field owner\",\n      \"index\": 20,\n      \"left\": \"115792089237316195423570984636647819893197591486716404205567476931566564571592\",\n      \"right\": \"1461501637330902918203684832716283019655932542975\",\n      \"scope\": {\n        \"actions\": 19,\n        \"fields\": [\n          \"owner: slot 0 offset 0 width 20 (address)\",\n          \"paused: slot 0 offset 20 width 1 (bool)\",\n          \"limit: slot 0 offset 21 width 11 (uint)\"\n        ],\n        \"mapping_keys\": {\n          \"0x0000000000000000000000000000000000000000\": \"0xa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49\",\n          \"0x70997970c51812dc3a010c7d01b50e0d17dc79c8\": \"0x3c8e904cdb19937d60d41c8d984b1a8803ad6e0891b4f9e032dcec2a22c2c7f5\",\n          \"0xffffffffffffffffffffffffffffffffffffffff\": \"0x73df27e0fa8bbb6c6a588f907379871e0f69a2bae64ea632056f6dabc259f362\"\n        },\n        \"slots\": [\n          0,\n          1\n        ]\n      },\n      \"step\": 3,\n      \"verdict\": \"violation\"\n    }\n  },\n  \"left\": \"solidity-layout\",\n  \"right\": \"fe-layout-clobber\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "sources": {
+    "fe.toml": "65d983a85187468340f13b9580e64c28d36bfe496d9902a52a7c3c5fab938805",
+    "src/lib.fe": "780af4069f06de54ae1a604711dc97bb5b3331115ae3189e2faa14ae688340b4",
+    "src/observation.fe": "0002c58a7c536ddbbe0b995ba5e54e5df01976050d82af37382c649318ae050c",
+    "src/conformance.fe": "168e8615eb446e5e02942a2cb94b391051f2d8bff4c5d9de245b34838888cbf3",
+    "src/abi.fe": "e9a2b4b0aaaf4ebd6a5f8ebe1d147751bdf77c21feab1d90132d76451db7d3e6",
+    "src/normalize.fe": "44ffeb4e8ff609ce8932a1c1a00ca32c00a426ff05b0e27d8a31564a2eef2ce6",
+    "src/phase1_tests.fe": "3a59ad685758d53e3b6af7aff37f5b7992c2b8fa7c0b217f392e1e32d65220de",
+    "contracts/solidity/Codec.sol": "c116f56721c597f7f4619be2f880911f8e5d6ed116ad326ae6df3b24d9ff8ffd",
+    "contracts/fe/codec/fe.toml": "d39c2f61514bd2d987b7eff897bbdbf316a2f5562cf86321e14a421b61a8ef4c",
+    "contracts/fe/codec/src/lib.fe": "d891d172029f54ddbd62af33f2b62c405fca3f3530c5ad1f41701e9647ff52ab",
+    "host/checker-native/fe.toml": "5da71135e249735757422288288548dbe45f9b97bde85a7f4c311daefb8c14df",
+    "host/checker-native/src/lib.fe": "c4cb9b7bea146dcf44e59e17319a9b334333af3dd8de0960fb16784efc219f69",
+    "contracts/solidity/Meter.sol": "bfafb856bb756df23854a29fdd742705424d8e6d591234c0c8656bb59499c181",
+    "contracts/fe/meter/fe.toml": "45a4eda71bb72570e7e926164d53c0ff472fd4736583f6f17e59264996cf0793",
+    "contracts/fe/meter/src/lib.fe": "557c0c0f57a23f458a2e8467926cd65f4dc030c559e15bee5477904938699223",
+    "contracts/fe/meter/src/tests.fe": "f106c2295ba57e0978cbe736e84f649e7af805c2f56a9a5c2915ae987a1bbf37",
+    "src/tests.fe": "2ded4ce41e1bb91b98a1c9fb42a090e7a5c5ec82139b06dd4b7b5f8eee61687d",
+    "contracts/solidity/Treasury.sol": "f959c800e8e22462b1a29e2dc2244f07f7a15e7754a7f1d1ebc6de0efb9116d7",
+    "contracts/solidity/Harness.sol": "042e7fbad99139f702310f0365879bbe7feb7801aaff3abaf5cc4eda18e0c0d4",
+    "contracts/fe/treasury/provenance.json": "bd05128e33497c54eb79189447f2fbf0a657be24ba823e1711f5a7a3298b71fd",
+    "contracts/fe/treasury/policy/fe.toml": "7362f48804e22c52f5f7ea79737ed08e378f7faf1b9c7d92e35387ee7628908f",
+    "contracts/fe/treasury/policy/src/lib.fe": "ef2c9b2a24b78080b59705bccc2d94cf25ecf8ed9c8558c0a92ee19e98acc6f9",
+    "contracts/fe/treasury/policy/src/policy.fe": "97695eb46b585df2322b8f8203eb679c1479e477b6499e67f19da9dd9ffab1f0",
+    "contracts/fe/treasury/policy/src/types.fe": "f0e6fae2aa8bde5c281b9d4918d2bde3bc46c726a4673cfda769cc1a6519a3a7",
+    "contracts/fe/treasury/treasury/fe.toml": "fe89a8666dd1b9947a80ee4d8848e8a55f44b5b3225e22317ce8b253837a972e",
+    "contracts/fe/treasury/treasury/src/lib.fe": "5acc23870070e8226627297ab523c80b0030a30f4fad3d836ff057f67dcbef21",
+    "contracts/solidity/PackedLayout.sol": "227e9b848d4b6718a164f3f5a73d36262b7253621fb8ae0cd03ef3e9e16050b4",
+    "contracts/fe/layout/fe.toml": "dba5459d970f375af3ec83be169f349509fa54f7982472450ce9871099d20c20",
+    "contracts/fe/layout/src/lib.fe": "cd2599937846d2395192f277553a746e4468daa952cee97cbb9fe7a74c9fa994",
+    "src/layout.fe": "62f8901aa53b5e6c78833f288aaa77b88614fd1cd81abf88e7c2c9a559ed7900",
+    "src/phase2_tests.fe": "d9221c7bd73b14ec59c956174544ed84821188008f3c1398912fc8c9980fcbd7",
+    "src/phase4_tests.fe": "dc2e173a2aa94e9a8e5cb65089366299cf1d87ab6093e1cc187fe36316232efd",
+    "scripts/build.py": "cfd304dc4f1cd386ce383339baef1a8934f46dcc26d61e726b7cd75cbc80975a",
+    "host/common.py": "0a74cfcc275fb382c83493d5eeff6764f7b8381afeca9647ffdbeb2c7b2067d1"
+  }
+}

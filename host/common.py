@@ -19,6 +19,8 @@ SOURCES = ('fe.toml', 'src/lib.fe', 'src/observation.fe', 'src/conformance.fe', 
            'contracts/fe/treasury/policy/fe.toml', 'contracts/fe/treasury/policy/src/lib.fe',
            'contracts/fe/treasury/policy/src/policy.fe', 'contracts/fe/treasury/policy/src/types.fe',
            'contracts/fe/treasury/treasury/fe.toml', 'contracts/fe/treasury/treasury/src/lib.fe',
+           'contracts/solidity/PackedLayout.sol', 'contracts/fe/layout/fe.toml', 'contracts/fe/layout/src/lib.fe',
+           'src/layout.fe', 'src/phase2_tests.fe', 'src/phase4_tests.fe',
            'scripts/build.py', 'host/common.py')
 EMIT = '            log.emit(Added { caller: ctx.caller(), quantity, total })\n'
 # Seeded faults in copies of contracts/fe/meter, applied at build time. Each one
@@ -130,3 +132,16 @@ def load_stamp():
         if not (ROOT / path).exists() or sha(ROOT / path) != digest:
             raise InfrastructureError(f'Modified or missing build artifact {path}; run scripts/build.py')
     return stamp
+
+# Phase 4 seeded faults in copies of contracts/fe/layout (file, old, new). The first two
+# keep the contract's own getters consistent, so only the raw layout reveals them.
+LAYOUT_VARIANTS = {
+    'fe-layout-shifted': [('src/lib.fe', 'pub const PAUSED_OFFSET: u256 = 20',
+                           'pub const PAUSED_OFFSET: u256 = 21  // INTENTIONAL PHASE 4 FAULT: paused one byte too high')],
+    'fe-layout-wrong-root': [('src/lib.fe', 'pub const BALANCES_ROOT: u256 = 1',
+                              'pub const BALANCES_ROOT: u256 = 2  // INTENTIONAL PHASE 4 FAULT: wrong mapping root')],
+    'fe-layout-clobber': [('src/lib.fe', '            slot.write(offset: OWNER_OFFSET, value)\n',
+                           '            slot.store(std::evm::SolWord { word: 0 })'
+                           '  // INTENTIONAL PHASE 4 FAULT: setOwner clears the slot first\n'
+                           '            slot.write(offset: OWNER_OFFSET, value)\n')],
+}
