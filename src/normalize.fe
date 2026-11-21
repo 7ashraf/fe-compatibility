@@ -1,0 +1,125 @@
+// Address normalization limited to an allowlist. Each world supplies a table
+// mapping its concrete addresses to stable role IDs. Only the declared
+// positions are rewritten: log emitters, plus listed returndata words
+// (successful calls only), topics, and log-data words. An address-shaped value
+// anywhere else stays raw, so a real mismatch can't be hidden by a byte pattern
+// that happens to equal an actor's address.
+use super::{CallObservation, MAX_LOGS, MAX_TOPICS, MAX_PAYLOAD_WORDS}
+
+pub const MAX_ROLES: usize = 8
+pub const MAX_POSITIONS: usize = 16
+// Normalized words carry the top bit, which no canonical address word can.
+const MARKER: u256 = 1 << 255
+
+pub struct AddressTable { pub count: usize, pub addresses: [u256; 8], pub roles: [u256; 8] }
+impl Copy for AddressTable {}
+
+pub enum Field {
+    Return,
+    Topic,
+    Data,
+}
+impl Copy for Field {}
+
+pub struct Position { pub field: Field, pub log: usize, pub word: usize }
+impl Copy for Position {}
+
+pub struct Allowlist { pub count: usize, pub positions: [Position; 16] }
+impl Copy for Allowlist {}
+
+pub fn empty_table() -> AddressTable {
+    AddressTable { count: 0, addresses: [0; 8], roles: [0; 8] }
+}
+
+pub fn empty_allowlist() -> Allowlist {
+    Allowlist { count: 0, positions: [Position { field: Field::Return, log: 0, word: 0 }; 16] }
+}
+
+pub fn table_valid(table: AddressTable) -> bool {
+    if table.count > MAX_ROLES {
+        return false
+    }
+    var i: usize = 0
+    while i < table.count {
+        if table.addresses[i] >= (1 << 160) || table.roles[i] >= (1 << 64) {
+            return false
+        }
+        var j: usize = 0
+        while j < i {
+            if table.addresses[j] == table.addresses[i] || table.roles[j] == table.roles[i] {
+                return false
+            }
+            j += 1
+        }
+        i += 1
+    }
+    true
+}
+
+pub fn allowlist_valid(allowlist: Allowlist) -> bool {
+    if allowlist.count > MAX_POSITIONS {
+        return false
+    }
+    var i: usize = 0
+    while i < allowlist.count {
+        let p = allowlist.positions[i]
+        let ok = match p.field {
+            Field::Return => p.log == 0 && p.word < MAX_PAYLOAD_WORDS,
+            Field::Topic => p.log < MAX_LOGS && p.word < MAX_TOPICS,
+            Field::Data => p.log < MAX_LOGS && p.word < MAX_PAYLOAD_WORDS,
+        }
+        if !ok {
+            return false
+        }
+        i += 1
+    }
+    true
+}
+
+fn map_word(table: AddressTable, word: u256) -> u256 {
+    if (word >> 160) != 0 {
+        return word
+    }
+    var i: usize = 0
+    while i < table.count {
+        if table.addresses[i] == word {
+            return MARKER | table.roles[i]
+        }
+        i += 1
+    }
+    word
+}
+
+// The caller has already checked that the observation, table, and allowlist are
+// well formed. Positions beyond the observed data, or on a reverted call, are skipped.
+pub fn normalize(observation: CallObservation, table: AddressTable, allowlist: Allowlist) -> CallObservation {
+    var out = observation
+    var l: usize = 0
+    while l < out.log_count {
+        out.logs[l].emitter = map_word(table, word: out.logs[l].emitter)
+        l += 1
+    }
+    var i: usize = 0
+    while i < allowlist.count {
+        let p = allowlist.positions[i]
+        match p.field {
+            Field::Return => {
+                if out.success && p.word * 32 + 32 <= out.returndata.len {
+                    out.returndata.words[p.word] = map_word(table, word: out.returndata.words[p.word])
+                }
+            },
+            Field::Topic => {
+                if p.log < out.log_count && p.word < out.logs[p.log].topic_count {
+                    out.logs[p.log].topics[p.word] = map_word(table, word: out.logs[p.log].topics[p.word])
+                }
+            },
+            Field::Data => {
+                if p.log < out.log_count && p.word * 32 + 32 <= out.logs[p.log].data.len {
+                    out.logs[p.log].data.words[p.word] = map_word(table, word: out.logs[p.log].data.words[p.word])
+                }
+            },
+        }
+        i += 1
+    }
+    out
+}

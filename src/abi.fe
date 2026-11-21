@@ -1,0 +1,188 @@
+// ABI conformance mode: check a payload (calldata with selector, or returndata
+// without) against a declared head layout. It reports the first rule broken.
+// Phase 1 supports static uint/int of 8..256 bits, address, bool, and at most one
+// dynamic `bytes` value, which must be canonically encoded (offset equal to
+// the head size, zero padding, and no trailing bytes).
+use super::{Payload, MAX_PAYLOAD_WORDS}
+
+pub const MAX_SLOTS: usize = 8
+
+pub enum SlotKind {
+    Uint,
+    Int,
+    Address,
+    Bool,
+    Bytes,
+}
+impl Copy for SlotKind {}
+
+pub struct Slot { pub kind: SlotKind, pub bits: usize }
+impl Copy for Slot {}
+
+pub struct Layout { pub count: usize, pub slots: [Slot; 8] }
+impl Copy for Layout {}
+
+pub enum AbiCategory {
+    Canonical,
+    Selector,
+    Truncated,
+    Extra,
+    Type,
+    Offset,
+    Length,
+    Padding,
+    BadLayout,
+}
+impl Copy for AbiCategory {}
+
+pub struct AbiResult { pub category: AbiCategory, pub index: usize }
+impl Copy for AbiResult {}
+
+pub fn empty_layout() -> Layout {
+    Layout { count: 0, slots: [Slot { kind: SlotKind::Uint, bits: 256 }; 8] }
+}
+
+pub fn abi_code(_ category: AbiCategory) -> u256 {
+    match category {
+        AbiCategory::Canonical => 0,
+        AbiCategory::Selector => 1,
+        AbiCategory::Truncated => 2,
+        AbiCategory::Extra => 3,
+        AbiCategory::Type => 4,
+        AbiCategory::Offset => 5,
+        AbiCategory::Length => 6,
+        AbiCategory::Padding => 7,
+        AbiCategory::BadLayout => 8,
+    }
+}
+
+fn result(category: AbiCategory, index: usize) -> AbiResult {
+    AbiResult { category, index }
+}
+
+fn byte_of(word: u256, i: usize) -> u256 {
+    (word >> (((31 - i) * 8) as u256)) & 255
+}
+
+// 32 bytes starting at any byte offset; the caller guarantees offset + 32 <= len.
+fn word_at(payload: Payload, offset: usize) -> u256 {
+    let w = offset / 32
+    let r = offset % 32
+    if r == 0 {
+        return payload.words[w]
+    }
+    let high = payload.words[w] << ((r * 8) as u256)
+    let low = payload.words[w + 1] >> (((32 - r) * 8) as u256)
+    high | low
+}
+
+fn layout_valid(layout: Layout) -> bool {
+    if layout.count > MAX_SLOTS {
+        return false
+    }
+    var dynamic: usize = 0
+    var i: usize = 0
+    while i < layout.count {
+        let slot = layout.slots[i]
+        match slot.kind {
+            SlotKind::Uint => {
+                if slot.bits == 0 || slot.bits > 256 || slot.bits % 8 != 0 {
+                    return false
+                }
+            },
+            SlotKind::Int => {
+                if slot.bits == 0 || slot.bits > 256 || slot.bits % 8 != 0 {
+                    return false
+                }
+            },
+            SlotKind::Bytes => {
+                dynamic += 1
+            },
+            _ => {},
+        }
+        i += 1
+    }
+    dynamic <= 1
+}
+
+fn static_canonical(slot: Slot, w: u256) -> bool {
+    match slot.kind {
+        SlotKind::Uint => slot.bits == 256 || (w >> (slot.bits as u256)) == 0,
+        SlotKind::Int => {
+            if slot.bits == 256 {
+                return true
+            }
+            let sign = w >> ((slot.bits - 1) as u256)
+            sign == 0 || sign == (!(0 as u256)) >> ((slot.bits - 1) as u256)
+        },
+        SlotKind::Address => (w >> 160) == 0,
+        SlotKind::Bool => w <= 1,
+        SlotKind::Bytes => true,
+    }
+}
+
+pub fn validate(payload: Payload, layout: Layout, selector: u256, with_selector: bool) -> AbiResult {
+    if !layout_valid(layout) || payload.len > MAX_PAYLOAD_WORDS * 32 {
+        return result(category: AbiCategory::BadLayout, index: 0)
+    }
+    var base: usize = 0
+    if with_selector {
+        if payload.len < 4 {
+            return result(category: AbiCategory::Truncated, index: 0)
+        }
+        if (payload.words[0] >> 224) != selector {
+            return result(category: AbiCategory::Selector, index: 0)
+        }
+        base = 4
+    }
+    let head = 32 * layout.count
+    var end = base + head
+    var i: usize = 0
+    while i < layout.count {
+        if base + 32 * i + 32 > payload.len {
+            return result(category: AbiCategory::Truncated, index: i)
+        }
+        let slot = layout.slots[i]
+        let w = word_at(payload, offset: base + 32 * i)
+        if !static_canonical(slot, w) {
+            return result(category: AbiCategory::Type, index: i)
+        }
+        match slot.kind {
+            SlotKind::Bytes => {
+                if w != head as u256 {
+                    return result(category: AbiCategory::Offset, index: i)
+                }
+                let start = base + head
+                if start + 32 > payload.len {
+                    return result(category: AbiCategory::Truncated, index: i)
+                }
+                let declared = word_at(payload, offset: start)
+                if declared > (payload.len - start - 32) as u256 {
+                    return result(category: AbiCategory::Length, index: i)
+                }
+                let length = declared as usize
+                let padded = (length + 31) / 32 * 32
+                if start + 32 + padded > payload.len {
+                    return result(category: AbiCategory::Truncated, index: i)
+                }
+                var p = start + 32 + length
+                while p < start + 32 + padded {
+                    if byte_of(word: payload.words[p / 32], i: p % 32) != 0 {
+                        return result(category: AbiCategory::Padding, index: i)
+                    }
+                    p += 1
+                }
+                end = start + 32 + padded
+            },
+            _ => {},
+        }
+        i += 1
+    }
+    if payload.len > end {
+        return result(category: AbiCategory::Extra, index: 0)
+    }
+    if payload.len < end {
+        return result(category: AbiCategory::Truncated, index: layout.count)
+    }
+    result(category: AbiCategory::Canonical, index: 0)
+}

@@ -1,4 +1,5 @@
 use super::{CallObservation, Payload, LogRecord, MAX_LOGS, MAX_STEPS, well_formed}
+use super::{AddressTable, Allowlist, table_valid, allowlist_valid, normalize}
 
 // Strict-mode mismatch classes, checked in this fixed order so the reported
 // divergence is deterministic: status, returndata, then logs in emission order
@@ -16,10 +17,14 @@ pub enum Category {
 }
 impl Copy for Category {}
 
+// NotComparable: a deployment failed in at least one world. No later step can
+// turn that into a match, so a constructor revert can never pass for an
+// expected application revert.
 pub enum Verdict {
     Match,
     Mismatch,
     Malformed,
+    NotComparable,
 }
 impl Copy for Verdict {}
 
@@ -27,6 +32,7 @@ impl Copy for Verdict {}
 // topic index, or 0; `left`/`right` are the differing byte, word, length, or flag.
 pub struct Mismatch {
     pub verdict: Verdict,
+    pub deployment: bool,
     pub step: usize,
     pub category: Category,
     pub log: usize,
@@ -51,11 +57,11 @@ pub fn category_code(_ category: Category) -> u256 {
 }
 
 fn matched() -> Mismatch {
-    Mismatch { verdict: Verdict::Match, step: 0, category: Category::Status, log: 0, index: 0, left: 0, right: 0 }
+    Mismatch { verdict: Verdict::Match, deployment: false, step: 0, category: Category::Status, log: 0, index: 0, left: 0, right: 0 }
 }
 
 fn differ(category: Category, log: usize, index: usize, left: u256, right: u256) -> Mismatch {
-    Mismatch { verdict: Verdict::Mismatch, step: 0, category, log, index, left, right }
+    Mismatch { verdict: Verdict::Mismatch, deployment: false, step: 0, category, log, index, left, right }
 }
 
 fn is_match(_ m: Mismatch) -> bool {
@@ -123,6 +129,12 @@ pub fn compare(left: CallObservation, right: CallObservation) -> Mismatch {
     if !well_formed(observation: left) || !well_formed(observation: right) {
         return malformed(step: 0)
     }
+    compare_core(left, right, exact_returndata: true)
+}
+
+// When `exact_returndata` is false, the returndata bytes are outside the claim
+// (for example, a compiler-generated ABI rejection). Status and logs still must match.
+fn compare_core(left: CallObservation, right: CallObservation, exact_returndata: bool) -> Mismatch {
     if left.success != right.success {
         return differ(
             category: Category::Status,
@@ -132,16 +144,22 @@ pub fn compare(left: CallObservation, right: CallObservation) -> Mismatch {
             right: if right.success { 1 } else { 0 },
         )
     }
-    let data = compare_payload(
-        left: left.returndata,
-        right: right.returndata,
-        length: Category::ReturnLength,
-        byte: Category::ReturnByte,
-        log: 0,
-    )
-    if !is_match(data) {
-        return data
+    if exact_returndata {
+        let data = compare_payload(
+            left: left.returndata,
+            right: right.returndata,
+            length: Category::ReturnLength,
+            byte: Category::ReturnByte,
+            log: 0,
+        )
+        if !is_match(data) {
+            return data
+        }
     }
+    compare_logs(left, right)
+}
+
+fn compare_logs(left: CallObservation, right: CallObservation) -> Mismatch {
     if left.log_count != right.log_count {
         return differ(
             category: Category::LogCount,
@@ -172,13 +190,65 @@ pub fn begin() -> Progress {
     Progress { steps: 0, result: matched() }
 }
 
+// Deployments are compared before any call. Both must succeed, and their logs
+// must match. Runtime code is compiler-specific and isn't behavior, so the
+// deployment returndata is never compared.
+pub fn begin_deployed(left: CallObservation, right: CallObservation, left_table: AddressTable,
+                      right_table: AddressTable) -> Progress {
+    var progress = begin()
+    if !well_formed(observation: left) || !well_formed(observation: right) || !table_valid(table: left_table)
+        || !table_valid(table: right_table) {
+        progress.result = malformed(step: 0)
+        progress.result.deployment = true
+        return progress
+    }
+    if !left.success || !right.success {
+        var failed = matched()
+        failed.verdict = Verdict::NotComparable
+        failed.deployment = true
+        failed.left = if left.success { 1 } else { 0 }
+        failed.right = if right.success { 1 } else { 0 }
+        progress.result = failed
+        return progress
+    }
+    let empty = super::empty_allowlist()
+    var logs = compare_logs(
+        left: normalize(observation: left, table: left_table, allowlist: empty),
+        right: normalize(observation: right, table: right_table, allowlist: empty),
+    )
+    if !is_match(logs) {
+        logs.deployment = true
+        progress.result = logs
+    }
+    progress
+}
+
 pub fn step(progress: Progress, left: CallObservation, right: CallObservation) -> Progress {
+    let none = super::empty_table()
+    step_normalized(progress, left, right, left_table: none, right_table: none,
+                    allowlist: super::empty_allowlist(), exact_returndata: true)
+}
+
+// One step: check that both raw observations are well formed, normalize only the
+// allowlisted address positions through each world's table, then compare.
+pub fn step_normalized(progress: Progress, left: CallObservation, right: CallObservation, left_table: AddressTable,
+                       right_table: AddressTable, allowlist: Allowlist, exact_returndata: bool) -> Progress {
     var next = progress
     if next.steps >= MAX_STEPS {
         next.result = malformed(step: next.steps)
         return next
     }
-    let current = compare(left, right)
+    var current = matched()
+    if !well_formed(observation: left) || !well_formed(observation: right) || !table_valid(table: left_table)
+        || !table_valid(table: right_table) || !allowlist_valid(allowlist) {
+        current = malformed(step: 0)
+    } else {
+        current = compare_core(
+            left: normalize(observation: left, table: left_table, allowlist),
+            right: normalize(observation: right, table: right_table, allowlist),
+            exact_returndata,
+        )
+    }
     match current.verdict {
         Verdict::Malformed => {
             next.result = malformed(step: next.steps)
@@ -189,10 +259,19 @@ pub fn step(progress: Progress, left: CallObservation, right: CallObservation) -
                 next.result.step = next.steps
             }
         },
-        Verdict::Match => {},
+        _ => {},
     }
-    if is_malformed(progress.result) {
-        next.result = progress.result
+    // Malformed input outranks everything; a failed deployment outranks any step result.
+    match progress.result.verdict {
+        Verdict::Malformed => {
+            next.result = progress.result
+        },
+        Verdict::NotComparable => {
+            if !is_malformed(next.result) {
+                next.result = progress.result
+            }
+        },
+        _ => {},
     }
     next.steps += 1
     next

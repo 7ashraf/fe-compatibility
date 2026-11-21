@@ -1,30 +1,56 @@
-// Native transport for the Fe conformance checker (protocol version 1).
+// Native transport for the Fe conformance checker (protocol version 2).
 //
 // Input: whitespace-separated unsigned decimals, at most 65,536 characters and
-// 78 digits per number, ending at EOF:
-//   1 <steps> then, per step, the left observation followed by the right one.
-// Observation: success(0|1) len word*ceil(len/32) log_count, then per log:
-//   emitter topic_count topic*topic_count data_len word*ceil(data_len/32)
-// Words are big-endian 32-byte chunks with a zero-padded tail.
-// Output: `1 verdict steps step category log index left right` and a newline;
-// verdict 0 match, 1 mismatch, 2 malformed observation. Exit 2 means an
-// invalid frame (nothing written); exit 3 means output failure.
+// 78 digits per number, ending at EOF. The first two numbers are `2 <kind>`.
+//
+// kind 1, sequence comparison:
+//   table(left) table(right) deployment(left) deployment(right) steps,
+//   then per step: allowlist exact(0|1) observation(left) observation(right)
+//   table:       count (address role)*count                    (count <= 8)
+//   allowlist:   count (field log word)*count, field 0 return, 1 topic, 2 data (count <= 16)
+//   observation: success len word*ceil(len/32) log_count, then per log:
+//                emitter topic_count topic*topic_count data_len word*ceil(data_len/32)
+//   reply: `2 1 verdict steps deployment step category log index left right`, where
+//   verdict is 0 match, 1 mismatch, 2 malformed, 3 not comparable (deployment failed).
+// kind 2, ABI validation:
+//   layout with_selector(0|1) selector payload
+//   layout: count (kind bits)*count, kind 0 uint, 1 int, 2 address, 3 bool, 4 bytes (count <= 8)
+//   payload: len word*ceil(len/32)
+//   reply: `2 2 category index`
+// Words are big-endian 32-byte chunks with a zero-padded tail. Exit 2 means an
+// invalid frame (nothing is written); exit 3 means an output failure.
 use std::io::{Read, Write, host}
 use compat::{
     CallObservation,
     Payload,
     Verdict,
     Mismatch,
+    AddressTable,
+    Allowlist,
+    Position,
+    Field,
+    Layout,
+    Slot,
+    SlotKind,
+    AbiResult,
     MAX_PAYLOAD_WORDS,
     MAX_LOGS,
     MAX_TOPICS,
     MAX_STEPS,
+    MAX_ROLES,
+    MAX_POSITIONS,
+    MAX_SLOTS,
     empty_payload,
     empty_log,
     empty_observation,
-    begin,
-    step,
+    empty_table,
+    empty_allowlist,
+    empty_layout,
+    begin_deployed,
+    step_normalized,
     category_code,
+    abi_code,
+    validate,
 }
 
 struct Parser { bad: bool, chars: usize }
@@ -120,26 +146,109 @@ fn finish_input() uses (input: mut Read, parser: mut Parser) {
     }
 }
 
-struct Reply { steps: usize, result: Mismatch }
-
-fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
-    var progress = begin()
-    if read_number() != 1 {
-        parser.bad = true
-        return Reply { steps: 0, result: progress.result }
+fn read_table() -> AddressTable uses (input: mut Read, parser: mut Parser) {
+    var table = empty_table()
+    table.count = read_small(limit: MAX_ROLES as u256)
+    var i: usize = 0
+    while i < table.count && !parser.bad {
+        table.addresses[i] = read_number()
+        table.roles[i] = read_number()
+        i += 1
     }
-    let count = read_small(limit: MAX_STEPS as u256)
-    var s: usize = 0
-    while s < count && !parser.bad {
-        let left = read_observation()
-        let right = read_observation()
-        progress = step(progress, left, right)
-        s += 1
-    }
-    finish_input()
-    Reply { steps: progress.steps, result: progress.result }
+    table
 }
 
+fn read_allowlist() -> Allowlist uses (input: mut Read, parser: mut Parser) {
+    var allowlist = empty_allowlist()
+    allowlist.count = read_small(limit: MAX_POSITIONS as u256)
+    var i: usize = 0
+    while i < allowlist.count && !parser.bad {
+        let tag = read_small(limit: 2)
+        let field = if tag == 0 {
+            Field::Return
+        } else if tag == 1 {
+            Field::Topic
+        } else {
+            Field::Data
+        }
+        let log = read_small(limit: 255)
+        let word = read_small(limit: 255)
+        allowlist.positions[i] = Position { field, log, word }
+        i += 1
+    }
+    allowlist
+}
+
+fn read_layout() -> Layout uses (input: mut Read, parser: mut Parser) {
+    var layout = empty_layout()
+    layout.count = read_small(limit: MAX_SLOTS as u256)
+    var i: usize = 0
+    while i < layout.count && !parser.bad {
+        let tag = read_small(limit: 4)
+        let kind = if tag == 0 {
+            SlotKind::Uint
+        } else if tag == 1 {
+            SlotKind::Int
+        } else if tag == 2 {
+            SlotKind::Address
+        } else if tag == 3 {
+            SlotKind::Bool
+        } else {
+            SlotKind::Bytes
+        }
+        let bits = read_small(limit: 256)
+        layout.slots[i] = Slot { kind, bits }
+        i += 1
+    }
+    layout
+}
+
+struct Reply { kind: u256, steps: usize, result: Mismatch, abi: AbiResult }
+
+fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
+    let left_table = empty_table()
+    var reply = Reply {
+        kind: 0,
+        steps: 0,
+        result: begin_deployed(left: empty_observation(), right: empty_observation(), left_table, right_table: left_table).result,
+        abi: validate(payload: empty_payload(), layout: empty_layout(), selector: 0, with_selector: false),
+    }
+    if read_number() != 2 {
+        parser.bad = true
+        return reply
+    }
+    reply.kind = read_number()
+    if reply.kind == 1 {
+        let left_table = read_table()
+        let right_table = read_table()
+        let deploy_left = read_observation()
+        let deploy_right = read_observation()
+        var progress = begin_deployed(left: deploy_left, right: deploy_right, left_table, right_table)
+        let count = read_small(limit: MAX_STEPS as u256)
+        var s: usize = 0
+        while s < count && !parser.bad {
+            let allowlist = read_allowlist()
+            let exact = read_small(limit: 1) == 1
+            let left = read_observation()
+            let right = read_observation()
+            progress = step_normalized(progress, left, right, left_table, right_table, allowlist,
+                                       exact_returndata: exact)
+            s += 1
+        }
+        reply.steps = progress.steps
+        reply.result = progress.result
+    } else if reply.kind == 2 {
+        let layout = read_layout()
+        let with_selector = read_small(limit: 1) == 1
+        let selector = read_number()
+        let payload = read_payload()
+        reply.abi = validate(payload, layout, selector, with_selector)
+    } else {
+        parser.bad = true
+    }
+    finish_input()
+    reply
+}
 fn number(_ n: u256) uses (output: mut Write) {
     var value = n
     var digits: [u8; 78] = [0; 78]
@@ -161,16 +270,25 @@ fn number(_ n: u256) uses (output: mut Write) {
 }
 
 fn write_reply(reply: Reply) uses (output: mut Write) {
+    number(2)
+    number(reply.kind)
+    if reply.kind == 2 {
+        number(abi_code(reply.abi.category))
+        number(reply.abi.index as u256)
+        output.write_char(c: 10)
+        return
+    }
     let m = reply.result
-    number(1)
     number(
         match m.verdict {
             Verdict::Match => 0,
             Verdict::Mismatch => 1,
             Verdict::Malformed => 2,
+            Verdict::NotComparable => 3,
         },
     )
     number(reply.steps as u256)
+    number(if m.deployment { 1 } else { 0 })
     number(m.step as u256)
     number(
         match m.verdict {

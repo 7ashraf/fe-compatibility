@@ -1,0 +1,35 @@
+{
+  "format": "fe-compatibility-raw-execution",
+  "version": 2,
+  "implementation": "fe-codec",
+  "target": {
+    "creation": "fe-codec/Codec.bin",
+    "runtime": "fe-codec/Codec.runtime.bin",
+    "abi": "fe-codec/Codec.abi.json",
+    "compiler": "fe 26.5.0 (3dab95f)",
+    "settings": "fe build --backend sonatina --profile release -O 1",
+    "creation_sha256": "96789bc11a6145f2576a4cc570496207177c0d607c329553d1df0b0462246859",
+    "runtime_sha256": "f42b56980de66074c02266c14b123e846baa63e2ac899001c778c706174b6357"
+  },
+  "tools": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "world": {
+    "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+    "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "zero": "0x0000000000000000000000000000000000000000"
+  },
+  "deployment": {
+    "success": false,
+    "returndata": "0x49e27cff",
+    "returndata_via_eth_call": "0x49e27cff",
+    "logs": [],
+    "gas_used": 66764,
+    "block": 1,
+    "timestamp": 1700000001,
+    "checker_returndata": "0x49e27cff",
+    "address": null
+  },
+  "steps": []
+}

@@ -1,0 +1,35 @@
+{
+  "format": "fe-compatibility-raw-execution",
+  "version": 2,
+  "implementation": "solidity-codec",
+  "target": {
+    "creation": "solidity/Codec.bin",
+    "runtime": "solidity/Codec.bin-runtime",
+    "abi": "solidity/Codec.abi",
+    "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+    "creation_sha256": "7746a61974c75696c49eaede436e3037f90b6459e71e7abf6dd754aedb12e73f",
+    "runtime_sha256": "51b993de0b549b7adfd6ab50e75649cecafc4a4449d2f9109af8fc678e474722"
+  },
+  "tools": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "world": {
+    "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+    "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "zero": "0x0000000000000000000000000000000000000000"
+  },
+  "deployment": {
+    "success": false,
+    "returndata": "0x49e27cff",
+    "returndata_via_eth_call": "0x49e27cff",
+    "logs": [],
+    "gas_used": 72198,
+    "block": 1,
+    "timestamp": 1700000001,
+    "checker_returndata": "0x49e27cff",
+    "address": null
+  },
+  "steps": []
+}

@@ -1,0 +1,362 @@
+[
+  {
+    "type": "constructor",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "type": "fallback",
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deposit",
+    "stateMutability": "payable",
+    "inputs": [],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "createGrant",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "delegate",
+        "type": "address"
+      },
+      {
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "name": "cap",
+        "type": "uint256"
+      },
+      {
+        "name": "expiresAt",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "grantId",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "revoke",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "spend",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "stateMutability": "view",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "owner",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "nextGrantId",
+    "stateMutability": "view",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "nextGrantId",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "treasuryBalance",
+    "stateMutability": "view",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "balance",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getGrant",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "exists",
+        "type": "bool"
+      },
+      {
+        "name": "delegate",
+        "type": "address"
+      },
+      {
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "name": "cap",
+        "type": "uint256"
+      },
+      {
+        "name": "spent",
+        "type": "uint256"
+      },
+      {
+        "name": "expiresAt",
+        "type": "uint256"
+      },
+      {
+        "name": "active",
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidOwner",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Unauthorized",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidAddress",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidAmount",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidExpiry",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "GrantIdExhausted",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UnknownGrant",
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InactiveGrant",
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Expired",
+    "inputs": [
+      {
+        "name": "expiresAt",
+        "type": "uint256"
+      },
+      {
+        "name": "currentTime",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidGrantState",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "CapExceeded",
+    "inputs": [
+      {
+        "name": "remaining",
+        "type": "uint256"
+      },
+      {
+        "name": "requested",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InsufficientBalance",
+    "inputs": [
+      {
+        "name": "available",
+        "type": "uint256"
+      },
+      {
+        "name": "requested",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "PaymentFailed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Reentrant",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UnsupportedCall",
+    "inputs": []
+  },
+  {
+    "type": "event",
+    "name": "Deposited",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "GrantCreated",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256",
+        "indexed": true
+      },
+      {
+        "name": "delegate",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "cap",
+        "type": "uint256",
+        "indexed": false
+      },
+      {
+        "name": "expiresAt",
+        "type": "uint256",
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "GrantRevoked",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256",
+        "indexed": true
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "Spent",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "grantId",
+        "type": "uint256",
+        "indexed": true
+      },
+      {
+        "name": "delegate",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false
+      },
+      {
+        "name": "newSpent",
+        "type": "uint256",
+        "indexed": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "project": "Fe Capabilities",
+  "commit": "ba6893c5e847b9f1e2c7479ef00f2489972a2691",
+  "license": "MIT",
+  "source_paths": {
+    "treasury-v0.md": "spec/treasury-v0.md",
+    "treasury-v0.abi.json": "spec/treasury-v0.abi.json",
+    "LICENSE": "LICENSE"
+  },
+  "files": {
+    "LICENSE": "0d2f5d1a8e7d0871fe473f493929bf053ff74c6ac5921b27718c1d7c30af8110",
+    "treasury-v0.abi.json": "50b6894b82c9158cac85aa373b85bd3dc227326db5b9bf07eb2bc2da5251323f",
+    "treasury-v0.md": "86d2992791fe8de7577ec9c5a51101bcd214c019305938e08dcb4f439e7acd45"
+  },
+  "use": "Frozen shared treasury v0 interface (revision 1); the Phase 3 behavioral corpus targets it."
+}

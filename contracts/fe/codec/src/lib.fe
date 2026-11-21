@@ -1,0 +1,68 @@
+// Fe port of spec/codec-v1.md.
+use std::abi::sol
+use std::evm::{Address, Ctx, Log}
+
+#[abi]
+pub struct Point { pub x: u64, pub owner: Address }
+
+pub msg CodecMsg {
+    #[selector = sol("statics(uint8,int16,address,bool)")]
+    Statics { small: u8, delta: i16, who: Address, flag: bool } -> (u8, i16, Address, bool),
+    #[selector = sol("wide(uint256,int256)")]
+    Wide { a: u256, b: i256 } -> (u256, i256),
+    #[selector = sol("point((uint64,address))")]
+    PointOf { p: Point } -> (Address, u256),
+    #[selector = sol("echo(bytes)")]
+    Echo { payload: Bytes } -> Bytes,
+    #[selector = sol("owner()")]
+    Owner -> Address,
+}
+
+#[error]
+pub struct InvalidOwner {}
+
+#[error]
+pub struct TooLong { pub length: u256, pub max: u256 }
+
+#[event]
+pub struct Echoed {
+    #[indexed]
+    pub sender: Address,
+    pub length: u256,
+}
+
+const MAX_PAYLOAD: u256 = 64
+
+pub contract Codec uses (ctx: Ctx, log: mut Log) {
+    owner: Address,
+
+    init(initialOwner: Address) uses (mut owner) {
+        if initialOwner == Address::zero() {
+            revert_error(InvalidOwner {})
+        }
+        owner = initialOwner
+    }
+
+    recv CodecMsg {
+        Statics { small, delta, who, flag } -> (u8, i16, Address, bool) {
+            (small, delta, who, flag)
+        }
+        Wide { a, b } -> (u256, i256) {
+            (a, b)
+        }
+        PointOf { p } -> (Address, u256) {
+            (p.owner, p.x as u256)
+        }
+        Echo { payload } -> Bytes uses (ctx, mut log) {
+            let length = payload.len() as u256
+            if length > MAX_PAYLOAD {
+                revert_error(TooLong { length, max: MAX_PAYLOAD })
+            }
+            log.emit(Echoed { sender: ctx.caller(), length })
+            payload
+        }
+        Owner -> Address uses (owner) {
+            owner
+        }
+    }
+}

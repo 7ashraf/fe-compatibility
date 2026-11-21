@@ -33,7 +33,7 @@ def main():
 
     solidity = BUILD / 'solidity'
     run([solc, '--evm-version', 'osaka', '--optimize', '--optimize-runs', '200', '--bin', '--bin-runtime', '--abi',
-         '-o', solidity, 'contracts/solidity/Meter.sol'])
+         '-o', solidity, 'contracts/solidity/Meter.sol', 'contracts/solidity/Codec.sol'])
     faulty_source = BUILD / 'sources/meter-faulty'
     shutil.copytree(ROOT / 'contracts/fe/meter', faulty_source, ignore=shutil.ignore_patterns('out'))
     source_file = faulty_source / 'src/lib.fe'
@@ -41,7 +41,8 @@ def main():
     if text.count(MUTATION[0]) != 1:
         raise InfrastructureError('Seeded mutation no longer applies exactly once')
     source_file.write_text(text.replace(*MUTATION))
-    for variant, path in (('fe', ROOT / 'contracts/fe/meter'), ('fe-faulty', faulty_source)):
+    for variant, path in (('fe', ROOT / 'contracts/fe/meter'), ('fe-faulty', faulty_source),
+                          ('fe-codec', ROOT / 'contracts/fe/codec')):
         run([fe, 'build', path, '--backend', 'sonatina', '--profile', 'release', '-O', '1',
              '--emit', 'bytecode,runtime-bytecode,abi,metadata', '--out-dir', BUILD / variant])
     run([fe, 'build', 'host/checker-native', '--backend', 'native', '--emit', 'executable', '-O', '1'])
@@ -57,6 +58,12 @@ def main():
                       'fault': 'intentional: TooLarge reports limit 101 instead of 100',
                       'mutated_source_sha256': sha(source_file)},
     }
+    targets['solidity-codec'] = {'creation': 'solidity/Codec.bin', 'runtime': 'solidity/Codec.bin-runtime',
+                                 'abi': 'solidity/Codec.abi', 'compiler': solc_info['version'],
+                                 'settings': targets['solidity']['settings']}
+    targets['fe-codec'] = {'creation': 'fe-codec/Codec.bin', 'runtime': 'fe-codec/Codec.runtime.bin',
+                           'abi': 'fe-codec/Codec.abi.json', 'compiler': fe_info['version'],
+                           'settings': targets['fe']['settings']}
     for target in targets.values():
         target['creation_sha256'] = hex_sha(BUILD / target['creation'])
         target['runtime_sha256'] = hex_sha(BUILD / target['runtime'])

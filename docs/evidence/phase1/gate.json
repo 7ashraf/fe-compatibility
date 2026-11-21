@@ -1,0 +1,523 @@
+{
+  "format": "fe-compatibility-phase1-gate-v1",
+  "result": "Phase 1 exit gate passed",
+  "verified_at_utc": "2026-11-21T10:03:17.805293+00:00",
+  "host": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6",
+  "fe": {
+    "version": "fe 26.5.0 (3dab95f)",
+    "sha256": "4968711c5bc02c1a3151cfaea0d81a48dc74803ea208362022af467c2a523fed"
+  },
+  "solc": {
+    "version": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "sha256": "f5a243d6b2dd8fba307e36c5fefa2d8eb3ae74ba81036d1c17c971b5d346ade9"
+  },
+  "foundry": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "targets": {
+    "solidity-codec": {
+      "creation": "solidity/Codec.bin",
+      "runtime": "solidity/Codec.bin-runtime",
+      "abi": "solidity/Codec.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "creation_sha256": "7746a61974c75696c49eaede436e3037f90b6459e71e7abf6dd754aedb12e73f",
+      "runtime_sha256": "51b993de0b549b7adfd6ab50e75649cecafc4a4449d2f9109af8fc678e474722"
+    },
+    "fe-codec": {
+      "creation": "fe-codec/Codec.bin",
+      "runtime": "fe-codec/Codec.runtime.bin",
+      "abi": "fe-codec/Codec.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "creation_sha256": "96789bc11a6145f2576a4cc570496207177c0d607c329553d1df0b0462246859",
+      "runtime_sha256": "f42b56980de66074c02266c14b123e846baa63e2ac899001c778c706174b6357"
+    }
+  },
+  "fixture_sha256": "51208c64115f0ac5de0bc811dcc0f03dca0c983b5149f261741f7c552b3e2c99",
+  "expectations": {
+    "declared_abis_match_frozen": true,
+    "fe_classifies_every_vector_as_declared": true,
+    "solidity_matches_golden": true,
+    "fe_matches_golden": true,
+    "observed_returndata_canonical": true,
+    "differential_match_or_only_unspecified_divergence": true,
+    "normalized_worlds_match": true,
+    "unnormalized_worlds_differ": true,
+    "bytes_content_never_normalized": true,
+    "failed_deployment_not_comparable": true,
+    "constructor_revert_never_passes_as_application_revert": true
+  },
+  "malformed_behavior": [
+    {
+      "id": "m-unknown-selector",
+      "expected_outcome": "reject",
+      "category": "selector",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-empty",
+      "expected_outcome": "reject",
+      "category": "truncated",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-truncated-word",
+      "expected_outcome": "reject",
+      "category": "truncated",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-truncated-byte",
+      "expected_outcome": "reject",
+      "category": "truncated",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-uint8-dirty",
+      "expected_outcome": "reject",
+      "category": "type",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-int16-unextended",
+      "expected_outcome": "reject",
+      "category": "type",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-address-dirty",
+      "expected_outcome": "reject",
+      "category": "type",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-bool-two",
+      "expected_outcome": "reject",
+      "category": "type",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-uint64-dirty",
+      "expected_outcome": "reject",
+      "category": "type",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-echo-length-overrun",
+      "expected_outcome": "reject",
+      "category": "length",
+      "solidity": {
+        "success": false,
+        "returndata": "0x"
+      },
+      "fe": {
+        "success": false,
+        "returndata": "0x"
+      }
+    },
+    {
+      "id": "m-echo-offset-noncanonical",
+      "expected_outcome": "unspecified",
+      "category": "offset",
+      "solidity": {
+        "success": true,
+        "returndata": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "fe": {
+        "success": true,
+        "returndata": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "m-echo-dirty-padding",
+      "expected_outcome": "unspecified",
+      "category": "padding",
+      "solidity": {
+        "success": true,
+        "returndata": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "fe": {
+        "success": true,
+        "returndata": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "m-statics-trailing",
+      "expected_outcome": "unspecified",
+      "category": "extra",
+      "solidity": {
+        "success": true,
+        "returndata": "0x00000000000000000000000000000000000000000000000000000000000000ff0000000000000000000000000000000000000000000000000000000000007fff00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "fe": {
+        "success": true,
+        "returndata": "0x00000000000000000000000000000000000000000000000000000000000000ff0000000000000000000000000000000000000000000000000000000000007fff00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000001"
+      }
+    }
+  ],
+  "returndata_perturbations": [
+    {
+      "name": "returned uint8 with high bits",
+      "fe": {
+        "category": "type",
+        "index": 0
+      }
+    },
+    {
+      "name": "returned address with a dirty byte",
+      "fe": {
+        "category": "type",
+        "index": 2
+      }
+    },
+    {
+      "name": "returned bool 2",
+      "fe": {
+        "category": "type",
+        "index": 3
+      }
+    },
+    {
+      "name": "returndata missing a word",
+      "fe": {
+        "category": "truncated",
+        "index": 3
+      }
+    },
+    {
+      "name": "returndata with an extra word",
+      "fe": {
+        "category": "extra",
+        "index": 0
+      }
+    },
+    {
+      "name": "bytes length larger than data",
+      "fe": {
+        "category": "length",
+        "index": 0
+      }
+    },
+    {
+      "name": "bytes offset not canonical",
+      "fe": {
+        "category": "offset",
+        "index": 0
+      }
+    },
+    {
+      "name": "wrong error selector",
+      "fe": {
+        "deployment": false,
+        "step": 0,
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 3,
+        "left": "60",
+        "right": "61"
+      }
+    },
+    {
+      "name": "error payload missing a word",
+      "fe": {
+        "deployment": false,
+        "step": 0,
+        "category": "returndata-length",
+        "log": 0,
+        "index": 0,
+        "left": "68",
+        "right": "36"
+      }
+    }
+  ],
+  "roundtrip": [
+    {
+      "vector": "wide-max",
+      "implementation": "solidity",
+      "decimal": [
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "57896044618658097711785492504343953926634992332820282019728792003956564819967"
+      ]
+    },
+    {
+      "vector": "wide-max",
+      "implementation": "fe",
+      "decimal": [
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        "57896044618658097711785492504343953926634992332820282019728792003956564819967"
+      ]
+    },
+    {
+      "vector": "wide-min",
+      "implementation": "solidity",
+      "decimal": [
+        "0",
+        "-57896044618658097711785492504343953926634992332820282019728792003956564819968"
+      ]
+    },
+    {
+      "vector": "wide-min",
+      "implementation": "fe",
+      "decimal": [
+        "0",
+        "-57896044618658097711785492504343953926634992332820282019728792003956564819968"
+      ]
+    },
+    {
+      "vector": "wide-beyond-double",
+      "implementation": "solidity",
+      "decimal": [
+        "9007199254740993",
+        "-9007199254740993"
+      ]
+    },
+    {
+      "vector": "wide-beyond-double",
+      "implementation": "fe",
+      "decimal": [
+        "9007199254740993",
+        "-9007199254740993"
+      ]
+    },
+    {
+      "vector": "point-max",
+      "implementation": "solidity",
+      "decimal": [
+        "18446744073709551615"
+      ]
+    },
+    {
+      "vector": "point-max",
+      "implementation": "fe",
+      "decimal": [
+        "18446744073709551615"
+      ]
+    },
+    {
+      "vector": "point-beyond-double",
+      "implementation": "solidity",
+      "decimal": [
+        "9007199254740993"
+      ]
+    },
+    {
+      "vector": "point-beyond-double",
+      "implementation": "fe",
+      "decimal": [
+        "9007199254740993"
+      ]
+    }
+  ],
+  "loader_rejections": [
+    {
+      "name": "schema_version 2",
+      "error": "Unsupported format or schema_version (expected fe-compatibility-abi-vectors v1)"
+    },
+    {
+      "name": "schema_version true",
+      "error": "Unsupported format or schema_version (expected fe-compatibility-abi-vectors v1)"
+    },
+    {
+      "name": "unknown top-level field",
+      "error": "fixture: expected exactly ['constructor', 'deployment_vectors', 'fixture', 'format', 'interface_sha256', 'provenance', 'reference_world', 'schema_version', 'vectors']"
+    },
+    {
+      "name": "missing field",
+      "error": "fixture: expected exactly ['constructor', 'deployment_vectors', 'fixture', 'format', 'interface_sha256', 'provenance', 'reference_world', 'schema_version', 'vectors']"
+    },
+    {
+      "name": "JSON number argument above 2^53",
+      "error": "vector wide-beyond-double.args[0]: JSON numbers, booleans and null are not allowed; use decimal strings"
+    },
+    {
+      "name": "float argument",
+      "error": "vector wide-max.args[0]: JSON numbers, booleans and null are not allowed; use decimal strings"
+    },
+    {
+      "name": "leading-zero decimal",
+      "error": "vector wide-max.args[0]: expected a canonical decimal string, 0x hex, or true/false"
+    },
+    {
+      "name": "uppercase hex",
+      "error": "vector statics-zero.calldata: expected lowercase 0x hex of at most 256 bytes"
+    },
+    {
+      "name": "calldata over 256 bytes",
+      "error": "vector statics-zero.calldata: expected lowercase 0x hex of at most 256 bytes"
+    },
+    {
+      "name": "65 vectors",
+      "error": "vectors: 1-64 entries"
+    },
+    {
+      "name": "duplicate vector id",
+      "error": "vector statics-zero: id must be unique [a-z0-9-]{1,64}"
+    },
+    {
+      "name": "five topics",
+      "error": "vector echo-empty: at most 4 topics"
+    },
+    {
+      "name": "allowlist extended to a uint word",
+      "error": "vector wide-max: normalize differs from the allowlist derived from the frozen ABI"
+    },
+    {
+      "name": "signature not in the frozen ABI",
+      "error": "vector statics-zero: signature/inputs/outputs differ from the frozen ABI"
+    },
+    {
+      "name": "different interface hash",
+      "error": "Fixture does not target the frozen spec/codec-v1.abi.json"
+    },
+    {
+      "name": "duplicate JSON key",
+      "error": "Duplicate JSON key"
+    },
+    {
+      "name": "vectors not a list",
+      "error": "vectors: 1-64 entries"
+    },
+    {
+      "name": "vector entry not an object",
+      "error": "vector ?: kind must be valid or malformed"
+    },
+    {
+      "name": "NaN",
+      "error": "Non-finite number"
+    },
+    {
+      "name": "missing fixture file (CLI)",
+      "error": "Cannot read fixture: No such file or directory"
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/verify-phase0.py"
+      ],
+      "exit": 0,
+      "stdout": "PASS pinned tools: fe 26.5.0 (3dab95f), Version: 0.8.31+commit.fd3a2265.Darwin.appleclang, anvil/cast 1.5.1 b0a9dd9c\nPASS fe check .\nPASS fe test .\nPASS fe test . --backend native\nPASS fe test contracts/fe/meter\nPASS python3 scripts/build.py\nPASS fe test .tools/build/sources/meter-faulty  (expected exit 1)\nPASS python3 host/observe.py --left solidity --right fe\nPASS python3 host/observe.py --left fe --right solidity\nPASS python3 host/observe.py --left solidity --right fe-faulty  (expected exit 1)\nPASS seeded one-byte fault located by Fe: step 2 add(200), returndata byte 67, 0x64 vs 0x65\nPASS 15 targeted perturbations classified by Fe; each record matches itself\nPASS 5 malformed/stale inputs are infrastructure errors, not verdicts\nPASS Phase 0 exit gate: comparison decided in Fe; a one-byte difference is detected\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        "."
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.0001s] canonical_payloads_pass\nPASS  [0.0001s] dynamic_bytes_rules\nPASS  [0.0002s] invalid_tables_and_allowlists_are_malformed\nPASS  [0.0002s] log_differences_are_classified\nPASS  [0.0002s] malformed_observations_are_not_comparable\nPASS  [0.0003s] identical_observations_match\nPASS  [0.0003s] compiler_rejection_scope_compares_status_and_logs_only\nPASS  [0.0001s] values_beyond_float_precision_are_exact\nPASS  [0.0001s] status_and_length_differences\nPASS  [0.0004s] failed_deployment_is_never_a_match\nPASS  [0.0002s] one_byte_in_revert_payload_is_located\nPASS  [0.0001s] wrong_selector_type_and_length_are_categorized\nPASS  [0.0004s] normalization_touches_only_allowlisted_fields\nPASS  [0.0032s] first_divergent_step_is_reported\n\ntest result: ok. 14 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        ".",
+        "--backend",
+        "native"
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.1708s] compiler_rejection_scope_compares_status_and_logs_only\nPASS  [0.1708s] normalization_touches_only_allowlisted_fields\nPASS  [0.1713s] dynamic_bytes_rules\nPASS  [0.1713s] wrong_selector_type_and_length_are_categorized\nPASS  [0.1715s] failed_deployment_is_never_a_match\nPASS  [0.1716s] invalid_tables_and_allowlists_are_malformed\nPASS  [0.1725s] values_beyond_float_precision_are_exact\nPASS  [0.1726s] canonical_payloads_pass\nPASS  [0.0039s] one_byte_in_revert_payload_is_located\nPASS  [0.0039s] identical_observations_match\nPASS  [0.0044s] malformed_observations_are_not_comparable\nPASS  [0.0047s] log_differences_are_classified\nPASS  [0.0048s] first_divergent_step_is_reported\nPASS  [0.0143s] status_and_length_differences\n\ntest result: ok. 14 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/make-vectors.py",
+        "--check"
+      ],
+      "exit": 0,
+      "stdout": "PASS golden vectors reproduced byte-for-byte\n",
+      "stderr": ""
+    }
+  ],
+  "sources": {
+    "fe.toml": "65d983a85187468340f13b9580e64c28d36bfe496d9902a52a7c3c5fab938805",
+    "src/lib.fe": "71d5de516400e37a09093fa1ddcfc3ed6c05729caaf12a3faf0e00db8472d2c1",
+    "src/observation.fe": "1d8e754eb1d466fb435de657ff6db627eded108ed7a3a804822c8da74f638187",
+    "src/conformance.fe": "451c01b295354f9ddf02e5e6cc7d9c62613a40bde67a787e5722c70c7fc8f51f",
+    "src/abi.fe": "e9a2b4b0aaaf4ebd6a5f8ebe1d147751bdf77c21feab1d90132d76451db7d3e6",
+    "src/normalize.fe": "2f5ecb534928231b63339bc865ad9b3ef922c5a04b58fc02fd8253537bf0a767",
+    "src/phase1_tests.fe": "ae54819c3960bc602dd7f770b1ba44a5422fdb03745118be93f30c9b0f4c14b4",
+    "contracts/solidity/Codec.sol": "c116f56721c597f7f4619be2f880911f8e5d6ed116ad326ae6df3b24d9ff8ffd",
+    "contracts/fe/codec/fe.toml": "d39c2f61514bd2d987b7eff897bbdbf316a2f5562cf86321e14a421b61a8ef4c",
+    "contracts/fe/codec/src/lib.fe": "d891d172029f54ddbd62af33f2b62c405fca3f3530c5ad1f41701e9647ff52ab",
+    "host/checker-native/fe.toml": "5da71135e249735757422288288548dbe45f9b97bde85a7f4c311daefb8c14df",
+    "host/checker-native/src/lib.fe": "dba95358c0b0aee8827de5cca06c88d202cf948754d91264fadf65aa6755456a",
+    "contracts/solidity/Meter.sol": "bfafb856bb756df23854a29fdd742705424d8e6d591234c0c8656bb59499c181",
+    "contracts/fe/meter/fe.toml": "45a4eda71bb72570e7e926164d53c0ff472fd4736583f6f17e59264996cf0793",
+    "contracts/fe/meter/src/lib.fe": "557c0c0f57a23f458a2e8467926cd65f4dc030c559e15bee5477904938699223",
+    "contracts/fe/meter/src/tests.fe": "f106c2295ba57e0978cbe736e84f649e7af805c2f56a9a5c2915ae987a1bbf37",
+    "src/tests.fe": "7aa72f9130c3a0ac82a9cbb669360af6eea06ae306cd8ed3c41d2d6a654303c6",
+    "scripts/build.py": "c532194e7fbf503bbf7f7159c084e2b45d6159eed6b5c8eea8668609b609e8c7",
+    "host/common.py": "c84a49ae60e0cf6603b14fc8b981618fde85efda32d64e499c3abd7f9f609754"
+  }
+}

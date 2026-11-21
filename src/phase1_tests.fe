@@ -1,0 +1,311 @@
+// Phase 1 unit tests: the ABI validator, allowlisted normalization, and deployment handling.
+use super::{
+    CallObservation,
+    Payload,
+    Mismatch,
+    Verdict,
+    Layout,
+    Slot,
+    SlotKind,
+    AbiCategory,
+    AbiResult,
+    AddressTable,
+    Allowlist,
+    Position,
+    Field,
+    abi_code,
+    category_code,
+    validate,
+    empty_layout,
+    empty_payload,
+    empty_log,
+    empty_observation,
+    empty_table,
+    empty_allowlist,
+    begin,
+    begin_deployed,
+    step,
+    step_normalized,
+}
+
+fn verdict(_ m: Mismatch) -> u256 {
+    match m.verdict {
+        Verdict::Match => 0,
+        Verdict::Mismatch => category_code(m.category),
+        Verdict::Malformed => 100,
+        Verdict::NotComparable => 200,
+    }
+}
+
+fn code(_ r: AbiResult) -> u256 {
+    abi_code(r.category)
+}
+
+fn slot(kind: SlotKind, bits: usize) -> Slot {
+    Slot { kind, bits }
+}
+
+// statics(uint8,int16,address,bool)
+fn statics_layout() -> Layout {
+    var l = empty_layout()
+    l.count = 4
+    l.slots[0] = slot(kind: SlotKind::Uint, bits: 8)
+    l.slots[1] = slot(kind: SlotKind::Int, bits: 16)
+    l.slots[2] = slot(kind: SlotKind::Address, bits: 160)
+    l.slots[3] = slot(kind: SlotKind::Bool, bits: 8)
+    l
+}
+
+// Returndata for (255, -2, 0xabc, true): four aligned words, no selector.
+fn statics_return() -> Payload {
+    var p = empty_payload()
+    p.len = 128
+    p.words[0] = 255
+    p.words[1] = !(0 as u256) - 1
+    p.words[2] = 0xabc
+    p.words[3] = 1
+    p
+}
+
+// Calldata echo(bytes) with a 3-byte payload 0x010203: selector, offset 32, length 3, padded data.
+fn echo_calldata() -> Payload {
+    var p = empty_payload()
+    p.len = 100
+    p.words[0] = (0x12345678 << 224) | (32 >> 32)
+    p.words[1] = (32 << 224) | (3 >> 32)
+    p.words[2] = (3 << 224) | (0x010203 << 200)
+    p.words[3] = 0
+    p
+}
+
+fn echo_layout() -> Layout {
+    var l = empty_layout()
+    l.count = 1
+    l.slots[0] = slot(kind: SlotKind::Bytes, bits: 0)
+    l
+}
+
+#[test]
+fn canonical_payloads_pass() {
+    assert!(code(validate(payload: statics_return(), layout: statics_layout(), selector: 0, with_selector: false)) == 0)
+    assert!(code(validate(payload: echo_calldata(), layout: echo_layout(), selector: 0x12345678, with_selector: true)) == 0)
+}
+
+#[test]
+fn wrong_selector_type_and_length_are_categorized() {
+    assert!(code(validate(payload: echo_calldata(), layout: echo_layout(), selector: 0x12345679, with_selector: true)) == 1)
+    // Truncated: drop the final padded word.
+    var short = echo_calldata()
+    short.len = 68
+    short.words[2] = 3 << 224
+    assert!(code(validate(payload: short, layout: echo_layout(), selector: 0x12345678, with_selector: true)) == 6)
+    var cut = statics_return()
+    cut.len = 96
+    cut.words[3] = 0
+    let t = validate(payload: cut, layout: statics_layout(), selector: 0, with_selector: false)
+    assert!(code(t) == 2 && t.index == 3)
+    var extra = statics_return()
+    extra.len = 160
+    assert!(code(validate(payload: extra, layout: statics_layout(), selector: 0, with_selector: false)) == 3)
+    // Type: uint8 with a ninth bit, int16 without sign extension, dirty address, bool 2.
+    var wide = statics_return()
+    wide.words[0] = 256
+    let w = validate(payload: wide, layout: statics_layout(), selector: 0, with_selector: false)
+    assert!(code(w) == 4 && w.index == 0)
+    var unsigned = statics_return()
+    unsigned.words[1] = 0xfffe
+    let u = validate(payload: unsigned, layout: statics_layout(), selector: 0, with_selector: false)
+    assert!(code(u) == 4 && u.index == 1)
+    var dirty = statics_return()
+    dirty.words[2] = (1 << 160) | 0xabc
+    assert!(code(validate(payload: dirty, layout: statics_layout(), selector: 0, with_selector: false)) == 4)
+    var flag = statics_return()
+    flag.words[3] = 2
+    let f = validate(payload: flag, layout: statics_layout(), selector: 0, with_selector: false)
+    assert!(code(f) == 4 && f.index == 3)
+}
+
+#[test]
+fn dynamic_bytes_rules() {
+    var offset = echo_calldata()
+    offset.words[0] = (0x12345678 << 224) | (64 >> 32)
+    offset.words[1] = (64 << 224) | (3 >> 32)
+    assert!(code(validate(payload: offset, layout: echo_layout(), selector: 0x12345678, with_selector: true)) == 5)
+    var long = echo_calldata()
+    long.words[1] = (32 << 224) | (99 >> 32)
+    long.words[2] = (99 << 224) | (0x010203 << 200)
+    assert!(code(validate(payload: long, layout: echo_layout(), selector: 0x12345678, with_selector: true)) == 6)
+    var padding = echo_calldata()
+    padding.words[2] = (3 << 224) | (0x01020304 << 192)
+    assert!(code(validate(payload: padding, layout: echo_layout(), selector: 0x12345678, with_selector: true)) == 7)
+    var twice = echo_layout()
+    twice.count = 2
+    twice.slots[1] = slot(kind: SlotKind::Bytes, bits: 0)
+    assert!(code(validate(payload: echo_calldata(), layout: twice, selector: 0x12345678, with_selector: true)) == 8)
+    var bits = statics_layout()
+    bits.slots[0] = slot(kind: SlotKind::Uint, bits: 7)
+    assert!(code(validate(payload: statics_return(), layout: bits, selector: 0, with_selector: false)) == 8)
+}
+
+#[test]
+fn values_beyond_float_precision_are_exact() {
+    var l = empty_layout()
+    l.count = 2
+    l.slots[0] = slot(kind: SlotKind::Uint, bits: 64)
+    l.slots[1] = slot(kind: SlotKind::Int, bits: 256)
+    var p = empty_payload()
+    p.len = 64
+    p.words[0] = 9007199254740993
+    p.words[1] = 1 << 255
+    assert!(code(validate(payload: p, layout: l, selector: 0, with_selector: false)) == 0)
+    var q = p
+    q.words[0] = 9007199254740992
+    var left = empty_observation()
+    left.success = true
+    left.returndata = p
+    var right = left
+    right.returndata = q
+    let m = step(progress: begin(), left, right).result
+    assert!(verdict(m) == 3 && m.index == 31 && m.left == 1 && m.right == 0)
+    var over = p
+    over.words[0] = 1 << 64
+    assert!(code(validate(payload: over, layout: l, selector: 0, with_selector: false)) == 4)
+}
+
+const A_TARGET: u256 = 0x5fbdb2315678afecb367f032d93f642f64180aa3
+const B_TARGET: u256 = 0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
+const A_CALLER: u256 = 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+const B_CALLER: u256 = 0x90f79bf6eb2c4f870365e785982e1f101e93b906
+
+fn table(target: u256, caller: u256) -> AddressTable {
+    var t = empty_table()
+    t.count = 2
+    t.addresses[0] = target
+    t.roles[0] = 1
+    t.addresses[1] = caller
+    t.roles[1] = 2
+    t
+}
+
+// A success returning (address who, uint256 value) and emitting Echoed(caller indexed, n).
+fn world(target: u256, caller: u256, value: u256) -> CallObservation {
+    var o = empty_observation()
+    o.success = true
+    o.returndata.len = 64
+    o.returndata.words[0] = caller
+    o.returndata.words[1] = value
+    o.log_count = 1
+    var log = empty_log()
+    log.emitter = target
+    log.topic_count = 2
+    log.topics[0] = 0xec
+    log.topics[1] = caller
+    log.data.len = 32
+    log.data.words[0] = 3
+    o.logs[0] = log
+    o
+}
+
+fn allow_return_and_topic() -> Allowlist {
+    var a = empty_allowlist()
+    a.count = 2
+    a.positions[0] = Position { field: Field::Return, log: 0, word: 0 }
+    a.positions[1] = Position { field: Field::Topic, log: 0, word: 1 }
+    a
+}
+
+fn run(left: CallObservation, right: CallObservation, allow: Allowlist) -> Mismatch {
+    step_normalized(progress: begin(), left, right, left_table: table(target: A_TARGET, caller: A_CALLER),
+                    right_table: table(target: B_TARGET, caller: B_CALLER), allowlist: allow,
+                    exact_returndata: true).result
+}
+
+#[test]
+fn normalization_touches_only_allowlisted_fields() {
+    let a = world(target: A_TARGET, caller: A_CALLER, value: 7)
+    let b = world(target: B_TARGET, caller: B_CALLER, value: 7)
+    // Raw comparison sees the differing worlds.
+    assert!(verdict(step(progress: begin(), left: a, right: b).result) == 3)
+    // With the allowlist (and emitters, always), the worlds match.
+    assert!(verdict(run(left: a, right: b, allow: allow_return_and_topic())) == 0)
+    // Without the topic position, the indexed caller still differs.
+    var only_return = allow_return_and_topic()
+    only_return.count = 1
+    let t = run(left: a, right: b, allow: only_return)
+    assert!(verdict(t) == 7 && t.index == 1)
+    // An address-shaped value in a non-allowlisted uint word is never rewritten.
+    let x = world(target: A_TARGET, caller: A_CALLER, value: A_CALLER)
+    let y = world(target: B_TARGET, caller: B_CALLER, value: B_CALLER)
+    let v = run(left: x, right: y, allow: allow_return_and_topic())
+    assert!(verdict(v) == 3 && v.index >= 32)
+    // A real role difference is still a mismatch after normalization.
+    let wrong = world(target: B_TARGET, caller: B_TARGET, value: 7)
+    assert!(verdict(run(left: a, right: wrong, allow: allow_return_and_topic())) == 3)
+    // An unknown address stays raw and is compared raw.
+    let stranger = world(target: B_TARGET, caller: 0x1234, value: 7)
+    assert!(verdict(run(left: a, right: stranger, allow: allow_return_and_topic())) == 3)
+}
+
+#[test]
+fn invalid_tables_and_allowlists_are_malformed() {
+    let a = world(target: A_TARGET, caller: A_CALLER, value: 7)
+    var duplicate = table(target: A_TARGET, caller: A_CALLER)
+    duplicate.roles[1] = 1
+    let m = step_normalized(progress: begin(), left: a, right: a, left_table: duplicate, right_table: duplicate,
+                            allowlist: empty_allowlist(), exact_returndata: true).result
+    assert!(verdict(m) == 100)
+    var far = empty_allowlist()
+    far.count = 1
+    far.positions[0] = Position { field: Field::Topic, log: 0, word: 4 }
+    assert!(verdict(run(left: a, right: a, allow: far)) == 100)
+}
+
+fn revert_with(selector: u256) -> CallObservation {
+    var o = empty_observation()
+    o.returndata.len = 4
+    o.returndata.words[0] = selector << 224
+    o
+}
+
+#[test]
+fn failed_deployment_is_never_a_match() {
+    let none = empty_table()
+    // The constructor reverted with InvalidOwner() in both worlds: identical bytes, still not comparable.
+    let failed = revert_with(selector: 0x49e27cff)
+    let p = begin_deployed(left: failed, right: failed, left_table: none, right_table: none)
+    assert!(verdict(p.result) == 200 && p.result.deployment)
+    // A later step that "expects" the same revert bytes cannot rescue it.
+    let after = step(progress: p, left: failed, right: failed)
+    assert!(verdict(after.result) == 200)
+    var ok = empty_observation()
+    ok.success = true
+    ok.returndata.len = 3
+    ok.returndata.words[0] = 0x600a00 << 232
+    let one = begin_deployed(left: ok, right: failed, left_table: none, right_table: none)
+    assert!(verdict(one.result) == 200 && one.result.left == 1 && one.result.right == 0)
+    // Runtime code differs by compiler and isn't compared; constructor logs are.
+    var other = ok
+    other.returndata.words[0] = 0x600b00 << 232
+    assert!(verdict(begin_deployed(left: ok, right: other, left_table: none, right_table: none).result) == 0)
+    var logged = other
+    logged.log_count = 1
+    logged.logs[0].emitter = A_TARGET
+    let d = begin_deployed(left: ok, right: logged, left_table: none, right_table: none).result
+    assert!(verdict(d) == 4 && d.deployment)
+}
+
+#[test]
+fn compiler_rejection_scope_compares_status_and_logs_only() {
+    let a = revert_with(selector: 0x11111111)
+    let b = revert_with(selector: 0x22222222)
+    let none = empty_table()
+    let scoped = step_normalized(progress: begin(), left: a, right: b, left_table: none, right_table: none,
+                                 allowlist: empty_allowlist(), exact_returndata: false).result
+    assert!(verdict(scoped) == 0)
+    var success = b
+    success.success = true
+    let s = step_normalized(progress: begin(), left: a, right: success, left_table: none, right_table: none,
+                            allowlist: empty_allowlist(), exact_returndata: false).result
+    assert!(verdict(s) == 1)
+    assert!(verdict(step(progress: begin(), left: a, right: b).result) == 3)
+}

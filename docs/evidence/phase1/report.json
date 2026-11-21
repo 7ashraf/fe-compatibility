@@ -1,0 +1,643 @@
+{
+  "format": "fe-compatibility-phase1-report-v1",
+  "mode": "ABI conformance",
+  "fixture": "fixtures/abi/codec-v1.json",
+  "fixture_sha256": "51208c64115f0ac5de0bc811dcc0f03dca0c983b5149f261741f7c552b3e2c99",
+  "declared_abi_matches_frozen": {
+    "solidity-codec": true,
+    "fe-codec": true
+  },
+  "classification": [
+    {
+      "id": "statics-zero",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "statics-max",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "statics-min",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "statics-minus-one",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "wide-max",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "wide-min",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "wide-beyond-double",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "point-max",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "point-beyond-double",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "echo-empty",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "echo-leading-zero",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "echo-address-bytes",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "echo-max",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "echo-too-long",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "owner",
+      "calldata": {
+        "category": "canonical",
+        "index": 0
+      },
+      "declared": {
+        "category": "canonical",
+        "index": 0
+      },
+      "golden_returndata": {
+        "category": "canonical",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-unknown-selector",
+      "calldata": {
+        "category": "selector",
+        "index": 0
+      },
+      "declared": {
+        "category": "selector",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-empty",
+      "calldata": {
+        "category": "truncated",
+        "index": 0
+      },
+      "declared": {
+        "category": "truncated",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-truncated-word",
+      "calldata": {
+        "category": "truncated",
+        "index": 3
+      },
+      "declared": {
+        "category": "truncated",
+        "index": 3
+      }
+    },
+    {
+      "id": "m-truncated-byte",
+      "calldata": {
+        "category": "truncated",
+        "index": 3
+      },
+      "declared": {
+        "category": "truncated",
+        "index": 3
+      }
+    },
+    {
+      "id": "m-uint8-dirty",
+      "calldata": {
+        "category": "type",
+        "index": 0
+      },
+      "declared": {
+        "category": "type",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-int16-unextended",
+      "calldata": {
+        "category": "type",
+        "index": 1
+      },
+      "declared": {
+        "category": "type",
+        "index": 1
+      }
+    },
+    {
+      "id": "m-address-dirty",
+      "calldata": {
+        "category": "type",
+        "index": 2
+      },
+      "declared": {
+        "category": "type",
+        "index": 2
+      }
+    },
+    {
+      "id": "m-bool-two",
+      "calldata": {
+        "category": "type",
+        "index": 3
+      },
+      "declared": {
+        "category": "type",
+        "index": 3
+      }
+    },
+    {
+      "id": "m-uint64-dirty",
+      "calldata": {
+        "category": "type",
+        "index": 0
+      },
+      "declared": {
+        "category": "type",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-echo-length-overrun",
+      "calldata": {
+        "category": "length",
+        "index": 0
+      },
+      "declared": {
+        "category": "length",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-echo-offset-noncanonical",
+      "calldata": {
+        "category": "offset",
+        "index": 0
+      },
+      "declared": {
+        "category": "offset",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-echo-dirty-padding",
+      "calldata": {
+        "category": "padding",
+        "index": 0
+      },
+      "declared": {
+        "category": "padding",
+        "index": 0
+      }
+    },
+    {
+      "id": "m-statics-trailing",
+      "calldata": {
+        "category": "extra",
+        "index": 0
+      },
+      "declared": {
+        "category": "extra",
+        "index": 0
+      }
+    }
+  ],
+  "golden": {
+    "solidity": {
+      "checker": "native Fe compat_checker protocol 2",
+      "frame_words": 343,
+      "steps_compared": 25,
+      "verdict": "match"
+    },
+    "fe": {
+      "checker": "native Fe compat_checker protocol 2",
+      "frame_words": 343,
+      "steps_compared": 25,
+      "verdict": "match"
+    }
+  },
+  "returndata_canonical": {
+    "solidity": [
+      {
+        "id": "statics-zero",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "statics-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "statics-min",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "statics-minus-one",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "wide-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "wide-min",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "wide-beyond-double",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "point-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "point-beyond-double",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-empty",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-leading-zero",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-address-bytes",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "owner",
+        "category": "canonical",
+        "index": 0
+      }
+    ],
+    "fe": [
+      {
+        "id": "statics-zero",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "statics-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "statics-min",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "statics-minus-one",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "wide-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "wide-min",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "wide-beyond-double",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "point-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "point-beyond-double",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-empty",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-leading-zero",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-address-bytes",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "echo-max",
+        "category": "canonical",
+        "index": 0
+      },
+      {
+        "id": "owner",
+        "category": "canonical",
+        "index": 0
+      }
+    ]
+  },
+  "differential": {
+    "checker": "native Fe compat_checker protocol 2",
+    "frame_words": 411,
+    "steps_compared": 28,
+    "verdict": "match"
+  },
+  "normalized": {
+    "worlds": {
+      "left": {
+        "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+        "zero": "0x0000000000000000000000000000000000000000",
+        "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3"
+      },
+      "right": {
+        "deployer": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+        "caller": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+        "zero": "0x0000000000000000000000000000000000000000",
+        "target": "0x663f3ad617193148711d28f5334ee4ed07016602"
+      }
+    },
+    "with_allowlist": {
+      "checker": "native Fe compat_checker protocol 2",
+      "frame_words": 469,
+      "steps_compared": 27,
+      "verdict": "match"
+    },
+    "without_normalization": {
+      "checker": "native Fe compat_checker protocol 2",
+      "frame_words": 385,
+      "steps_compared": 27,
+      "verdict": "mismatch",
+      "first_divergence": {
+        "deployment": false,
+        "step": 1,
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 76,
+        "left": "112",
+        "right": "144",
+        "vector": "statics-max"
+      }
+    },
+    "control_bytes_not_rewritten": {
+      "checker": "native Fe compat_checker protocol 2",
+      "frame_words": 52,
+      "steps_compared": 1,
+      "verdict": "mismatch",
+      "first_divergence": {
+        "deployment": false,
+        "step": 0,
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 76,
+        "left": "95",
+        "right": "102",
+        "vector": "echo-address-bytes"
+      }
+    }
+  },
+  "deployment": {
+    "revert_bytes": {
+      "solidity-codec": "0x49e27cff",
+      "fe-codec": "0x49e27cff"
+    },
+    "revert_bytes_equal_expected": {
+      "solidity-codec": true,
+      "fe-codec": true
+    },
+    "differential": {
+      "checker": "native Fe compat_checker protocol 2",
+      "frame_words": 13,
+      "steps_compared": 0,
+      "verdict": "not-comparable",
+      "deployment_succeeded": {
+        "left": false,
+        "right": false
+      }
+    },
+    "as_expected_application_revert": {
+      "checker": "native Fe compat_checker protocol 2",
+      "frame_words": 22,
+      "steps_compared": 1,
+      "verdict": "not-comparable",
+      "deployment_succeeded": {
+        "left": true,
+        "right": false
+      }
+    }
+  },
+  "expectations": {
+    "declared_abis_match_frozen": true,
+    "fe_classifies_every_vector_as_declared": true,
+    "solidity_matches_golden": true,
+    "fe_matches_golden": true,
+    "observed_returndata_canonical": true,
+    "differential_match_or_only_unspecified_divergence": true,
+    "normalized_worlds_match": true,
+    "unnormalized_worlds_differ": true,
+    "bytes_content_never_normalized": true,
+    "failed_deployment_not_comparable": true,
+    "constructor_revert_never_passes_as_application_revert": true
+  }
+}

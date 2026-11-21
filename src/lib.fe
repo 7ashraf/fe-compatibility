@@ -13,4 +13,29 @@ pub use observation::{
     empty_observation,
     well_formed,
 }
-pub use conformance::{Category, Mismatch, Verdict, Progress, compare, begin, step, category_code}
+pub use conformance::{
+    Category,
+    Mismatch,
+    Verdict,
+    Progress,
+    compare,
+    begin,
+    begin_deployed,
+    step,
+    step_normalized,
+    category_code,
+}
+pub use normalize::{
+    MAX_ROLES,
+    MAX_POSITIONS,
+    AddressTable,
+    Field,
+    Position,
+    Allowlist,
+    empty_table,
+    empty_allowlist,
+    table_valid,
+    allowlist_valid,
+    normalize,
+}
+pub use abi::{MAX_SLOTS, SlotKind, Slot, Layout, AbiCategory, AbiResult, empty_layout, abi_code, validate}

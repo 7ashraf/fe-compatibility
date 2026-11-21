@@ -10,7 +10,9 @@ ROOT = Path(__file__).resolve().parent.parent
 BUILD = ROOT / '.tools/build'
 STAMP = BUILD / 'build.json'
 CHECKER = ROOT / 'host/checker-native/out/compat_checker'
-SOURCES = ('fe.toml', 'src/lib.fe', 'src/observation.fe', 'src/conformance.fe',
+SOURCES = ('fe.toml', 'src/lib.fe', 'src/observation.fe', 'src/conformance.fe', 'src/abi.fe', 'src/normalize.fe',
+           'src/phase1_tests.fe', 'contracts/solidity/Codec.sol', 'contracts/fe/codec/fe.toml',
+           'contracts/fe/codec/src/lib.fe',
            'host/checker-native/fe.toml', 'host/checker-native/src/lib.fe',
            'contracts/solidity/Meter.sol', 'contracts/fe/meter/fe.toml', 'contracts/fe/meter/src/lib.fe', 'contracts/fe/meter/src/tests.fe', 'src/tests.fe',
            'scripts/build.py', 'host/common.py')

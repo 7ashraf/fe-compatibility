@@ -47,6 +47,7 @@ fn code(_ m: Mismatch) -> u256 {
         Verdict::Match => 0,
         Verdict::Malformed => 100,
         Verdict::Mismatch => category_code(m.category),
+        Verdict::NotComparable => 200,
     }
 }
 

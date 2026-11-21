@@ -1,0 +1,174 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "initialOwner",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "statics",
+    "inputs": [
+      {
+        "name": "small",
+        "type": "uint8"
+      },
+      {
+        "name": "delta",
+        "type": "int16"
+      },
+      {
+        "name": "who",
+        "type": "address"
+      },
+      {
+        "name": "flag",
+        "type": "bool"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8"
+      },
+      {
+        "name": "",
+        "type": "int16"
+      },
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "wide",
+    "inputs": [
+      {
+        "name": "a",
+        "type": "uint256"
+      },
+      {
+        "name": "b",
+        "type": "int256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "point",
+    "inputs": [
+      {
+        "name": "p",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "x",
+            "type": "uint64"
+          },
+          {
+            "name": "owner",
+            "type": "address"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "echo",
+    "inputs": [
+      {
+        "name": "payload",
+        "type": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "error",
+    "name": "InvalidOwner",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "TooLong",
+    "inputs": [
+      {
+        "name": "length",
+        "type": "uint256"
+      },
+      {
+        "name": "max",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "Echoed",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "length",
+        "type": "uint256",
+        "indexed": false
+      }
+    ]
+  }
+]
