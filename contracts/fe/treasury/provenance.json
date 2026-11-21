@@ -1,0 +1,16 @@
+{
+  "project": "Fe Capabilities",
+  "commit": "ba6893c5e847b9f1e2c7479ef00f2489972a2691",
+  "license": "MIT (upstream/LICENSE)",
+  "files": {
+    "policy/fe.toml": "7362f48804e22c52f5f7ea79737ed08e378f7faf1b9c7d92e35387ee7628908f",
+    "policy/src/lib.fe": "ef2c9b2a24b78080b59705bccc2d94cf25ecf8ed9c8558c0a92ee19e98acc6f9",
+    "policy/src/policy.fe": "97695eb46b585df2322b8f8203eb679c1479e477b6499e67f19da9dd9ffab1f0",
+    "policy/src/types.fe": "f0e6fae2aa8bde5c281b9d4918d2bde3bc46c726a4673cfda769cc1a6519a3a7",
+    "treasury/fe.toml": "fe89a8666dd1b9947a80ee4d8848e8a55f44b5b3225e22317ce8b253837a972e",
+    "treasury/src/lib.fe": "5acc23870070e8226627297ab523c80b0030a30f4fad3d836ff057f67dcbef21",
+    "upstream/LICENSE": "0d2f5d1a8e7d0871fe473f493929bf053ff74c6ac5921b27718c1d7c30af8110",
+    "upstream/NOTICE.md": "5b47ce4e2629b26104979d2e1eabf817d155840048b1b65078794ea4bf17d9d3"
+  },
+  "use": "Fe implementation of treasury v0 revision 1, vendored unchanged; seeded variants are generated at build time and never committed"
+}

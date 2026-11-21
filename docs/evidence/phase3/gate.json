@@ -1,0 +1,395 @@
+{
+  "format": "fe-compatibility-phase3-gate-v1",
+  "result": "Phase 3 exit gate passed",
+  "verified_at_utc": "2026-11-21T15:02:55.443465+00:00",
+  "host": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6",
+  "fe": {
+    "version": "fe 26.5.0 (3dab95f)",
+    "sha256": "4968711c5bc02c1a3151cfaea0d81a48dc74803ea208362022af467c2a523fed"
+  },
+  "solc": {
+    "version": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "sha256": "f5a243d6b2dd8fba307e36c5fefa2d8eb3ae74ba81036d1c17c971b5d346ade9"
+  },
+  "targets": {
+    "solidity-treasury": {
+      "creation": "solidity/Treasury.bin",
+      "runtime": "solidity/Treasury.bin-runtime",
+      "abi": "solidity/Treasury.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+      "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a"
+    },
+    "fe-treasury": {
+      "creation": "fe-treasury/Treasury.bin",
+      "runtime": "fe-treasury/Treasury.runtime.bin",
+      "abi": "fe-treasury/Treasury.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)",
+      "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+      "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11"
+    },
+    "fe-inclusive-expiry": {
+      "creation": "fe-inclusive-expiry/Treasury.bin",
+      "runtime": "fe-inclusive-expiry/Treasury.runtime.bin",
+      "abi": "fe-inclusive-expiry/Treasury.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)",
+      "fault": "intentional: PHASE 3 FAULT: inclusive expiry",
+      "creation_sha256": "fae557414e31d353660a7a9a2253d65bb36f7252a5719f7de52aa6dc6936f711",
+      "runtime_sha256": "88ee7408d66b6df131fba74c13387c13e65c0c90368a79f449caa5ce1557581f"
+    },
+    "fe-cap-off-by-one": {
+      "creation": "fe-cap-off-by-one/Treasury.bin",
+      "runtime": "fe-cap-off-by-one/Treasury.runtime.bin",
+      "abi": "fe-cap-off-by-one/Treasury.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)",
+      "fault": "intentional: PHASE 3 FAULT: exact remaining rejected",
+      "creation_sha256": "5c2a2fcbd6f96d9f01adf17a84dd727af0c90ee27d5548f423d8cf4c8c9c7494",
+      "runtime_sha256": "277f1ed84694ff9efba8afdd242c8819edf949c055c0da3438b6cb5a849ccb6e"
+    },
+    "fe-unindexed-delegate": {
+      "creation": "fe-unindexed-delegate/Treasury.bin",
+      "runtime": "fe-unindexed-delegate/Treasury.runtime.bin",
+      "abi": "fe-unindexed-delegate/Treasury.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)",
+      "fault": "intentional: PHASE 3 FAULT: Spent.delegate not indexed",
+      "creation_sha256": "dcc1301947fc7b5700321d0e956cc1f6439ef5ba99b543c864124e3afdcf01eb",
+      "runtime_sha256": "4799a3cc79d5168ff487cdb7441a1e8af1e7f4ef1f69681c98112c048570d8a6"
+    },
+    "fe-auth-after-active": {
+      "creation": "fe-auth-after-active/Treasury.bin",
+      "runtime": "fe-auth-after-active/Treasury.runtime.bin",
+      "abi": "fe-auth-after-active/Treasury.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)",
+      "fault": "intentional: PHASE 3 FAULT: active checked before authority",
+      "creation_sha256": "d977f002b0bfac92ecd200e5419d066274834413d6761b639aea1c20bda47eb8",
+      "runtime_sha256": "f0bc446e89a35d97c839257b8084f8de846ebbfd2649b86ab639ccfe33fba4ae"
+    },
+    "fe-revoke-event-twice": {
+      "creation": "fe-revoke-event-twice/Treasury.bin",
+      "runtime": "fe-revoke-event-twice/Treasury.runtime.bin",
+      "abi": "fe-revoke-event-twice/Treasury.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)",
+      "fault": "intentional: PHASE 3 FAULT: repeated revocation emits again",
+      "creation_sha256": "86a40e76fcbf10b0690ed07e0237884d2f9fb1aa41f842877dc6a2e7a56f1bda",
+      "runtime_sha256": "180efa3a798e0ecdb4ca2814c9f973906f609c132b3e8741e08a93ac4761c582"
+    },
+    "fe-no-reserve": {
+      "creation": "fe-no-reserve/Treasury.bin",
+      "runtime": "fe-no-reserve/Treasury.runtime.bin",
+      "abi": "fe-no-reserve/Treasury.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)",
+      "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+      "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+      "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47"
+    },
+    "harness-RejectingRecipient": {
+      "creation": "solidity/RejectingRecipient.bin",
+      "runtime": "solidity/RejectingRecipient.bin-runtime",
+      "abi": "solidity/RejectingRecipient.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "role": "shared test fixture",
+      "creation_sha256": "1de511d6627f86bbe3270882bfbb8de8935f19c21106e8589ab55316e0ce6fa8",
+      "runtime_sha256": "fc5789fa22da2c1a41c84cbe935fcaef7a886b4a56315fefc17fab36c1d9ccfc"
+    },
+    "harness-ReentrantRecipient": {
+      "creation": "solidity/ReentrantRecipient.bin",
+      "runtime": "solidity/ReentrantRecipient.bin-runtime",
+      "abi": "solidity/ReentrantRecipient.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "role": "shared test fixture",
+      "creation_sha256": "2518592f03a0634dcf67fe8078d22b251953554c219ec9b9982eaa780ad411da",
+      "runtime_sha256": "44565fbe47fc924edb9b3361ac21de0deb7ab0b345325f067ee74046d913ecbf"
+    },
+    "harness-Batcher": {
+      "creation": "solidity/Batcher.bin",
+      "runtime": "solidity/Batcher.bin-runtime",
+      "abi": "solidity/Batcher.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "role": "shared test fixture",
+      "creation_sha256": "1c6df6d051c3e4c12204d887825d421a157c10cb246f603377c9b2374216f655",
+      "runtime_sha256": "12cfd3535b71f57f655a41c87bb33b83927e3b8d00ba7a4355224b06b8c6e374"
+    }
+  },
+  "corpus_sha256": "df27bf7967feaea305e56147a1a38319e9aeaf64a03071c840be4c2ce8822a7c",
+  "summary": {
+    "actions": 85,
+    "differential_match": true,
+    "first_divergence": {},
+    "spec_oracle_left": true,
+    "spec_oracle_right": true
+  },
+  "intended": {
+    "fe-inclusive-expiry": {
+      "expiry-equality": [
+        4,
+        "status"
+      ]
+    },
+    "fe-cap-off-by-one": {
+      "deposit-spend": [
+        4,
+        "status"
+      ],
+      "cap-boundary": [
+        3,
+        "status"
+      ],
+      "revocation": [
+        11,
+        "status"
+      ]
+    },
+    "fe-unindexed-delegate": {
+      "deposit-spend": [
+        3,
+        "topic-count"
+      ],
+      "cap-boundary": [
+        3,
+        "topic-count"
+      ],
+      "expiry-equality": [
+        2,
+        "topic-count"
+      ],
+      "revocation": [
+        2,
+        "topic-count"
+      ],
+      "insufficient-funds": [
+        3,
+        "topic-count"
+      ],
+      "reentry": [
+        2,
+        "topic-count"
+      ],
+      "same-transaction": [
+        2,
+        "topic-count"
+      ]
+    },
+    "fe-auth-after-active": {
+      "revocation": [
+        6,
+        "error-selector"
+      ]
+    },
+    "fe-revoke-event-twice": {
+      "revocation": [
+        4,
+        "log-extra"
+      ]
+    },
+    "fe-no-reserve": {
+      "deposit-spend": [
+        3,
+        "state-value"
+      ],
+      "cap-boundary": [
+        3,
+        "state-value"
+      ],
+      "expiry-equality": [
+        2,
+        "state-value"
+      ],
+      "revocation": [
+        2,
+        "state-value"
+      ],
+      "insufficient-funds": [
+        3,
+        "state-value"
+      ],
+      "reentry": [
+        2,
+        "state-value"
+      ],
+      "same-transaction": [
+        2,
+        "log-data-byte"
+      ]
+    }
+  },
+  "state_before_spec_oracle": {
+    "cap-boundary": [
+      3,
+      4
+    ],
+    "deposit-spend": [
+      3,
+      4
+    ],
+    "expiry-equality": [
+      2,
+      3
+    ],
+    "insufficient-funds": [
+      3,
+      6
+    ],
+    "reentry": [
+      2,
+      3
+    ],
+    "revocation": [
+      2,
+      9
+    ]
+  },
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/verify-phase2.py"
+      ],
+      "exit": 0,
+      "stdout": "PASS python3 scripts/verify-phase1.py\nPASS fe test .\nPASS fe test . --backend native\nPASS 10 Phase 2 engine tests (24 total) on the EVM and native backends\nPASS python3 host/observe.py --left solidity --right fe\nPASS python3 host/observe.py --left solidity --right fe-faulty\nPASS python3 host/observe.py --left solidity --right fe-state\nPASS python3 host/observe.py --left solidity --right fe-unindexed\nPASS python3 host/observe.py --left solidity --right fe-extra-log\nPASS python3 host/observe.py --left solidity --right fe-wrong-error\nPASS python3 host/observe.py --left solidity --right fe-no-empty-check\nPASS correct Fe port matches; 6 seeded ports each detected exactly at the intended step, category, and location (and nowhere else)\nPASS python3 host/observe.py --left solidity --right fe-state\nPASS reports are deterministic (byte-identical rerun) and valid fe-compatibility-report v1\nPASS 11 perturbations of real records classified by Fe as intended (reorder, missing, extra, indexed value, error payload, status, state, oversize, limits)\nPASS Phase 2 exit gate: every intended difference detected by the Fe engine, and only that difference\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/make-corpus.py",
+        "--check"
+      ],
+      "exit": 0,
+      "stdout": "PASS behavioral corpus reproduced byte-for-byte\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py"
+      ],
+      "exit": 0,
+      "stdout": " scheduled timestamps\"\n        },\n        \"format\": \"fe-compatibility-report\",\n        \"gas_used\": {\n          \"left\": [\n            23300,\n            144268,\n            35314,\n            35314,\n            35314,\n            21882,\n            21882,\n            23760,\n            24397,\n            22193,\n            22790,\n            22440\n          ],\n          \"note\": \"reported only; gas is never compared\",\n          \"right\": [\n            22959,\n            165501,\n            37061,\n            37061,\n            37061,\n            36699,\n            36699,\n            25104,\n            37033,\n            36975,\n            37394,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"8d449b59131567a81e26ee6a12c09d0e635a9a54c73bdca67b23d0ab06162c61\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": true,\n    \"first_divergence\": {},\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": true\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py"
+      ],
+      "exit": 0,
+      "stdout": " scheduled timestamps\"\n        },\n        \"format\": \"fe-compatibility-report\",\n        \"gas_used\": {\n          \"left\": [\n            23300,\n            144268,\n            35314,\n            35314,\n            35314,\n            21882,\n            21882,\n            23760,\n            24397,\n            22193,\n            22790,\n            22440\n          ],\n          \"note\": \"reported only; gas is never compared\",\n          \"right\": [\n            22959,\n            165501,\n            37061,\n            37061,\n            37061,\n            36699,\n            36699,\n            25104,\n            37033,\n            36975,\n            37394,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"8d449b59131567a81e26ee6a12c09d0e635a9a54c73bdca67b23d0ab06162c61\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": true,\n    \"first_divergence\": {},\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": true\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py",
+        "--right",
+        "fe-inclusive-expiry"
+      ],
+      "exit": 1,
+      "stdout": "report\",\n        \"gas_used\": {\n          \"left\": [\n            23300,\n            144268,\n            35314,\n            35314,\n            35314,\n            21882,\n            21882,\n            23760,\n            24397,\n            22193,\n            22790,\n            22440\n          ],\n          \"note\": \"reported only; gas is never compared\",\n          \"right\": [\n            22959,\n            165501,\n            37061,\n            37061,\n            37061,\n            36699,\n            36699,\n            25104,\n            37033,\n            36975,\n            37394,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"87e2b72b0a5ac2123e349603104c7c0bd2a38f810fec451c7b0bed4e1c95758b\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": false,\n    \"first_divergence\": {\n      \"expiry-equality\": [\n        4,\n        \"status\"\n      ]\n    },\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": false\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py",
+        "--right",
+        "fe-cap-off-by-one"
+      ],
+      "exit": 1,
+      "stdout": "  35314,\n            35314,\n            21882,\n            21882,\n            23760,\n            24397,\n            22193,\n            22790,\n            22440\n          ],\n          \"note\": \"reported only; gas is never compared\",\n          \"right\": [\n            22959,\n            165501,\n            37061,\n            37061,\n            37061,\n            36699,\n            36699,\n            25104,\n            37033,\n            36975,\n            37394,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"a621d3f407f4b4ed0b55a7724f7fc1fedf5d1ba21da5cdde3419b329a3c762c4\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": false,\n    \"first_divergence\": {\n      \"cap-boundary\": [\n        3,\n        \"status\"\n      ],\n      \"deposit-spend\": [\n        4,\n        \"status\"\n      ],\n      \"revocation\": [\n        11,\n        \"status\"\n      ]\n    },\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": false\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py",
+        "--right",
+        "fe-unindexed-delegate"
+      ],
+      "exit": 1,
+      "stdout": "501,\n            37061,\n            37061,\n            37061,\n            36699,\n            36699,\n            25104,\n            37033,\n            36975,\n            37394,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"62c6eb9757751e3f5722cdfce77173dab5bd225d1944591ddabe75a15af2dca5\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": false,\n    \"first_divergence\": {\n      \"cap-boundary\": [\n        3,\n        \"topic-count\"\n      ],\n      \"deposit-spend\": [\n        3,\n        \"topic-count\"\n      ],\n      \"expiry-equality\": [\n        2,\n        \"topic-count\"\n      ],\n      \"insufficient-funds\": [\n        3,\n        \"topic-count\"\n      ],\n      \"reentry\": [\n        2,\n        \"topic-count\"\n      ],\n      \"revocation\": [\n        2,\n        \"topic-count\"\n      ],\n      \"same-transaction\": [\n        2,\n        \"topic-count\"\n      ]\n    },\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": false\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py",
+        "--right",
+        "fe-auth-after-active"
+      ],
+      "exit": 1,
+      "stdout": "ort\",\n        \"gas_used\": {\n          \"left\": [\n            23300,\n            144268,\n            35314,\n            35314,\n            35314,\n            21882,\n            21882,\n            23760,\n            24397,\n            22193,\n            22790,\n            22440\n          ],\n          \"note\": \"reported only; gas is never compared\",\n          \"right\": [\n            22959,\n            165501,\n            37073,\n            37073,\n            37073,\n            36699,\n            36699,\n            25104,\n            37033,\n            36975,\n            37394,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"323ac9e435a4111d7640a9487d8c6635e320519d837b34df3bb7f8759366923c\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": false,\n    \"first_divergence\": {\n      \"revocation\": [\n        6,\n        \"error-selector\"\n      ]\n    },\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": false\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py",
+        "--right",
+        "fe-revoke-event-twice"
+      ],
+      "exit": 1,
+      "stdout": "y-report\",\n        \"gas_used\": {\n          \"left\": [\n            23300,\n            144268,\n            35314,\n            35314,\n            35314,\n            21882,\n            21882,\n            23760,\n            24397,\n            22193,\n            22790,\n            22440\n          ],\n          \"note\": \"reported only; gas is never compared\",\n          \"right\": [\n            22959,\n            165501,\n            37061,\n            37061,\n            37061,\n            34579,\n            34579,\n            25104,\n            37033,\n            36975,\n            37394,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"e7a2e6c620e969df0154c408733ca2b8e77b29708d30c82a46ba0d53b3456f88\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": false,\n    \"first_divergence\": {\n      \"revocation\": [\n        4,\n        \"log-extra\"\n      ]\n    },\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": false\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/treasury.py",
+        "--right",
+        "fe-no-reserve"
+      ],
+      "exit": 1,
+      "stdout": "1,\n            37056,\n            37056,\n            37056,\n            36699,\n            36699,\n            25104,\n            37016,\n            36961,\n            37369,\n            36799\n          ]\n        },\n        \"mismatches\": [],\n        \"mode\": \"behavioral conformance (strict; compiler rejections by status)\",\n        \"raw_records_sha256\": {\n          \"left\": \"5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681\",\n          \"right\": \"f8e01aa3b4d8adda6a7c1f34abfc6593d09fc26972465b9361340ff6ad1a3368\"\n        },\n        \"state_declared\": [\n          {\n            \"getter\": \"nextGrantId()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"nextGrantId\"\n          },\n          {\n            \"getter\": \"treasuryBalance()[] word 0\",\n            \"kind\": \"uint\",\n            \"name\": \"treasuryBalance\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 0\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.exists\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 1\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.delegate\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 2\",\n            \"kind\": \"address\",\n            \"name\": \"grant1.recipient\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 3\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.cap\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 5\",\n            \"kind\": \"uint\",\n            \"name\": \"grant1.expiresAt\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['1'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant1.active\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 4\",\n            \"kind\": \"uint\",\n            \"name\": \"grant2.spent\"\n          },\n          {\n            \"getter\": \"getGrant(uint256)['2'] word 6\",\n            \"kind\": \"bool\",\n            \"name\": \"grant2.active\"\n          },\n          {\n            \"getter\": \"balance of recipient\",\n            \"kind\": \"uint\",\n            \"name\": \"payee.balance\"\n          }\n        ],\n        \"tools\": {\n          \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n          \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n        },\n        \"version\": 1\n      },\n      \"spec_oracle\": {\n        \"left\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        },\n        \"right\": {\n          \"checker\": \"native Fe compat_checker protocol 3\",\n          \"frame_words\": 203,\n          \"listed\": 0,\n          \"mismatches\": [],\n          \"mismatching_steps\": 0,\n          \"steps_compared\": 12,\n          \"truncated\": false,\n          \"verdict\": \"match\"\n        }\n      }\n    }\n  },\n  \"summary\": {\n    \"actions\": 85,\n    \"differential_match\": false,\n    \"first_divergence\": {\n      \"cap-boundary\": [\n        3,\n        \"state-value\"\n      ],\n      \"deposit-spend\": [\n        3,\n        \"state-value\"\n      ],\n      \"expiry-equality\": [\n        2,\n        \"state-value\"\n      ],\n      \"insufficient-funds\": [\n        3,\n        \"state-value\"\n      ],\n      \"reentry\": [\n        2,\n        \"state-value\"\n      ],\n      \"revocation\": [\n        2,\n        \"state-value\"\n      ],\n      \"same-transaction\": [\n        2,\n        \"log-data-byte\"\n      ]\n    },\n    \"spec_oracle_left\": true,\n    \"spec_oracle_right\": false\n  }\n}\n",
+      "stderr": ""
+    }
+  ],
+  "sources": {
+    "fe.toml": "65d983a85187468340f13b9580e64c28d36bfe496d9902a52a7c3c5fab938805",
+    "src/lib.fe": "662bb26dcff6b6a09b3556a29fce8ac4702cb4564ef9796642384623310a0153",
+    "src/observation.fe": "0002c58a7c536ddbbe0b995ba5e54e5df01976050d82af37382c649318ae050c",
+    "src/conformance.fe": "168e8615eb446e5e02942a2cb94b391051f2d8bff4c5d9de245b34838888cbf3",
+    "src/abi.fe": "e9a2b4b0aaaf4ebd6a5f8ebe1d147751bdf77c21feab1d90132d76451db7d3e6",
+    "src/normalize.fe": "44ffeb4e8ff609ce8932a1c1a00ca32c00a426ff05b0e27d8a31564a2eef2ce6",
+    "src/phase1_tests.fe": "3a59ad685758d53e3b6af7aff37f5b7992c2b8fa7c0b217f392e1e32d65220de",
+    "contracts/solidity/Codec.sol": "c116f56721c597f7f4619be2f880911f8e5d6ed116ad326ae6df3b24d9ff8ffd",
+    "contracts/fe/codec/fe.toml": "d39c2f61514bd2d987b7eff897bbdbf316a2f5562cf86321e14a421b61a8ef4c",
+    "contracts/fe/codec/src/lib.fe": "d891d172029f54ddbd62af33f2b62c405fca3f3530c5ad1f41701e9647ff52ab",
+    "host/checker-native/fe.toml": "5da71135e249735757422288288548dbe45f9b97bde85a7f4c311daefb8c14df",
+    "host/checker-native/src/lib.fe": "2201610cdc24339dcf28e2d42ac26c0d02bc498659ccf77efe3fe59743abfdcf",
+    "contracts/solidity/Meter.sol": "bfafb856bb756df23854a29fdd742705424d8e6d591234c0c8656bb59499c181",
+    "contracts/fe/meter/fe.toml": "45a4eda71bb72570e7e926164d53c0ff472fd4736583f6f17e59264996cf0793",
+    "contracts/fe/meter/src/lib.fe": "557c0c0f57a23f458a2e8467926cd65f4dc030c559e15bee5477904938699223",
+    "contracts/fe/meter/src/tests.fe": "f106c2295ba57e0978cbe736e84f649e7af805c2f56a9a5c2915ae987a1bbf37",
+    "src/tests.fe": "2ded4ce41e1bb91b98a1c9fb42a090e7a5c5ec82139b06dd4b7b5f8eee61687d",
+    "contracts/solidity/Treasury.sol": "f959c800e8e22462b1a29e2dc2244f07f7a15e7754a7f1d1ebc6de0efb9116d7",
+    "contracts/solidity/Harness.sol": "042e7fbad99139f702310f0365879bbe7feb7801aaff3abaf5cc4eda18e0c0d4",
+    "contracts/fe/treasury/provenance.json": "bd05128e33497c54eb79189447f2fbf0a657be24ba823e1711f5a7a3298b71fd",
+    "contracts/fe/treasury/policy/fe.toml": "7362f48804e22c52f5f7ea79737ed08e378f7faf1b9c7d92e35387ee7628908f",
+    "contracts/fe/treasury/policy/src/lib.fe": "ef2c9b2a24b78080b59705bccc2d94cf25ecf8ed9c8558c0a92ee19e98acc6f9",
+    "contracts/fe/treasury/policy/src/policy.fe": "97695eb46b585df2322b8f8203eb679c1479e477b6499e67f19da9dd9ffab1f0",
+    "contracts/fe/treasury/policy/src/types.fe": "f0e6fae2aa8bde5c281b9d4918d2bde3bc46c726a4673cfda769cc1a6519a3a7",
+    "contracts/fe/treasury/treasury/fe.toml": "fe89a8666dd1b9947a80ee4d8848e8a55f44b5b3225e22317ce8b253837a972e",
+    "contracts/fe/treasury/treasury/src/lib.fe": "5acc23870070e8226627297ab523c80b0030a30f4fad3d836ff057f67dcbef21",
+    "scripts/build.py": "23380a6bfecbffaecbb4fadd10befe997bd627d4b877a6dd3201271cce7aa1cc",
+    "host/common.py": "ecd39990ba6690d4c278e9e65d8e2349ec6e4d29f07c04c99247d2f4a689c801"
+  }
+}

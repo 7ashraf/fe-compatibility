@@ -1,0 +1,125 @@
+use std::evm::{Address, Wei}
+use super::types::{
+    GrantId,
+    Grant,
+    GrantRequest,
+    PolicyContext,
+    PolicyError,
+    SpendDecision,
+    CreateDecision,
+}
+
+pub fn validate_owner(owner: Address) -> Result<PolicyError, ()> {
+    if owner == Address::zero() {
+        return Err(PolicyError::InvalidOwner)
+    }
+    Ok(())
+}
+
+fn authorize_owner(owner: Address) -> Result<PolicyError, ()>
+uses (context: PolicyContext)
+{
+    if owner == Address::zero() {
+        return Err(PolicyError::InvalidOwner)
+    }
+    if context.caller != owner {
+        return Err(PolicyError::Unauthorized)
+    }
+    Ok(())
+}
+
+pub fn evaluate_create(owner: Address, next_id: GrantId, request: GrantRequest) -> Result<
+    PolicyError,
+    CreateDecision,
+>
+uses (context: PolicyContext)
+{
+    match authorize_owner(owner) {
+        Err(error) => {
+            return Err(error)
+        },
+        Ok(_) => {},
+    }
+    if request.delegate == Address::zero() || request.recipient == Address::zero() {
+        return Err(PolicyError::InvalidAddress)
+    }
+    if request.cap == Wei::zero() {
+        return Err(PolicyError::InvalidAmount)
+    }
+    if request.expires_at <= context.now {
+        return Err(PolicyError::InvalidExpiry)
+    }
+    // MAX is an exhaustion sentinel. Never wrap, allocate zero, or reuse IDs.
+    if next_id.word() == 0 || next_id.word() == !(0 as u256) {
+        return Err(PolicyError::GrantIdExhausted)
+    }
+    Ok(
+        CreateDecision {
+            id: next_id,
+            next_id: GrantId::from_word(next_id.word() + 1),
+            grant: Grant {
+                exists: true,
+                delegate: request.delegate,
+                recipient: request.recipient,
+                cap: request.cap,
+                spent: Wei::zero(),
+                expires_at: request.expires_at,
+                active: true,
+            },
+        },
+    )
+}
+
+// True means deactivate and emit; false means an already inactive no-op.
+pub fn evaluate_revoke(owner: Address, id: GrantId, grant: Grant) -> Result<PolicyError, bool>
+uses (context: PolicyContext)
+{
+    match authorize_owner(owner) {
+        Err(error) => {
+            return Err(error)
+        },
+        Ok(_) => {},
+    }
+    if id.word() == 0 || id.word() == !(0 as u256) || !grant.exists {
+        return Err(PolicyError::UnknownGrant)
+    }
+    Ok(grant.active)
+}
+
+pub fn evaluate_spend(id: GrantId, grant: Grant, amount: Wei) -> Result<PolicyError, SpendDecision>
+uses (context: PolicyContext)
+{
+    // Spend must establish existence before it can load the actual delegate.
+    if id.word() == 0 || id.word() == !(0 as u256) || !grant.exists {
+        return Err(PolicyError::UnknownGrant)
+    }
+    if context.caller != grant.delegate {
+        return Err(PolicyError::Unauthorized)
+    }
+    if !grant.active {
+        return Err(PolicyError::InactiveGrant)
+    }
+    if amount == Wei::zero() {
+        return Err(PolicyError::InvalidAmount)
+    }
+    if context.now >= grant.expires_at {
+        return Err(PolicyError::Expired)
+    }
+    if grant.delegate == Address::zero()
+        || grant.recipient == Address::zero()
+        || grant.cap == Wei::zero()
+        || grant.spent > grant.cap {
+        return Err(PolicyError::InvalidGrantState)
+    }
+    let remaining = grant.cap - grant.spent
+    if amount > remaining {
+        return Err(PolicyError::CapExceeded)
+    }
+    if amount > context.available {
+        return Err(PolicyError::InsufficientBalance)
+    }
+    // Proven safe: amount <= cap - spent, hence spent + amount <= cap <= MAX.
+    Ok(
+        SpendDecision { recipient: grant.recipient, amount, new_spent: grant.spent + amount },
+    )
+}

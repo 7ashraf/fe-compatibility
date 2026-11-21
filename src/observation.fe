@@ -8,7 +8,7 @@ pub const MAX_PAYLOAD_WORDS: usize = 8
 pub const MAX_LOGS: usize = 4
 pub const MAX_TOPICS: usize = 4
 pub const MAX_STEPS: usize = 64
-pub const MAX_STATE: usize = 8
+pub const MAX_STATE: usize = 16
 
 pub struct Payload { pub len: usize, pub words: [u256; 8] }
 impl Copy for Payload {}
@@ -39,7 +39,7 @@ pub struct CallObservation {
     pub log_count: usize,
     pub logs: [LogRecord; 4],
     pub state_count: usize,
-    pub state: [StateField; 8],
+    pub state: [StateField; 16],
 }
 impl Copy for CallObservation {}
 
@@ -93,7 +93,7 @@ pub fn empty_observation() -> CallObservation {
         log_count: 0,
         logs: [empty_log(); 4],
         state_count: 0,
-        state: [empty_state(); 8],
+        state: [empty_state(); 16],
     }
 }
 

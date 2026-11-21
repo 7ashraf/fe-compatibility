@@ -36,7 +36,7 @@
   },
   "evm_fork": "osaka",
   "solidity_version": "0.8.31+commit.fd3a2265",
-  "status": "Phase 0-2 exit gates verified on Darwin arm64. Linux assets are pinned but untested.",
+  "status": "Phase 0-3 exit gates verified on Darwin arm64. Linux assets are pinned but untested.",
   "solidity": {
     "version": "0.8.31+commit.fd3a2265",
     "assets": {
@@ -62,6 +62,7 @@
     "dependencies": "Fe bundled core/std at the pinned compiler commit; local compat ingot only",
     "phase0_formats": "fe-compatibility-raw-execution-v1, fe-compatibility-phase0-report-v1",
     "phase1_formats": "fe-compatibility-abi-vectors v1, fe-compatibility-raw-execution v2, native checker protocol 2, golden encoder cast 1.5.1-stable",
-    "phase2_formats": "native checker protocol 3, fe-compatibility-report v1"
+    "phase2_formats": "native checker protocol 3, fe-compatibility-report v1",
+    "phase3": "fe-compatibility-scenarios v1; Solidity treasury vs vendored Fe Capabilities treasury ba6893c; eth_call cross-check with mined-block time overrides; balances net of own gas"
   }
 }

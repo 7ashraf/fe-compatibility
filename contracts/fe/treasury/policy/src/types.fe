@@ -1,0 +1,59 @@
+use std::evm::{Address, Wei, Timestamp}
+
+// Zero is a valid lookup input, but never an allocated grant identifier.
+pub struct GrantId { value: u256 }
+impl GrantId {
+    pub const fn from_word(_ value: u256) -> Self {
+        GrantId { value }
+    }
+    pub const fn word(self) -> u256 {
+        self.value
+    }
+}
+impl Copy for GrantId {}
+
+pub struct Grant {
+    pub exists: bool,
+    pub delegate: Address,
+    pub recipient: Address,
+    pub cap: Wei,
+    pub spent: Wei,
+    pub expires_at: Timestamp,
+    pub active: bool,
+}
+impl Copy for Grant {}
+
+pub struct GrantRequest {
+    pub delegate: Address,
+    pub recipient: Address,
+    pub cap: Wei,
+    pub expires_at: Timestamp,
+}
+
+// Application-owned effect. The production boundary must construct it from Ctx.
+pub struct PolicyContext { pub caller: Address, pub now: Timestamp, pub available: Wei }
+impl PolicyContext {
+    pub fn new(caller: Address, now: Timestamp, available: Wei) -> Self {
+        PolicyContext { caller, now, available }
+    }
+}
+
+pub enum PolicyError {
+    InvalidOwner,
+    Unauthorized,
+    UnknownGrant,
+    InactiveGrant,
+    InvalidAddress,
+    InvalidAmount,
+    InvalidExpiry,
+    GrantIdExhausted,
+    Expired,
+    InvalidGrantState,
+    CapExceeded,
+    InsufficientBalance,
+}
+
+// An observation of a valid transition at a snapshot, never an authorization token.
+pub struct SpendDecision { pub recipient: Address, pub amount: Wei, pub new_spent: Wei }
+
+pub struct CreateDecision { pub id: GrantId, pub next_id: GrantId, pub grant: Grant }

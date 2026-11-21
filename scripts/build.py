@@ -11,7 +11,7 @@ import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'host'))
-from common import (ROOT, BUILD, STAMP, CHECKER, VARIANTS, InfrastructureError, sha, hex_sha,
+from common import (ROOT, BUILD, STAMP, CHECKER, VARIANTS, TREASURY_VARIANTS, InfrastructureError, sha, hex_sha,
                     fe_compiler, solc_compiler, source_manifest)
 
 
@@ -33,7 +33,26 @@ def main():
 
     solidity = BUILD / 'solidity'
     run([solc, '--evm-version', 'osaka', '--optimize', '--optimize-runs', '200', '--bin', '--bin-runtime', '--abi',
-         '-o', solidity, 'contracts/solidity/Meter.sol', 'contracts/solidity/Codec.sol'])
+         '-o', solidity, 'contracts/solidity/Meter.sol', 'contracts/solidity/Codec.sol',
+         'contracts/solidity/Treasury.sol', 'contracts/solidity/Harness.sol'])
+    vendored = ROOT / 'contracts/fe/treasury'
+    provenance = json.loads((vendored / 'provenance.json').read_text())
+    for path, digest in provenance['files'].items():
+        if sha(vendored / path) != digest:
+            raise InfrastructureError(f'Vendored Fe treasury file changed: {path}')
+    treasury_builds = [('fe-treasury', vendored / 'treasury')]
+    for variant, edits in TREASURY_VARIANTS.items():
+        source = BUILD / 'sources' / f'treasury-{variant[3:]}'
+        shutil.copytree(vendored, source, ignore=shutil.ignore_patterns('out', 'upstream'))
+        for path, old, new in edits:
+            text = (source / path).read_text()
+            if text.count(old) != 1:
+                raise InfrastructureError(f'{variant}: seeded mutation no longer applies exactly once')
+            (source / path).write_text(text.replace(old, new))
+        treasury_builds.append((variant, source / 'treasury'))
+    for variant, path in treasury_builds:
+        run([fe, 'build', path, '--backend', 'sonatina', '--profile', 'release', '-O', '1',
+             '--emit', 'bytecode,runtime-bytecode,abi,metadata', '--out-dir', BUILD / variant])
     builds = [('fe', ROOT / 'contracts/fe/meter'), ('fe-codec', ROOT / 'contracts/fe/codec')]
     mutated = {}
     for variant, edits in VARIANTS.items():
@@ -71,6 +90,21 @@ def main():
     targets['fe-codec'] = {'creation': 'fe-codec/Codec.bin', 'runtime': 'fe-codec/Codec.runtime.bin',
                            'abi': 'fe-codec/Codec.abi.json', 'compiler': fe_info['version'],
                            'settings': targets['fe']['settings']}
+    targets['solidity-treasury'] = {'creation': 'solidity/Treasury.bin', 'runtime': 'solidity/Treasury.bin-runtime',
+                                    'abi': 'solidity/Treasury.abi', 'compiler': solc_info['version'],
+                                    'settings': targets['solidity']['settings']}
+    for variant in ('fe-treasury', *TREASURY_VARIANTS):
+        targets[variant] = {'creation': f'{variant}/Treasury.bin', 'runtime': f'{variant}/Treasury.runtime.bin',
+                            'abi': f'{variant}/Treasury.abi.json', 'compiler': fe_info['version'],
+                            'settings': targets['fe']['settings'],
+                            'source': 'contracts/fe/treasury (vendored from Fe Capabilities ba6893c)'}
+        if variant in TREASURY_VARIANTS:
+            targets[variant]['fault'] = 'intentional: ' + ' / '.join(
+                new.split('INTENTIONAL ')[1].split('\n')[0] for _, _, new in TREASURY_VARIANTS[variant])
+    for name in ('RejectingRecipient', 'ReentrantRecipient', 'Batcher'):
+        targets[f'harness-{name}'] = {'creation': f'solidity/{name}.bin', 'runtime': f'solidity/{name}.bin-runtime',
+                                      'abi': f'solidity/{name}.abi', 'compiler': solc_info['version'],
+                                      'settings': targets['solidity']['settings'], 'role': 'shared test fixture'}
     for target in targets.values():
         target['creation_sha256'] = hex_sha(BUILD / target['creation'])
         target['runtime_sha256'] = hex_sha(BUILD / target['runtime'])

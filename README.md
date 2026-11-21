@@ -5,9 +5,8 @@ raw EVM observations (status, exact returndata or revert bytes, and ordered
 logs), and let a **Fe checker** decide whether they match. When they don't, it
 reports the first divergence.
 
-**Status: Phase 0–2 exit gates passed** ([feasibility](docs/feasibility.md)).
-Phases 3–5 (the treasury corpus, layout mode, and an outside user) are not
-started. Passing means "no mismatch
+**Status: Phase 0–3 exit gates passed** ([feasibility](docs/feasibility.md)).
+Phases 4–5 (layout mode and an outside user) are not started. Passing means "no mismatch
 observed for this corpus under this configuration". It never means the
 contracts are equivalent.
 
@@ -27,7 +26,22 @@ python3 host/vectors.py                                     # Phase 1 ABI confor
 python3 scripts/verify-phase1.py                            # Phase 1 gate (includes Phase 0), about 10 s
 python3 host/observe.py --right fe-state                    # report: state differs behind a matching return
 python3 scripts/verify-phase2.py                            # Phase 2 gate (includes 0-1), about 26 s
+python3 host/treasury.py                                    # treasury v0: Solidity vs Fe over 85 actions
+python3 host/treasury.py --right fe-inclusive-expiry        # a seeded porting mistake, located
+python3 scripts/verify-phase3.py                            # Phase 3 gate (includes 0-2), about 46 s
 ```
+
+The treasury corpus (`fixtures/behavior/treasury-v0.json`,
+[spec/scenarios.md](spec/scenarios.md)) has 11 scenarios. They cover the cap
+boundary, expiry equality, unauthorized access, revocation, insufficient
+funds, a rejecting recipient, reentry, two spends in one transaction, and
+dispatch. Each action's outcome is written from the frozen spec. The Fe
+checker compares each implementation with that outcome and the two
+implementations with each other, including 12 typed state fields after every
+action. Six seeded Fe treasury ports (`fe-inclusive-expiry`,
+`fe-cap-off-by-one`, `fe-unindexed-delegate`, `fe-auth-after-active`,
+`fe-revoke-event-twice`, `fe-no-reserve`) are each caught at their earliest
+relevant step.
 
 Reports follow [spec/report.md](spec/report.md). Each listed mismatch has
 Fe's category and location, the exact raw bytes, and a typed explanation. Six

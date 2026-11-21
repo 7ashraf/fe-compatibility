@@ -15,6 +15,10 @@ SOURCES = ('fe.toml', 'src/lib.fe', 'src/observation.fe', 'src/conformance.fe', 
            'contracts/fe/codec/src/lib.fe',
            'host/checker-native/fe.toml', 'host/checker-native/src/lib.fe',
            'contracts/solidity/Meter.sol', 'contracts/fe/meter/fe.toml', 'contracts/fe/meter/src/lib.fe', 'contracts/fe/meter/src/tests.fe', 'src/tests.fe',
+           'contracts/solidity/Treasury.sol', 'contracts/solidity/Harness.sol', 'contracts/fe/treasury/provenance.json',
+           'contracts/fe/treasury/policy/fe.toml', 'contracts/fe/treasury/policy/src/lib.fe',
+           'contracts/fe/treasury/policy/src/policy.fe', 'contracts/fe/treasury/policy/src/types.fe',
+           'contracts/fe/treasury/treasury/fe.toml', 'contracts/fe/treasury/treasury/src/lib.fe',
            'scripts/build.py', 'host/common.py')
 EMIT = '            log.emit(Added { caller: ctx.caller(), quantity, total })\n'
 # Seeded faults in copies of contracts/fe/meter, applied at build time. Each one
@@ -38,6 +42,32 @@ VARIANTS = {
                            '            // INTENTIONAL PHASE 2 FAULT: zero quantity is not rejected\n')],
 }
 MUTATION = VARIANTS['fe-faulty'][0]
+
+# Phase 3 seeded faults in copies of the vendored Fe treasury: (file, old, new), each applied exactly once.
+TREASURY_VARIANTS = {
+    'fe-inclusive-expiry': [('policy/src/policy.fe', '    if context.now >= grant.expires_at {',
+                             '    if context.now > grant.expires_at {  // INTENTIONAL PHASE 3 FAULT: inclusive expiry')],
+    'fe-cap-off-by-one': [('policy/src/policy.fe', '    if amount > remaining {',
+                           '    if amount >= remaining {  // INTENTIONAL PHASE 3 FAULT: exact remaining rejected')],
+    'fe-unindexed-delegate': [('treasury/src/lib.fe',
+                               'pub struct Spent {\n    #[indexed]\n    pub grantId: u256,\n    #[indexed]\n'
+                               '    pub delegate: Address,',
+                               'pub struct Spent {\n    #[indexed]\n    pub grantId: u256,\n'
+                               '    pub delegate: Address,  // INTENTIONAL PHASE 3 FAULT: Spent.delegate not indexed')],
+    'fe-auth-after-active': [('policy/src/policy.fe',
+                              '    if context.caller != grant.delegate {\n        return Err(PolicyError::Unauthorized)\n'
+                              '    }\n    if !grant.active {\n        return Err(PolicyError::InactiveGrant)\n    }\n',
+                              '    // INTENTIONAL PHASE 3 FAULT: active checked before authority\n'
+                              '    if !grant.active {\n        return Err(PolicyError::InactiveGrant)\n    }\n'
+                              '    if context.caller != grant.delegate {\n        return Err(PolicyError::Unauthorized)\n'
+                              '    }\n')],
+    'fe-revoke-event-twice': [('policy/src/policy.fe', '    Ok(grant.active)\n}',
+                               '    Ok(true)  // INTENTIONAL PHASE 3 FAULT: repeated revocation emits again\n}')],
+    'fe-no-reserve': [('treasury/src/lib.fe',
+                       '                    grant.spent = decision.new_spent\n'
+                       '                    state.value().grants.set(key: grantId, value: grant)\n',
+                       '                    // INTENTIONAL PHASE 3 FAULT: spent is not persisted\n')],
+}
 
 
 class InfrastructureError(RuntimeError):

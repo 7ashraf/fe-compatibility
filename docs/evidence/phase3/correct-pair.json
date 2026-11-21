@@ -1,0 +1,2105 @@
+{
+  "corpus_sha256": "df27bf7967feaea305e56147a1a38319e9aeaf64a03071c840be4c2ce8822a7c",
+  "format": "fe-compatibility-treasury-run-v1",
+  "left": "solidity-treasury",
+  "right": "fe-treasury",
+  "scenarios": {
+    "cap-boundary": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/cap-boundary (6 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/cap-boundary (6 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 6,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144268,
+            35761,
+            68103,
+            35761,
+            35350
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165501,
+            37405,
+            69784,
+            37405,
+            37122
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "8eacf79bb8187fb70ceb5f95a6698bf2d9b68e4cead40aeb87a2b1acf1850a3d",
+          "right": "4e9563045cb17966ff88c265038b4a3c073f11d281c9dfaf1abbd415487a5ce2"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 137,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 6,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 137,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 6,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "deposit-spend": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/deposit-spend (10 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/deposit-spend (10 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 10,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            21864,
+            144268,
+            68103,
+            51003,
+            35761,
+            34979,
+            23387,
+            21258,
+            21303
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            21549,
+            165501,
+            69784,
+            52684,
+            37405,
+            36447,
+            23399,
+            21192,
+            21250
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "c35d8adc074db075f031166276a282935657a161250da07bb60bfadcd177d850",
+          "right": "65fe603b0f1c50db2d2bd993fd8744eee397de774419307a08074259067dc98c"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 207,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 10,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 207,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 10,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "dispatch": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/dispatch (8 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/dispatch (8 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 8,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            21311,
+            21147,
+            21115,
+            21065,
+            23760,
+            23300,
+            21480,
+            21860
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            21432,
+            21202,
+            21170,
+            21075,
+            23760,
+            22959,
+            21480,
+            21860
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "241ac7b54fcf0207b07881b14a6cb543d56cdc01a0e5aa0d0012a1237fae4c7f",
+          "right": "2e18107bad78c758b86c9ab3ab1261e8263194e91cfd9514c9ba72611b50f9d2"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 111,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 8,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 111,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 8,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "expiry-equality": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/expiry-equality (7 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/expiry-equality (7 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 7,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144268,
+            68103,
+            51003,
+            35458,
+            35458,
+            25930
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165501,
+            69784,
+            52684,
+            37199,
+            37199,
+            36809
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "dd4bd50eae21574987e3a0d93d872fbc5d9a5bd6444e4e80225b9f0d2164e71a",
+          "right": "047ff7ed8111d1218ec075d76d3e900179d4fb6c3acfc275c9da4e8178e3a704"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 173,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 7,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 173,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 7,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "insufficient-funds": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/insufficient-funds (7 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/insufficient-funds (7 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 7,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144268,
+            35792,
+            68103,
+            35792,
+            23300,
+            51003
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165501,
+            37430,
+            69784,
+            37430,
+            22959,
+            52684
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "fcccdabc10890474b46836fede40505d011c164997fc0c30e9be6fefe8e88d5a",
+          "right": "a913ad1f5f83b1633bdcf1737d0f2fc509c3e5490e754e3ef6e540aecac4c8d0"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 175,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 7,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 175,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 7,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "invalid-creation": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/invalid-creation (9 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/invalid-creation (9 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 9,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23160,
+            23190,
+            23730,
+            23760,
+            23760,
+            23130,
+            22560,
+            144976,
+            23387
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            24899,
+            24930,
+            25187,
+            25292,
+            25292,
+            24887,
+            24624,
+            166209,
+            23399
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "2d11655b4fefb86b7536d0f750557674ec79c376e9587896fa742a696a9080ce",
+          "right": "ab075ab5e3d8c11a7684054e38d81d04df51013dcd47792d06ecb6d8858f017a"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 139,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 9,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 139,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 9,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "recipient-revert": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/recipient-revert (5 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "rejecting": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "rejecting": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/recipient-revert (5 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 5,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144280,
+            65537,
+            34979,
+            21258
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165513,
+            67398,
+            36447,
+            21192
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "00c45ccd975721941392e5e34e56ad4429de5a45f0908d1337592e5cb05d45f1",
+          "right": "24b215f1c6fdb71aa2b897f30961073898a369e233dd8e6ecbb376bb2bdee8e5"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of rejecting",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 113,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 5,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 113,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 5,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "reentry": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/reentry (4 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "reentrant": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "reentrant": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/reentry (4 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 4,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144280,
+            71163,
+            34979
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165513,
+            72775,
+            36447
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "8e85c093fb9f914b5d6269ec1fe898e481b0e3817e2a4f22b85b0dff4d89dec3",
+          "right": "3974b0dd2adbf8250ca22986278809e0f26fe3511c0553db5476eb28f468ccd4"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of reentrant",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 133,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 4,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 133,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 4,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "revocation": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/revocation (12 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/revocation (12 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 12,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144268,
+            68103,
+            25930,
+            26558,
+            35373,
+            35314,
+            24198,
+            21994,
+            34979,
+            144268,
+            68103
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165501,
+            69784,
+            36809,
+            36827,
+            37109,
+            37061,
+            36895,
+            36845,
+            36447,
+            165501,
+            69784
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "efc5ec713ddafdd27beb25dbf6c06aa4b80b3af930b1421a2270b1ed9b5dd9de",
+          "right": "450bfa734c2ee67bfc38e5c7b4068559c11e982e6d038422fc7f9085226095f5"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 259,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 12,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 259,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 12,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "same-transaction": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/same-transaction (5 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "batcher": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "batcher": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/same-transaction (5 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 5,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144268,
+            84388,
+            39306,
+            34979
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165501,
+            85750,
+            40950,
+            36447
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "7f2022340af1e1e65b10481d0c102aff7412f38ccdf429b6a898199decc9cc83",
+          "right": "705e550960146fa4f3b017c4266e0cf62960d26951182b0731a22f5407f70a12"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 151,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 5,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 151,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 5,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    },
+    "unauthorized": {
+      "report": {
+        "claim": "No mismatch observed for corpus treasury-v0/unauthorized (12 actions) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+        "configuration": {
+          "left": {
+            "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+            "implementation": "solidity-treasury",
+            "target": {
+              "abi": "solidity/Treasury.abi",
+              "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+              "creation": "solidity/Treasury.bin",
+              "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+              "runtime": "solidity/Treasury.bin-runtime",
+              "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+              "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          },
+          "right": {
+            "deployed_runtime_sha256": "cefde7ea861cbce8402024d67fe3b2b89efe53b96908f0a1b63709627d216429",
+            "implementation": "fe-treasury",
+            "target": {
+              "abi": "fe-treasury/Treasury.abi.json",
+              "compiler": "fe 26.5.0 (3dab95f)",
+              "creation": "fe-treasury/Treasury.bin",
+              "creation_sha256": "200d381ebf780ca7c39cbfefe497e44c29045112a02b0dc0309c7035cfc91e56",
+              "runtime": "fe-treasury/Treasury.runtime.bin",
+              "runtime_sha256": "6f1466de80f80c20625ac55c556ce3876137669f677f8c94ccfdf417aa786a11",
+              "settings": "fe build --backend sonatina --profile release -O 1",
+              "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+            },
+            "world": {
+              "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+              "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+              "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              "zero": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        },
+        "corpus": "treasury-v0/unauthorized (12 actions)",
+        "decision": {
+          "checker": "native Fe compat_checker protocol 3",
+          "listed": 0,
+          "mismatching_steps": 0,
+          "steps_compared": 12,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "environment": {
+          "base_fee": 0,
+          "chain_id": 31337,
+          "gas_limit_per_tx": 2000000,
+          "gas_price": 1,
+          "hardfork": "osaka",
+          "mining": "one mined transaction per block, scheduled timestamps"
+        },
+        "format": "fe-compatibility-report",
+        "gas_used": {
+          "left": [
+            23300,
+            144268,
+            35314,
+            35314,
+            35314,
+            21882,
+            21882,
+            23760,
+            24397,
+            22193,
+            22790,
+            22440
+          ],
+          "note": "reported only; gas is never compared",
+          "right": [
+            22959,
+            165501,
+            37061,
+            37061,
+            37061,
+            36699,
+            36699,
+            25104,
+            37033,
+            36975,
+            37394,
+            36799
+          ]
+        },
+        "mismatches": [],
+        "mode": "behavioral conformance (strict; compiler rejections by status)",
+        "raw_records_sha256": {
+          "left": "5f81dc8d3e50578c6d2bde94e1f8167e1d95d7bbc18e35ef324cbdb6a0755681",
+          "right": "8d449b59131567a81e26ee6a12c09d0e635a9a54c73bdca67b23d0ab06162c61"
+        },
+        "state_declared": [
+          {
+            "getter": "nextGrantId()[] word 0",
+            "kind": "uint",
+            "name": "nextGrantId"
+          },
+          {
+            "getter": "treasuryBalance()[] word 0",
+            "kind": "uint",
+            "name": "treasuryBalance"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 0",
+            "kind": "bool",
+            "name": "grant1.exists"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 1",
+            "kind": "address",
+            "name": "grant1.delegate"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 2",
+            "kind": "address",
+            "name": "grant1.recipient"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 3",
+            "kind": "uint",
+            "name": "grant1.cap"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 4",
+            "kind": "uint",
+            "name": "grant1.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 5",
+            "kind": "uint",
+            "name": "grant1.expiresAt"
+          },
+          {
+            "getter": "getGrant(uint256)['1'] word 6",
+            "kind": "bool",
+            "name": "grant1.active"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 4",
+            "kind": "uint",
+            "name": "grant2.spent"
+          },
+          {
+            "getter": "getGrant(uint256)['2'] word 6",
+            "kind": "bool",
+            "name": "grant2.active"
+          },
+          {
+            "getter": "balance of recipient",
+            "kind": "uint",
+            "name": "payee.balance"
+          }
+        ],
+        "tools": {
+          "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+          "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+        },
+        "version": 1
+      },
+      "spec_oracle": {
+        "left": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 203,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 12,
+          "truncated": false,
+          "verdict": "match"
+        },
+        "right": {
+          "checker": "native Fe compat_checker protocol 3",
+          "frame_words": 203,
+          "listed": 0,
+          "mismatches": [],
+          "mismatching_steps": 0,
+          "steps_compared": 12,
+          "truncated": false,
+          "verdict": "match"
+        }
+      }
+    }
+  },
+  "summary": {
+    "actions": 85,
+    "differential_match": true,
+    "first_divergence": {},
+    "spec_oracle_left": true,
+    "spec_oracle_right": true
+  }
+}

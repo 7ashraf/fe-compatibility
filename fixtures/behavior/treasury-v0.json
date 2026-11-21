@@ -1,0 +1,2869 @@
+{
+  "format": "fe-compatibility-scenarios",
+  "schema_version": 1,
+  "interface": "treasury-v0 revision 1",
+  "interface_sha256": "50b6894b82c9158cac85aa373b85bd3dc227326db5b9bf07eb2bc2da5251323f",
+  "actors": {
+    "owner": 0,
+    "delegate": 1,
+    "recipient": 2,
+    "outsider": 3
+  },
+  "deployment": {
+    "treasury_args": [
+      {
+        "role": "owner"
+      }
+    ],
+    "aux_order": [
+      "rejecting",
+      "reentrant",
+      "batcher"
+    ],
+    "reentrant_args": [
+      {
+        "role": "target"
+      },
+      "1"
+    ]
+  },
+  "state": [
+    {
+      "name": "nextGrantId",
+      "kind": "uint",
+      "getter": "nextGrantId()",
+      "args": [],
+      "word": 0
+    },
+    {
+      "name": "treasuryBalance",
+      "kind": "uint",
+      "getter": "treasuryBalance()",
+      "args": [],
+      "word": 0
+    },
+    {
+      "name": "grant1.exists",
+      "kind": "bool",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "1"
+      ],
+      "word": 0
+    },
+    {
+      "name": "grant1.delegate",
+      "kind": "address",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "1"
+      ],
+      "word": 1
+    },
+    {
+      "name": "grant1.recipient",
+      "kind": "address",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "1"
+      ],
+      "word": 2
+    },
+    {
+      "name": "grant1.cap",
+      "kind": "uint",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "1"
+      ],
+      "word": 3
+    },
+    {
+      "name": "grant1.spent",
+      "kind": "uint",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "1"
+      ],
+      "word": 4
+    },
+    {
+      "name": "grant1.expiresAt",
+      "kind": "uint",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "1"
+      ],
+      "word": 5
+    },
+    {
+      "name": "grant1.active",
+      "kind": "bool",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "1"
+      ],
+      "word": 6
+    },
+    {
+      "name": "grant2.spent",
+      "kind": "uint",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "2"
+      ],
+      "word": 4
+    },
+    {
+      "name": "grant2.active",
+      "kind": "bool",
+      "getter": "getGrant(uint256)",
+      "args": [
+        "2"
+      ],
+      "word": 6
+    },
+    {
+      "name": "payee.balance",
+      "kind": "uint",
+      "balance": "payee"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "deposit-spend",
+      "description": "Deposits, a grant, spending up to the exact cap, then over it",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "deposit-spend-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "deposit-spend-1",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": []
+          }
+        },
+        {
+          "id": "deposit-spend-2",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "50",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "50",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "deposit-spend-3",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "20"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "20",
+                  "20"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "deposit-spend-4",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [
+            "cap boundary: amount equal to remaining succeeds"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "30"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "30",
+                  "50"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "deposit-spend-5",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 5,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "CapExceeded(uint256,uint256)",
+            "args": [
+              "0",
+              "1"
+            ]
+          }
+        },
+        {
+          "id": "deposit-spend-6",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 6,
+          "advance": "0",
+          "covers": [],
+          "call": "getGrant(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "(bool,address,address,uint256,uint256,uint256,bool)"
+              ],
+              "values": [
+                [
+                  "true",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "50",
+                  "50",
+                  {
+                    "t": 1000
+                  },
+                  "true"
+                ]
+              ]
+            },
+            "events": []
+          }
+        },
+        {
+          "id": "deposit-spend-7",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 7,
+          "advance": "0",
+          "covers": [],
+          "call": "nextGrantId()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "2"
+              ]
+            },
+            "events": []
+          }
+        },
+        {
+          "id": "deposit-spend-8",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 8,
+          "advance": "0",
+          "covers": [],
+          "call": "treasuryBalance()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "50"
+              ]
+            },
+            "events": []
+          }
+        },
+        {
+          "id": "deposit-spend-9",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 9,
+          "advance": "0",
+          "covers": [],
+          "call": "owner()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "address"
+              ],
+              "values": [
+                {
+                  "role": "owner"
+                }
+              ]
+            },
+            "events": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "cap-boundary",
+      "description": "Cap boundary: one over, exactly remaining, then exhausted; zero amount",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "cap-boundary-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "cap-boundary-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "cap-boundary-2",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [
+            "cap boundary"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "11"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "CapExceeded(uint256,uint256)",
+            "args": [
+              "10",
+              "11"
+            ]
+          }
+        },
+        {
+          "id": "cap-boundary-3",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [
+            "cap boundary"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "10"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  "10"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "cap-boundary-4",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "CapExceeded(uint256,uint256)",
+            "args": [
+              "0",
+              "1"
+            ]
+          }
+        },
+        {
+          "id": "cap-boundary-5",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 5,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "0"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InvalidAmount()",
+            "args": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "expiry-equality",
+      "description": "Spends before expiry, rejection at exactly the expiry second and after",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "expiry-equality-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "expiry-equality-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 4
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  {
+                    "t": 4
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "expiry-equality-2",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "1",
+                  "1"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "expiry-equality-3",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "1",
+                  "2"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "expiry-equality-4",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [
+            "expiry equality rejects"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Expired(uint256,uint256)",
+            "args": [
+              {
+                "t": 4
+              },
+              {
+                "t": 4
+              }
+            ]
+          }
+        },
+        {
+          "id": "expiry-equality-5",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 105,
+          "advance": "100",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Expired(uint256,uint256)",
+            "args": [
+              {
+                "t": 4
+              },
+              {
+                "t": 105
+              }
+            ]
+          }
+        },
+        {
+          "id": "expiry-equality-6",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 106,
+          "advance": "0",
+          "covers": [
+            "expired grant is revocable"
+          ],
+          "call": "revoke(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantRevoked",
+                "args": [
+                  "1"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "invalid-creation",
+      "description": "Creation validation order and maximal quantities",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "invalid-creation-0",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "zero"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 100
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InvalidAddress()",
+            "args": []
+          }
+        },
+        {
+          "id": "invalid-creation-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "zero"
+            },
+            "10",
+            {
+              "t": 100
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InvalidAddress()",
+            "args": []
+          }
+        },
+        {
+          "id": "invalid-creation-2",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "0",
+            {
+              "t": 100
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InvalidAmount()",
+            "args": []
+          }
+        },
+        {
+          "id": "invalid-creation-3",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [
+            "expiry equal to now is invalid"
+          ],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 3
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InvalidExpiry()",
+            "args": []
+          }
+        },
+        {
+          "id": "invalid-creation-4",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 2
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InvalidExpiry()",
+            "args": []
+          }
+        },
+        {
+          "id": "invalid-creation-5",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 5,
+          "advance": "0",
+          "covers": [
+            "address checked before cap and expiry"
+          ],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "zero"
+            },
+            {
+              "role": "recipient"
+            },
+            "0",
+            {
+              "t": 0
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InvalidAddress()",
+            "args": []
+          }
+        },
+        {
+          "id": "invalid-creation-6",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 6,
+          "advance": "0",
+          "covers": [
+            "authority checked first"
+          ],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "zero"
+            },
+            {
+              "role": "zero"
+            },
+            "0",
+            {
+              "t": 0
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "invalid-creation-7",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 7,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "MAX",
+            "MAX"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "MAX",
+                  "MAX"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "invalid-creation-8",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 8,
+          "advance": "0",
+          "covers": [],
+          "call": "nextGrantId()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "2"
+              ]
+            },
+            "events": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "unauthorized",
+      "description": "Unauthorized callers, and unknown IDs checked before authority for spend",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "unauthorized-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "unauthorized-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "unauthorized-2",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [
+            "unauthorized access"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "unauthorized-3",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [
+            "unauthorized access"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "unauthorized-4",
+          "from": "recipient",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [
+            "unauthorized access"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "unauthorized-5",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 5,
+          "advance": "0",
+          "covers": [],
+          "call": "revoke(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "unauthorized-6",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 6,
+          "advance": "0",
+          "covers": [
+            "wrong owner wins over unknown ID"
+          ],
+          "call": "revoke(uint256)",
+          "args": [
+            "99"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "unauthorized-7",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 7,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "unauthorized-8",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 8,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "2",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "UnknownGrant(uint256)",
+            "args": [
+              "2"
+            ]
+          }
+        },
+        {
+          "id": "unauthorized-9",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 9,
+          "advance": "0",
+          "covers": [
+            "unknown ID checked before authority for spend"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "0",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "UnknownGrant(uint256)",
+            "args": [
+              "0"
+            ]
+          }
+        },
+        {
+          "id": "unauthorized-10",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 10,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "MAX",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "UnknownGrant(uint256)",
+            "args": [
+              "MAX"
+            ]
+          }
+        },
+        {
+          "id": "unauthorized-11",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 11,
+          "advance": "0",
+          "covers": [],
+          "call": "getGrant(uint256)",
+          "args": [
+            "MAX"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "(bool,address,address,uint256,uint256,uint256,bool)"
+              ],
+              "values": [
+                [
+                  "false",
+                  {
+                    "role": "zero"
+                  },
+                  {
+                    "role": "zero"
+                  },
+                  "0",
+                  "0",
+                  "0",
+                  "false"
+                ]
+              ]
+            },
+            "events": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "revocation",
+      "description": "Revocation, repeated revocation as a silent no-op, and no ID reuse",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "revocation-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "revocation-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "revocation-2",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "3"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "3",
+                  "3"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "revocation-3",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [
+            "revocation"
+          ],
+          "call": "revoke(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantRevoked",
+                "args": [
+                  "1"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "revocation-4",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [
+            "repeated revocation: success, no event"
+          ],
+          "call": "revoke(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": []
+          }
+        },
+        {
+          "id": "revocation-5",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 5,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InactiveGrant(uint256)",
+            "args": [
+              "1"
+            ]
+          }
+        },
+        {
+          "id": "revocation-6",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 6,
+          "advance": "0",
+          "covers": [
+            "authority checked before active"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "Unauthorized()",
+            "args": []
+          }
+        },
+        {
+          "id": "revocation-7",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 7,
+          "advance": "0",
+          "covers": [],
+          "call": "revoke(uint256)",
+          "args": [
+            "99"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "UnknownGrant(uint256)",
+            "args": [
+              "99"
+            ]
+          }
+        },
+        {
+          "id": "revocation-8",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 8,
+          "advance": "0",
+          "covers": [],
+          "call": "revoke(uint256)",
+          "args": [
+            "0"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "UnknownGrant(uint256)",
+            "args": [
+              "0"
+            ]
+          }
+        },
+        {
+          "id": "revocation-9",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 9,
+          "advance": "0",
+          "covers": [],
+          "call": "getGrant(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "(bool,address,address,uint256,uint256,uint256,bool)"
+              ],
+              "values": [
+                [
+                  "true",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  "3",
+                  {
+                    "t": 1000
+                  },
+                  "false"
+                ]
+              ]
+            },
+            "events": []
+          }
+        },
+        {
+          "id": "revocation-10",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 10,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "5",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "2"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "2",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "5",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "revocation-11",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 11,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "2",
+            "5"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "2",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "5",
+                  "5"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "insufficient-funds",
+      "description": "Grants do not reserve funds: balance checks after cap checks",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "insufficient-funds-0",
+          "from": "owner",
+          "to": "target",
+          "value": "5",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "5"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "insufficient-funds-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "50",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "50",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "insufficient-funds-2",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [
+            "insufficient funds"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "10"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InsufficientBalance(uint256,uint256)",
+            "args": [
+              "5",
+              "10"
+            ]
+          }
+        },
+        {
+          "id": "insufficient-funds-3",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "5"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "5",
+                  "5"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "insufficient-funds-4",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "InsufficientBalance(uint256,uint256)",
+            "args": [
+              "0",
+              "1"
+            ]
+          }
+        },
+        {
+          "id": "insufficient-funds-5",
+          "from": "outsider",
+          "to": "target",
+          "value": "7",
+          "t": 5,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "outsider"
+                  },
+                  "7"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "insufficient-funds-6",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 6,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "7"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "7",
+                  "12"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "recipient-revert",
+      "description": "A recipient that rejects payment: the whole spend reverts",
+      "aux": [
+        "rejecting"
+      ],
+      "payee": "rejecting",
+      "steps": [
+        {
+          "id": "recipient-revert-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "recipient-revert-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "rejecting"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "rejecting"
+                  },
+                  "10",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "recipient-revert-2",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [
+            "recipient revert"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "4"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "PaymentFailed()",
+            "args": []
+          }
+        },
+        {
+          "id": "recipient-revert-3",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [],
+          "call": "getGrant(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "(bool,address,address,uint256,uint256,uint256,bool)"
+              ],
+              "values": [
+                [
+                  "true",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "rejecting"
+                  },
+                  "10",
+                  "0",
+                  {
+                    "t": 1000
+                  },
+                  "true"
+                ]
+              ]
+            },
+            "events": []
+          }
+        },
+        {
+          "id": "recipient-revert-4",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [],
+          "call": "treasuryBalance()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "100"
+              ]
+            },
+            "events": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "reentry",
+      "description": "A recipient that re-enters spend() during payment gets Reentrant()",
+      "aux": [
+        "reentrant"
+      ],
+      "payee": "reentrant",
+      "steps": [
+        {
+          "id": "reentry-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "reentry-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "reentrant"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "reentrant"
+                  },
+                  "10",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "reentry-2",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [
+            "reentry blocked; outer spend completes"
+          ],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "4"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "reentrant",
+                "event": "Callback",
+                "args": [
+                  "false",
+                  {
+                    "selector": "Reentrant()"
+                  }
+                ]
+              },
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "reentrant"
+                  },
+                  "4",
+                  "4"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "reentry-3",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [],
+          "call": "getGrant(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "(bool,address,address,uint256,uint256,uint256,bool)"
+              ],
+              "values": [
+                [
+                  "true",
+                  {
+                    "role": "delegate"
+                  },
+                  {
+                    "role": "reentrant"
+                  },
+                  "10",
+                  "4",
+                  {
+                    "t": 1000
+                  },
+                  "true"
+                ]
+              ]
+            },
+            "events": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "same-transaction",
+      "description": "Two spends in one transaction both work after unlocking; a bubbled rejection",
+      "aux": [
+        "batcher"
+      ],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "same-transaction-0",
+          "from": "owner",
+          "to": "target",
+          "value": "100",
+          "t": 0,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "owner"
+                  },
+                  "100"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "same-transaction-1",
+          "from": "owner",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "batcher"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "uint256"
+              ],
+              "values": [
+                "1"
+              ]
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "GrantCreated",
+                "args": [
+                  "1",
+                  {
+                    "role": "batcher"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  {
+                    "t": 1000
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "same-transaction-2",
+          "from": "outsider",
+          "to": "batcher",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [
+            "second operation in the same transaction works"
+          ],
+          "call": "twice(address,uint256,uint256)",
+          "args": [
+            {
+              "role": "target"
+            },
+            "1",
+            "4"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "batcher"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "4",
+                  "4"
+                ]
+              },
+              {
+                "emitter": "target",
+                "event": "Spent",
+                "args": [
+                  "1",
+                  {
+                    "role": "batcher"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "4",
+                  "8"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "same-transaction-3",
+          "from": "outsider",
+          "to": "batcher",
+          "value": "0",
+          "t": 3,
+          "advance": "0",
+          "covers": [],
+          "call": "twice(address,uint256,uint256)",
+          "args": [
+            {
+              "role": "target"
+            },
+            "1",
+            "4"
+          ],
+          "scope": "strict",
+          "expect": {
+            "error": "CapExceeded(uint256,uint256)",
+            "args": [
+              "2",
+              "4"
+            ]
+          }
+        },
+        {
+          "id": "same-transaction-4",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 4,
+          "advance": "0",
+          "covers": [],
+          "call": "getGrant(uint256)",
+          "args": [
+            "1"
+          ],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [
+                "(bool,address,address,uint256,uint256,uint256,bool)"
+              ],
+              "values": [
+                [
+                  "true",
+                  {
+                    "role": "batcher"
+                  },
+                  {
+                    "role": "recipient"
+                  },
+                  "10",
+                  "8",
+                  {
+                    "t": 1000
+                  },
+                  "true"
+                ]
+              ]
+            },
+            "events": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "dispatch",
+      "description": "Fallback, payability, and malformed calldata",
+      "aux": [],
+      "payee": "recipient",
+      "steps": [
+        {
+          "id": "dispatch-0",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 0,
+          "advance": "0",
+          "covers": [
+            "unknown selector"
+          ],
+          "calldata": "0xdeadbeef",
+          "scope": "strict",
+          "expect": {
+            "error": "UnsupportedCall()",
+            "args": []
+          }
+        },
+        {
+          "id": "dispatch-1",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 1,
+          "advance": "0",
+          "covers": [
+            "short selector"
+          ],
+          "calldata": "0xdead",
+          "scope": "strict",
+          "expect": {
+            "error": "UnsupportedCall()",
+            "args": []
+          }
+        },
+        {
+          "id": "dispatch-2",
+          "from": "outsider",
+          "to": "target",
+          "value": "0",
+          "t": 2,
+          "advance": "0",
+          "covers": [
+            "empty calldata, zero value"
+          ],
+          "calldata": "0x",
+          "scope": "strict",
+          "expect": {
+            "error": "UnsupportedCall()",
+            "args": []
+          }
+        },
+        {
+          "id": "dispatch-3",
+          "from": "outsider",
+          "to": "target",
+          "value": "1",
+          "t": 3,
+          "advance": "0",
+          "covers": [
+            "value to the nonpayable fallback"
+          ],
+          "calldata": "0x",
+          "scope": "rejection",
+          "expect": {
+            "reject": true
+          }
+        },
+        {
+          "id": "dispatch-4",
+          "from": "owner",
+          "to": "target",
+          "value": "1",
+          "t": 4,
+          "advance": "0",
+          "covers": [
+            "value to a nonpayable function"
+          ],
+          "call": "createGrant(address,address,uint256,uint256)",
+          "args": [
+            {
+              "role": "delegate"
+            },
+            {
+              "role": "recipient"
+            },
+            "10",
+            {
+              "t": 1000
+            }
+          ],
+          "scope": "rejection",
+          "expect": {
+            "reject": true
+          }
+        },
+        {
+          "id": "dispatch-5",
+          "from": "outsider",
+          "to": "target",
+          "value": "3",
+          "t": 5,
+          "advance": "0",
+          "covers": [],
+          "call": "deposit()",
+          "args": [],
+          "scope": "strict",
+          "expect": {
+            "ok": {
+              "types": [],
+              "values": []
+            },
+            "events": [
+              {
+                "emitter": "target",
+                "event": "Deposited",
+                "args": [
+                  {
+                    "role": "outsider"
+                  },
+                  "3"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "dispatch-6",
+          "from": "delegate",
+          "to": "target",
+          "value": "0",
+          "t": 6,
+          "advance": "0",
+          "covers": [
+            "truncated calldata"
+          ],
+          "calldata": "0xb3a49eae0000000000000000000000000000000000000000000000000000000000000000",
+          "scope": "rejection",
+          "expect": {
+            "reject": true
+          }
+        },
+        {
+          "id": "dispatch-7",
+          "from": "outsider",
+          "to": "target",
+          "value": "1",
+          "t": 7,
+          "advance": "0",
+          "covers": [],
+          "call": "spend(uint256,uint256)",
+          "args": [
+            "1",
+            "1"
+          ],
+          "scope": "rejection",
+          "expect": {
+            "reject": true
+          }
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "generator": "scripts/make-corpus.py",
+    "source": "spec/vendor/treasury-v0/treasury-v0.md revision 1; expectations written from the specification, never from running an implementation"
+  }
+}

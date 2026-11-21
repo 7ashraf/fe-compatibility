@@ -5,7 +5,8 @@
 | 0: Observation path | Passed, 21 November 2026 ([below](#phase-0-feasibility--full-observation-path-21-november-2026)) |
 | 1: Specification, schemas, and golden vectors | Passed, 21 November 2026 ([below](#phase-1--specification-schemas-and-golden-vectors-21-november-2026)) |
 | 2: Reusable Fe conformance engine | Passed, 21 November 2026 ([below](#phase-2--reusable-fe-conformance-engine-21-november-2026)) |
-| 3–5 | Not started |
+| 3: Differential treasury execution | Passed, 21 November 2026 ([below](#phase-3--differential-treasury-execution-21-november-2026)) |
+| 4–5 | Not started |
 
 # Phase 0 feasibility — full observation path (21 November 2026)
 
@@ -454,3 +455,128 @@ Phase 3: differential treasury execution. Both treasury versions are built from
 the frozen v0 spec and run as matching sequences in isolated worlds, with
 negative and boundary cases and seeded faults such as inclusive expiry and a
 missing event index.
+
+
+# Phase 3 — differential treasury execution (21 November 2026)
+
+**Result: Phase 3 exit gate passed** (`scripts/verify-phase3.py`, about 46 s,
+including the Phase 0–2 gates). It uses the same pinned toolchain.
+
+## The pair and the corpus
+
+| Piece | Origin |
+| --- | --- |
+| `contracts/solidity/Treasury.sol` (150 lines) | Written for this project from `spec/vendor/treasury-v0/treasury-v0.md`. It uses a transient `bool` lock, the specified check order, `call{value, gas: 100000}` payment, and an explicit nonpayable `fallback` reverting `UnsupportedCall()`. |
+| `contracts/fe/treasury/` | Fe Capabilities treasury and policy at `ba6893c`, vendored unchanged (SHA-256 checked at every build). The Sonatina creation hash `200d381e…` matches the one fe-replay built independently from the same sources. |
+| `contracts/solidity/Harness.sol` | Shared fixtures, with identical bytecode in both worlds: `RejectingRecipient`, `ReentrantRecipient` (calls `spend` during payment and logs the outcome), and `Batcher` (a delegate making two spends in one transaction) |
+| `fixtures/behavior/treasury-v0.json` | 11 scenarios and 85 actions (`spec/scenarios.md`). Every action has its outcome written from the spec: the exact error and arguments, return values, and exact treasury events. |
+
+Both compiled ABIs equal the frozen ABI canonically, covering all functions,
+15 errors, 4 events, the fallback, and mutability. Each scenario gets one fresh
+Anvil world per implementation, with the same actors, deployment order and
+addresses, block schedule, and funding. After every action the runner records
+status, exact returndata, ordered logs, and 12 typed state fields:
+`nextGrantId`, the treasury balance, all seven words of grant 1, grant 2's
+`spent` and `active`, and the payee's balance.
+
+## Harness changes needed for the treasury
+
+- **Time-exact cross-check.** The `eth_call` replay of each transaction now
+  runs on the parent state with the mined block's timestamp and number (an
+  Anvil `blockOverrides` check confirmed this works). Without that, results
+  such as `Expired(expiresAt, now)` or `InvalidExpiry()` legitimately
+  differed from the trace, and the run stopped as an infrastructure error.
+- **Balances net of own gas.** When the recipient EOA sends a transaction
+  itself, its raw balance includes the gas fee, and the fee differs by
+  compiler. Observed balances add back the fees that account paid for its own
+  transactions. This follows the plan ("sender gas accounted separately").
+- **Fe state limit 8 → 16.** All 24 Fe tests still pass on both backends.
+
+## Exit tests
+
+**The correct pair passes.** Solidity and Fe each meet the spec oracle on all
+85 actions: status, exact returndata, and exact events, with the 6
+compiler-generated rejections compared by status only. They also match each
+other step by step, including all 12 state fields. The run output is
+byte-identical across reruns. The scenarios agree on the specified result for:
+
+- the cap boundary: exactly the remaining amount succeeds, one over gives
+  `CapExceeded(10, 11)`;
+- expiry equality: `Expired(T+4, T+4)` at exactly the expiry second, and
+  after it;
+- unauthorized access by outsider, owner, and recipient, including that the
+  wrong owner wins over an unknown ID for revoke, and that an unknown ID wins
+  over authority for spend;
+- revocation, repeated revocation (success, no event), and no ID reuse;
+- insufficient funds (`InsufficientBalance(5, 10)`);
+- a recipient revert (`PaymentFailed()` with state unchanged);
+- reentry (the recipient's `spend` callback gets `Reentrant()` and the outer
+  spend completes);
+- two spends in one transaction;
+- the fallback and payability (`UnsupportedCall()` for unknown, short, or
+  empty calldata).
+
+**Seeded faults are caught at the earliest relevant observation.** Each fault
+is a single mutation of the vendored Fe source, applied at build time and
+compared against Solidity. Every other scenario must match exactly.
+
+| Seeded fault | First divergence (scenario, step, category) |
+| --- | --- |
+| Inclusive expiry (`now > expiresAt`) | `expiry-equality` 4, `status`: the only spend at exactly the expiry second |
+| Exact remaining rejected (`amount >= remaining`) | `deposit-spend` 4, `cap-boundary` 3, `revocation` 11, all `status`: every spend of exactly the remaining amount |
+| `Spent.delegate` not indexed | `topic-count` at the first successful spend, in all 7 scenarios that have one |
+| Active checked before authority | `revocation` 6, `error-selector` (`Unauthorized()` vs `InactiveGrant(uint256)`) |
+| Repeated revocation emits again | `revocation` 4, `log-extra` |
+| `spent` not persisted | `state-value` `grant1.spent` at the first spend, in 6 scenarios; in `same-transaction`, `log-data-byte` (the second `Spent.newSpent`) |
+
+For the unpersisted-accounting fault, the return value and the event are still
+correct at the spend itself. Only the typed-state comparison catches it there.
+The spec oracle, which doesn't cover state, notices one to seven actions later
+(spend/oracle steps: cap-boundary 3/4, deposit-spend 3/4, expiry-equality 2/3,
+insufficient-funds 3/6, reentry 2/3, revocation 2/9).
+
+**Negative controls.**
+
+- Changing one expected error argument (`CapExceeded(9, 11)`) makes the spec
+  oracle fail on both correct implementations, with `error-argument` at the
+  right step. The differential still matches. So the oracle isn't vacuous.
+- A corpus whose schedule is inconsistent is rejected.
+
+Bytecode SHA-256 (creation / runtime):
+
+- Solidity treasury: `2b185fce…` / `7b80dc7b…`
+- Fe treasury: `200d381e…` / `6f1466de…`
+
+Evidence is in [evidence/phase3/](evidence/phase3/):
+
+- `correct-pair.json`: every scenario's spec-oracle decisions and its report;
+- `seeded-*.json`: first divergences, spec-oracle detections, counts, and
+  full reports;
+- `gate.json`;
+- `raw/`: 22 raw execution records of the correct pair.
+
+## Limitations
+
+- **The oracle isn't fully independent.** The Solidity reference was written
+  from the spec, but by the same agent that had read the vendored Fe
+  implementation. The spec-derived expectations, which are encoded by `cast`,
+  and the seeded faults reduce that risk but don't remove it.
+- **No new treasury logic.** The Fe treasury is vendored, so this project
+  contributes the conformance workflow, the Solidity reference, the corpus,
+  and the seeded faults.
+- **Coverage.** The corpus has 85 hand-written actions. It isn't generated or
+  exhaustive, and passing means "no mismatch observed for this corpus under
+  this configuration".
+- **Unreached rules.** `GrantIdExhausted` and `InvalidGrantState` aren't
+  reachable through the public interface, so they aren't exercised.
+- **Harness logs.** The reentrant recipient's own log is compared exactly. For
+  other harness contracts, only the treasury's events are specified.
+- Verified on macOS arm64 only, and all runs are the implementing agent's own.
+
+## Next gate
+
+Phase 4: a bounded layout adapter and validator. It uses the isolated packed
+storage fixture: an address, a bool, and a `uint88` packed in slot 0, and a
+mapping rooted at slot 1. It needs neighbor-preservation tests, a shifted
+offset that is detected, and overlapping or out-of-range field descriptions
+that are rejected.

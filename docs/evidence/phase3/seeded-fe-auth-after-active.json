@@ -1,0 +1,236 @@
+{
+  "first_divergence": {
+    "revocation": [
+      6,
+      "error-selector"
+    ]
+  },
+  "mismatching_steps": {
+    "cap-boundary": 0,
+    "deposit-spend": 0,
+    "dispatch": 0,
+    "expiry-equality": 0,
+    "insufficient-funds": 0,
+    "invalid-creation": 0,
+    "recipient-revert": 0,
+    "reentry": 0,
+    "revocation": 1,
+    "same-transaction": 0,
+    "unauthorized": 0
+  },
+  "reports": {
+    "revocation": {
+      "claim": "1 of 12 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "269f65f6933eb7c4e40f8345c39077f4ac850a0ab6c247db8fd3719ea7559bda",
+          "implementation": "fe-auth-after-active",
+          "target": {
+            "abi": "fe-auth-after-active/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-auth-after-active/Treasury.bin",
+            "creation_sha256": "d977f002b0bfac92ecd200e5419d066274834413d6761b639aea1c20bda47eb8",
+            "fault": "intentional: PHASE 3 FAULT: active checked before authority",
+            "runtime": "fe-auth-after-active/Treasury.runtime.bin",
+            "runtime_sha256": "f0bc446e89a35d97c839257b8084f8de846ebbfd2649b86ab639ccfe33fba4ae",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/revocation (12 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 1,
+        "mismatching_steps": 1,
+        "steps_compared": 12,
+        "truncated": false,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          144268,
+          68103,
+          25930,
+          26558,
+          35373,
+          35314,
+          24198,
+          21994,
+          34979,
+          144268,
+          68103
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          165501,
+          69784,
+          36809,
+          36827,
+          37086,
+          37086,
+          36895,
+          36845,
+          36447,
+          165501,
+          69784
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "outsider",
+            "id": "revocation-6"
+          },
+          "category": "error-selector",
+          "deployment": false,
+          "explanation": {
+            "left": "Unauthorized()",
+            "right": "InactiveGrant(uint256)",
+            "what": "different custom error"
+          },
+          "fe": {
+            "left": "2192845056",
+            "right": "52597040"
+          },
+          "location": {
+            "index": 0,
+            "log": 0,
+            "slot": 0
+          },
+          "step": 6,
+          "strict": {
+            "left_returndata": "0x82b42900",
+            "left_success": false,
+            "right_returndata": "0x032291300000000000000000000000000000000000000000000000000000000000000001",
+            "right_success": false
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "efc5ec713ddafdd27beb25dbf6c06aa4b80b3af930b1421a2270b1ed9b5dd9de",
+        "right": "3f190e1dd3fbde2d68c79147fd3d1b87f7dbc1504d446d3e7a4f943ac0f11341"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of recipient",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    }
+  },
+  "spec_oracle_first": {
+    "revocation": [
+      6,
+      "error-selector"
+    ]
+  }
+}

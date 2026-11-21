@@ -1,0 +1,6 @@
+[ingot]
+name = "capabilities_treasury"
+version = "0.1.0"
+
+[dependencies]
+capabilities = { path = "../policy" }

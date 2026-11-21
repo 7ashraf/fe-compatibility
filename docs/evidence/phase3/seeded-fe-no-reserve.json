@@ -1,0 +1,2459 @@
+{
+  "first_divergence": {
+    "cap-boundary": [
+      3,
+      "state-value"
+    ],
+    "deposit-spend": [
+      3,
+      "state-value"
+    ],
+    "expiry-equality": [
+      2,
+      "state-value"
+    ],
+    "insufficient-funds": [
+      3,
+      "state-value"
+    ],
+    "reentry": [
+      2,
+      "state-value"
+    ],
+    "revocation": [
+      2,
+      "state-value"
+    ],
+    "same-transaction": [
+      2,
+      "log-data-byte"
+    ]
+  },
+  "mismatching_steps": {
+    "cap-boundary": 3,
+    "deposit-spend": 7,
+    "dispatch": 0,
+    "expiry-equality": 5,
+    "insufficient-funds": 4,
+    "invalid-creation": 0,
+    "recipient-revert": 0,
+    "reentry": 2,
+    "revocation": 10,
+    "same-transaction": 3,
+    "unauthorized": 0
+  },
+  "reports": {
+    "cap-boundary": {
+      "claim": "3 of 6 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "4aaf8a2bc54643c839240b5cb7dd3cbba031eab586f893485f1591f5791b61f3",
+          "implementation": "fe-no-reserve",
+          "target": {
+            "abi": "fe-no-reserve/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-no-reserve/Treasury.bin",
+            "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+            "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+            "runtime": "fe-no-reserve/Treasury.runtime.bin",
+            "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/cap-boundary (6 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 3,
+        "mismatching_steps": 3,
+        "steps_compared": 6,
+        "truncated": false,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          144268,
+          35761,
+          68103,
+          35761,
+          35350
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          165501,
+          37405,
+          49004,
+          49004,
+          37122
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[\"1\", \"10\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "cap-boundary-3"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "10",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "10",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 3,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "10"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "cap-boundary-4"
+          },
+          "category": "status",
+          "deployment": false,
+          "explanation": {
+            "left": "revert CapExceeded(uint256,uint256)",
+            "right": "success",
+            "what": "one implementation succeeded and the other reverted"
+          },
+          "fe": {
+            "left": "0",
+            "right": "1"
+          },
+          "location": {
+            "index": 0,
+            "log": 0,
+            "slot": 0
+          },
+          "step": 4,
+          "strict": {
+            "left_returndata": "0xf480e28500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+            "left_success": false,
+            "right_returndata": "0x",
+            "right_success": true
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"0\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "cap-boundary-5"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "90",
+            "right": "89",
+            "what": "state `treasuryBalance` (treasuryBalance()[] word 0) differs after the action"
+          },
+          "fe": {
+            "left": "90",
+            "right": "89"
+          },
+          "location": {
+            "index": 1,
+            "log": 0,
+            "slot": 1
+          },
+          "step": 5,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "treasuryBalance",
+              "value": "90"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "treasuryBalance",
+              "value": "89"
+            }
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "8eacf79bb8187fb70ceb5f95a6698bf2d9b68e4cead40aeb87a2b1acf1850a3d",
+        "right": "e80e7b5824fa535a736490ea0dcd1e4e0db4f9642818e8593d64b3cda624511c"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of recipient",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    },
+    "deposit-spend": {
+      "claim": "7 of 10 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "4aaf8a2bc54643c839240b5cb7dd3cbba031eab586f893485f1591f5791b61f3",
+          "implementation": "fe-no-reserve",
+          "target": {
+            "abi": "fe-no-reserve/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-no-reserve/Treasury.bin",
+            "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+            "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+            "runtime": "fe-no-reserve/Treasury.runtime.bin",
+            "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/deposit-spend (10 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 7,
+        "mismatching_steps": 7,
+        "steps_compared": 10,
+        "truncated": false,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          21864,
+          144268,
+          68103,
+          51003,
+          35761,
+          34979,
+          23387,
+          21258,
+          21303
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          21549,
+          165501,
+          49004,
+          49004,
+          49004,
+          36447,
+          23399,
+          21192,
+          21250
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[\"1\", \"20\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "deposit-spend-3"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "20",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "20",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 3,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "20"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"30\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "deposit-spend-4"
+          },
+          "category": "log-data-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "50",
+            "right": "30",
+            "what": "Spent(uint256,address,address,uint256,uint256): data `newSpent` (uint256) differs at byte 63"
+          },
+          "fe": {
+            "left": "50",
+            "right": "30"
+          },
+          "location": {
+            "index": 63,
+            "log": 0,
+            "slot": 1
+          },
+          "step": 4,
+          "strict": {
+            "left_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000000000000000032",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ],
+            "right_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000000000000000000000000000000000000000001e",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "deposit-spend-5"
+          },
+          "category": "status",
+          "deployment": false,
+          "explanation": {
+            "left": "revert CapExceeded(uint256,uint256)",
+            "right": "success",
+            "what": "one implementation succeeded and the other reverted"
+          },
+          "fe": {
+            "left": "0",
+            "right": "1"
+          },
+          "location": {
+            "index": 0,
+            "log": 0,
+            "slot": 0
+          },
+          "step": 5,
+          "strict": {
+            "left_returndata": "0xf480e28500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+            "left_success": false,
+            "right_returndata": "0x",
+            "right_success": true
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\"]",
+            "call": "getGrant(uint256)",
+            "from": "outsider",
+            "id": "deposit-spend-6"
+          },
+          "category": "returndata-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "50",
+            "right": "0",
+            "what": "return value 4 (uint256) differs at byte 159"
+          },
+          "fe": {
+            "left": "50",
+            "right": "0"
+          },
+          "location": {
+            "index": 159,
+            "log": 0,
+            "slot": 4
+          },
+          "step": 6,
+          "strict": {
+            "left_returndata": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000000000000000000000000000000000000000000320000000000000000000000000000000000000000000000000000000000000032000000000000000000000000000000000000000000000000000000006553f4ea0000000000000000000000000000000000000000000000000000000000000001",
+            "left_success": true,
+            "right_returndata": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc00000000000000000000000000000000000000000000000000000000000000320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006553f4ea0000000000000000000000000000000000000000000000000000000000000001",
+            "right_success": true
+          }
+        },
+        {
+          "action": {
+            "argument": "[]",
+            "call": "nextGrantId()",
+            "from": "outsider",
+            "id": "deposit-spend-7"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "50",
+            "right": "49",
+            "what": "state `treasuryBalance` (treasuryBalance()[] word 0) differs after the action"
+          },
+          "fe": {
+            "left": "50",
+            "right": "49"
+          },
+          "location": {
+            "index": 1,
+            "log": 0,
+            "slot": 1
+          },
+          "step": 7,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "treasuryBalance",
+              "value": "50"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "treasuryBalance",
+              "value": "49"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[]",
+            "call": "treasuryBalance()",
+            "from": "outsider",
+            "id": "deposit-spend-8"
+          },
+          "category": "returndata-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "50",
+            "right": "49",
+            "what": "return value 0 (uint256) differs at byte 31"
+          },
+          "fe": {
+            "left": "50",
+            "right": "49"
+          },
+          "location": {
+            "index": 31,
+            "log": 0,
+            "slot": 0
+          },
+          "step": 8,
+          "strict": {
+            "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000032",
+            "left_success": true,
+            "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000031",
+            "right_success": true
+          }
+        },
+        {
+          "action": {
+            "argument": "[]",
+            "call": "owner()",
+            "from": "outsider",
+            "id": "deposit-spend-9"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "50",
+            "right": "49",
+            "what": "state `treasuryBalance` (treasuryBalance()[] word 0) differs after the action"
+          },
+          "fe": {
+            "left": "50",
+            "right": "49"
+          },
+          "location": {
+            "index": 1,
+            "log": 0,
+            "slot": 1
+          },
+          "step": 9,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "treasuryBalance",
+              "value": "50"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "treasuryBalance",
+              "value": "49"
+            }
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "c35d8adc074db075f031166276a282935657a161250da07bb60bfadcd177d850",
+        "right": "520d8af94c87c8fc6d8df2efe61c36a00de42ac5fcad4a5f635c6a737d536790"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of recipient",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    },
+    "expiry-equality": {
+      "claim": "5 of 7 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "4aaf8a2bc54643c839240b5cb7dd3cbba031eab586f893485f1591f5791b61f3",
+          "implementation": "fe-no-reserve",
+          "target": {
+            "abi": "fe-no-reserve/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-no-reserve/Treasury.bin",
+            "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+            "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+            "runtime": "fe-no-reserve/Treasury.runtime.bin",
+            "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/expiry-equality (7 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 5,
+        "mismatching_steps": 5,
+        "steps_compared": 7,
+        "truncated": false,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          144268,
+          68103,
+          51003,
+          35458,
+          35458,
+          25930
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          165501,
+          49004,
+          49004,
+          37199,
+          37199,
+          36809
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "expiry-equality-2"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "1",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "1",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 2,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "1"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "expiry-equality-3"
+          },
+          "category": "log-data-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "2",
+            "right": "1",
+            "what": "Spent(uint256,address,address,uint256,uint256): data `newSpent` (uint256) differs at byte 63"
+          },
+          "fe": {
+            "left": "2",
+            "right": "1"
+          },
+          "location": {
+            "index": 63,
+            "log": 0,
+            "slot": 1
+          },
+          "step": 3,
+          "strict": {
+            "left_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ],
+            "right_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "expiry-equality-4"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "2",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "2",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 4,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "2"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "expiry-equality-5"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "2",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "2",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 5,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "2"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\"]",
+            "call": "revoke(uint256)",
+            "from": "owner",
+            "id": "expiry-equality-6"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "2",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "2",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 6,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "2"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "dd4bd50eae21574987e3a0d93d872fbc5d9a5bd6444e4e80225b9f0d2164e71a",
+        "right": "8d875269208d32fe4db3cabe2e039ecc294316b7bac11dc0712621b757393b91"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of recipient",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    },
+    "insufficient-funds": {
+      "claim": "4 of 7 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "4aaf8a2bc54643c839240b5cb7dd3cbba031eab586f893485f1591f5791b61f3",
+          "implementation": "fe-no-reserve",
+          "target": {
+            "abi": "fe-no-reserve/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-no-reserve/Treasury.bin",
+            "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+            "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+            "runtime": "fe-no-reserve/Treasury.runtime.bin",
+            "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/insufficient-funds (7 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 4,
+        "mismatching_steps": 4,
+        "steps_compared": 7,
+        "truncated": false,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          144268,
+          35792,
+          68103,
+          35792,
+          23300,
+          51003
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          165501,
+          37430,
+          49004,
+          37430,
+          22959,
+          49004
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[\"1\", \"5\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "insufficient-funds-3"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "5",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "5",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 3,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "5"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "insufficient-funds-4"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "5",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "5",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 4,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "5"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[]",
+            "call": "deposit()",
+            "from": "outsider",
+            "id": "insufficient-funds-5"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "5",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "5",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 5,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "5"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"7\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "insufficient-funds-6"
+          },
+          "category": "log-data-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "12",
+            "right": "7",
+            "what": "Spent(uint256,address,address,uint256,uint256): data `newSpent` (uint256) differs at byte 63"
+          },
+          "fe": {
+            "left": "12",
+            "right": "7"
+          },
+          "location": {
+            "index": 63,
+            "log": 0,
+            "slot": 1
+          },
+          "step": 6,
+          "strict": {
+            "left_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x0000000000000000000000000000000000000000000000000000000000000007000000000000000000000000000000000000000000000000000000000000000c",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ],
+            "right_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x00000000000000000000000000000000000000000000000000000000000000070000000000000000000000000000000000000000000000000000000000000007",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "fcccdabc10890474b46836fede40505d011c164997fc0c30e9be6fefe8e88d5a",
+        "right": "a99124d12510b6994b8f6d9b156e7e68ff596126c407a83a8825364f09dd5611"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of recipient",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    },
+    "reentry": {
+      "claim": "2 of 4 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "reentrant": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "4aaf8a2bc54643c839240b5cb7dd3cbba031eab586f893485f1591f5791b61f3",
+          "implementation": "fe-no-reserve",
+          "target": {
+            "abi": "fe-no-reserve/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-no-reserve/Treasury.bin",
+            "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+            "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+            "runtime": "fe-no-reserve/Treasury.runtime.bin",
+            "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "reentrant": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/reentry (4 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 2,
+        "mismatching_steps": 2,
+        "steps_compared": 4,
+        "truncated": false,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          144280,
+          71163,
+          34979
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          165513,
+          51995,
+          36447
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[\"1\", \"4\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "reentry-2"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "4",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "4",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 2,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "4"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\"]",
+            "call": "getGrant(uint256)",
+            "from": "outsider",
+            "id": "reentry-3"
+          },
+          "category": "returndata-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "4",
+            "right": "0",
+            "what": "return value 4 (uint256) differs at byte 159"
+          },
+          "fe": {
+            "left": "4",
+            "right": "0"
+          },
+          "location": {
+            "index": 159,
+            "log": 0,
+            "slot": 4
+          },
+          "step": 3,
+          "strict": {
+            "left_returndata": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f0512000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000006553f4eb0000000000000000000000000000000000000000000000000000000000000001",
+            "left_success": true,
+            "right_returndata": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f0512000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006553f4eb0000000000000000000000000000000000000000000000000000000000000001",
+            "right_success": true
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "8e85c093fb9f914b5d6269ec1fe898e481b0e3817e2a4f22b85b0dff4d89dec3",
+        "right": "75778399bb39220abf652a3114d695f0e47ea6b50e78863283d65d73c95d4ea1"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of reentrant",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    },
+    "revocation": {
+      "claim": "10 of 12 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "4aaf8a2bc54643c839240b5cb7dd3cbba031eab586f893485f1591f5791b61f3",
+          "implementation": "fe-no-reserve",
+          "target": {
+            "abi": "fe-no-reserve/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-no-reserve/Treasury.bin",
+            "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+            "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+            "runtime": "fe-no-reserve/Treasury.runtime.bin",
+            "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/revocation (12 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 8,
+        "mismatching_steps": 10,
+        "steps_compared": 12,
+        "truncated": true,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          144268,
+          68103,
+          25930,
+          26558,
+          35373,
+          35314,
+          24198,
+          21994,
+          34979,
+          144268,
+          68103
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          165501,
+          49004,
+          36809,
+          36827,
+          37109,
+          37056,
+          36895,
+          36845,
+          36447,
+          165501,
+          49004
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[\"1\", \"3\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "revocation-2"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 2,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "3"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\"]",
+            "call": "revoke(uint256)",
+            "from": "owner",
+            "id": "revocation-3"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 3,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "3"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\"]",
+            "call": "revoke(uint256)",
+            "from": "owner",
+            "id": "revocation-4"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 4,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "3"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "delegate",
+            "id": "revocation-5"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 5,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "3"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\", \"1\"]",
+            "call": "spend(uint256,uint256)",
+            "from": "outsider",
+            "id": "revocation-6"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 6,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "3"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"99\"]",
+            "call": "revoke(uint256)",
+            "from": "owner",
+            "id": "revocation-7"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 7,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "3"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"0\"]",
+            "call": "revoke(uint256)",
+            "from": "owner",
+            "id": "revocation-8"
+          },
+          "category": "state-value",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "state `grant1.spent` (getGrant(uint256)['1'] word 4) differs after the action"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 6,
+            "log": 0,
+            "slot": 6
+          },
+          "step": 8,
+          "strict": {
+            "left_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "3"
+            },
+            "right_state": {
+              "kind": "uint",
+              "name": "grant1.spent",
+              "value": "0"
+            }
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\"]",
+            "call": "getGrant(uint256)",
+            "from": "outsider",
+            "id": "revocation-9"
+          },
+          "category": "returndata-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "3",
+            "right": "0",
+            "what": "return value 4 (uint256) differs at byte 159"
+          },
+          "fe": {
+            "left": "3",
+            "right": "0"
+          },
+          "location": {
+            "index": 159,
+            "log": 0,
+            "slot": 4
+          },
+          "step": 9,
+          "strict": {
+            "left_returndata": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000006553f4ea0000000000000000000000000000000000000000000000000000000000000000",
+            "left_success": true,
+            "right_returndata": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006553f4ea0000000000000000000000000000000000000000000000000000000000000000",
+            "right_success": true
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "efc5ec713ddafdd27beb25dbf6c06aa4b80b3af930b1421a2270b1ed9b5dd9de",
+        "right": "a499064877da4b977207a208bcbf7596b177f7946d08d07287763bf86acd71a8"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of recipient",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    },
+    "same-transaction": {
+      "claim": "3 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+      "configuration": {
+        "left": {
+          "deployed_runtime_sha256": "195630b8b10614d45ac55034656710b7d2a4aa027d4d15a63bf0aae77be1cac7",
+          "implementation": "solidity-treasury",
+          "target": {
+            "abi": "solidity/Treasury.abi",
+            "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+            "creation": "solidity/Treasury.bin",
+            "creation_sha256": "2b185fce12646733a320e0cef67d6acc7ab2abc77045a581b8f9b9be137f13d3",
+            "runtime": "solidity/Treasury.bin-runtime",
+            "runtime_sha256": "7b80dc7b8c3b37bd73a9ce4f91c9d248e62e25f64bb34c81d7e81b531b18a44a",
+            "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+          },
+          "world": {
+            "batcher": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "right": {
+          "deployed_runtime_sha256": "4aaf8a2bc54643c839240b5cb7dd3cbba031eab586f893485f1591f5791b61f3",
+          "implementation": "fe-no-reserve",
+          "target": {
+            "abi": "fe-no-reserve/Treasury.abi.json",
+            "compiler": "fe 26.5.0 (3dab95f)",
+            "creation": "fe-no-reserve/Treasury.bin",
+            "creation_sha256": "a0924662aad254acf1a31915ff696dac4015e4bbf7958b4cb2ebe20637cbb59b",
+            "fault": "intentional: PHASE 3 FAULT: spent is not persisted",
+            "runtime": "fe-no-reserve/Treasury.runtime.bin",
+            "runtime_sha256": "65ae1ee9eed23a533040a2f46a4f007687e5e6c867872662897b2be51c4f4b47",
+            "settings": "fe build --backend sonatina --profile release -O 1",
+            "source": "contracts/fe/treasury (vendored from Fe Capabilities ba6893c)"
+          },
+          "world": {
+            "batcher": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+            "caller": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "delegate": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+            "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "outsider": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+            "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "zero": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "corpus": "treasury-v0/same-transaction (5 actions)",
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "listed": 3,
+        "mismatching_steps": 3,
+        "steps_compared": 5,
+        "truncated": false,
+        "verdict": "mismatch"
+      },
+      "environment": {
+        "base_fee": 0,
+        "chain_id": 31337,
+        "gas_limit_per_tx": 2000000,
+        "gas_price": 1,
+        "hardfork": "osaka",
+        "mining": "one mined transaction per block, scheduled timestamps"
+      },
+      "format": "fe-compatibility-report",
+      "gas_used": {
+        "left": [
+          23300,
+          144268,
+          84388,
+          39306,
+          34979
+        ],
+        "note": "reported only; gas is never compared",
+        "right": [
+          22959,
+          165501,
+          64090,
+          64090,
+          36447
+        ]
+      },
+      "mismatches": [
+        {
+          "action": {
+            "argument": "[{\"role\": \"target\"}, \"1\", \"4\"]",
+            "call": "twice(address,uint256,uint256)",
+            "from": "outsider",
+            "id": "same-transaction-2"
+          },
+          "category": "log-data-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "8",
+            "right": "4",
+            "what": "Spent(uint256,address,address,uint256,uint256): data `newSpent` (uint256) differs at byte 63"
+          },
+          "fe": {
+            "left": "8",
+            "right": "4"
+          },
+          "location": {
+            "index": 63,
+            "log": 1,
+            "slot": 1
+          },
+          "step": 2,
+          "strict": {
+            "left_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000004",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f0512",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              },
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f0512",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ],
+            "right_logs": [
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000004",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f0512",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              },
+              {
+                "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+                "data": "0x00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000004",
+                "topics": [
+                  "0x4c25ad4adf741f04744a1f8519f9fddb9240b38825d17a94dd24c97003712690",
+                  "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "0x000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f0512",
+                  "0x0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "argument": "[{\"role\": \"target\"}, \"1\", \"4\"]",
+            "call": "twice(address,uint256,uint256)",
+            "from": "outsider",
+            "id": "same-transaction-3"
+          },
+          "category": "status",
+          "deployment": false,
+          "explanation": {
+            "left": "revert CapExceeded(uint256,uint256)",
+            "right": "success",
+            "what": "one implementation succeeded and the other reverted"
+          },
+          "fe": {
+            "left": "0",
+            "right": "1"
+          },
+          "location": {
+            "index": 0,
+            "log": 0,
+            "slot": 0
+          },
+          "step": 3,
+          "strict": {
+            "left_returndata": "0xf480e28500000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004",
+            "left_success": false,
+            "right_returndata": "0x",
+            "right_success": true
+          }
+        },
+        {
+          "action": {
+            "argument": "[\"1\"]",
+            "call": "getGrant(uint256)",
+            "from": "outsider",
+            "id": "same-transaction-4"
+          },
+          "category": "returndata-byte",
+          "deployment": false,
+          "explanation": {
+            "left": "8",
+            "right": "0",
+            "what": "return value 4 (uint256) differs at byte 159"
+          },
+          "fe": {
+            "left": "8",
+            "right": "0"
+          },
+          "location": {
+            "index": 159,
+            "log": 0,
+            "slot": 4
+          },
+          "step": 4,
+          "strict": {
+            "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000006553f4eb0000000000000000000000000000000000000000000000000000000000000001",
+            "left_success": true,
+            "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006553f4eb0000000000000000000000000000000000000000000000000000000000000001",
+            "right_success": true
+          }
+        }
+      ],
+      "mode": "behavioral conformance (strict; compiler rejections by status)",
+      "raw_records_sha256": {
+        "left": "7f2022340af1e1e65b10481d0c102aff7412f38ccdf429b6a898199decc9cc83",
+        "right": "b17594b3e2eeca0ff6bf85328bf54b1fd5056fd630f71fde8ad8d1232c1def95"
+      },
+      "state_declared": [
+        {
+          "getter": "nextGrantId()[] word 0",
+          "kind": "uint",
+          "name": "nextGrantId"
+        },
+        {
+          "getter": "treasuryBalance()[] word 0",
+          "kind": "uint",
+          "name": "treasuryBalance"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 0",
+          "kind": "bool",
+          "name": "grant1.exists"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 1",
+          "kind": "address",
+          "name": "grant1.delegate"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 2",
+          "kind": "address",
+          "name": "grant1.recipient"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 3",
+          "kind": "uint",
+          "name": "grant1.cap"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 4",
+          "kind": "uint",
+          "name": "grant1.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 5",
+          "kind": "uint",
+          "name": "grant1.expiresAt"
+        },
+        {
+          "getter": "getGrant(uint256)['1'] word 6",
+          "kind": "bool",
+          "name": "grant1.active"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 4",
+          "kind": "uint",
+          "name": "grant2.spent"
+        },
+        {
+          "getter": "getGrant(uint256)['2'] word 6",
+          "kind": "bool",
+          "name": "grant2.active"
+        },
+        {
+          "getter": "balance of recipient",
+          "kind": "uint",
+          "name": "payee.balance"
+        }
+      ],
+      "tools": {
+        "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+        "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+      },
+      "version": 1
+    }
+  },
+  "spec_oracle_first": {
+    "cap-boundary": [
+      4,
+      "status"
+    ],
+    "deposit-spend": [
+      4,
+      "log-data-byte"
+    ],
+    "expiry-equality": [
+      3,
+      "log-data-byte"
+    ],
+    "insufficient-funds": [
+      6,
+      "log-data-byte"
+    ],
+    "reentry": [
+      3,
+      "returndata-byte"
+    ],
+    "revocation": [
+      9,
+      "returndata-byte"
+    ],
+    "same-transaction": [
+      2,
+      "log-data-byte"
+    ]
+  }
+}

@@ -4,7 +4,7 @@
 | --- | --- | --- | --- |
 | Meter v0 | Phase 0 | [meter-v0.md](meter-v0.md) | Observation-path proof |
 | Codec v1 | 1 (21 November 2026) | [codec-v1.md](codec-v1.md), [codec-v1.abi.json](codec-v1.abi.json) | ABI conformance (Phase 1) |
-| Treasury v0 | 1 (14 November 2026) | [vendor/treasury-v0/](vendor/treasury-v0/), vendored from Fe Capabilities at `ba6893c` | Behavioral corpus (Phase 3) |
+| Treasury v0 | 1 (14 November 2026) | [vendor/treasury-v0/](vendor/treasury-v0/), vendored from Fe Capabilities at `ba6893c` | Behavioral corpus (Phase 3), [scenarios](scenarios.md) |
 
 The treasury specification is vendored unchanged, and its SHA-256 hashes are
 pinned in `vendor/treasury-v0/provenance.json`. It already freezes:
