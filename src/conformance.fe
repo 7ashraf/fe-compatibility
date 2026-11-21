@@ -1,0 +1,213 @@
+use super::{CallObservation, Payload, LogRecord, MAX_LOGS, MAX_STEPS, well_formed}
+
+// Strict-mode mismatch classes, checked in this fixed order so the reported
+// divergence is deterministic: status, returndata, then logs in emission order
+// (count, then per log: emitter, topic count, topics, data length, data bytes).
+pub enum Category {
+    Status,
+    ReturnLength,
+    ReturnByte,
+    LogCount,
+    LogEmitter,
+    TopicCount,
+    Topic,
+    DataLength,
+    DataByte,
+}
+impl Copy for Category {}
+
+pub enum Verdict {
+    Match,
+    Mismatch,
+    Malformed,
+}
+impl Copy for Verdict {}
+
+// `log` is the log index (0 when not a log category); `index` is the byte offset,
+// topic index, or 0; `left`/`right` are the differing byte, word, length, or flag.
+pub struct Mismatch {
+    pub verdict: Verdict,
+    pub step: usize,
+    pub category: Category,
+    pub log: usize,
+    pub index: usize,
+    pub left: u256,
+    pub right: u256,
+}
+impl Copy for Mismatch {}
+
+pub fn category_code(_ category: Category) -> u256 {
+    match category {
+        Category::Status => 1,
+        Category::ReturnLength => 2,
+        Category::ReturnByte => 3,
+        Category::LogCount => 4,
+        Category::LogEmitter => 5,
+        Category::TopicCount => 6,
+        Category::Topic => 7,
+        Category::DataLength => 8,
+        Category::DataByte => 9,
+    }
+}
+
+fn matched() -> Mismatch {
+    Mismatch { verdict: Verdict::Match, step: 0, category: Category::Status, log: 0, index: 0, left: 0, right: 0 }
+}
+
+fn differ(category: Category, log: usize, index: usize, left: u256, right: u256) -> Mismatch {
+    Mismatch { verdict: Verdict::Mismatch, step: 0, category, log, index, left, right }
+}
+
+fn is_match(_ m: Mismatch) -> bool {
+    match m.verdict {
+        Verdict::Match => true,
+        _ => false,
+    }
+}
+
+fn byte_at(word: u256, i: usize) -> u256 {
+    (word >> (((31 - i) * 8) as u256)) & 255
+}
+
+// Exact byte comparison of two well-formed payloads; reports the first differing
+// byte offset and both byte values.
+fn compare_payload(left: Payload, right: Payload, length: Category, byte: Category, log: usize) -> Mismatch {
+    if left.len != right.len {
+        return differ(category: length, log, index: 0, left: left.len as u256, right: right.len as u256)
+    }
+    var w: usize = 0
+    while w * 32 < left.len {
+        let a = left.words[w]
+        let b = right.words[w]
+        if a != b {
+            var i: usize = 0
+            while i < 32 {
+                let x = byte_at(word: a, i)
+                let y = byte_at(word: b, i)
+                if x != y {
+                    return differ(category: byte, log, index: w * 32 + i, left: x, right: y)
+                }
+                i += 1
+            }
+        }
+        w += 1
+    }
+    matched()
+}
+
+fn compare_log(left: LogRecord, right: LogRecord, log: usize) -> Mismatch {
+    if left.emitter != right.emitter {
+        return differ(category: Category::LogEmitter, log, index: 0, left: left.emitter, right: right.emitter)
+    }
+    if left.topic_count != right.topic_count {
+        return differ(
+            category: Category::TopicCount,
+            log,
+            index: 0,
+            left: left.topic_count as u256,
+            right: right.topic_count as u256,
+        )
+    }
+    var t: usize = 0
+    while t < left.topic_count {
+        if left.topics[t] != right.topics[t] {
+            return differ(category: Category::Topic, log, index: t, left: left.topics[t], right: right.topics[t])
+        }
+        t += 1
+    }
+    compare_payload(left: left.data, right: right.data, length: Category::DataLength, byte: Category::DataByte, log)
+}
+
+// Strict comparison of one step's observations from two implementations.
+pub fn compare(left: CallObservation, right: CallObservation) -> Mismatch {
+    if !well_formed(observation: left) || !well_formed(observation: right) {
+        return malformed(step: 0)
+    }
+    if left.success != right.success {
+        return differ(
+            category: Category::Status,
+            log: 0,
+            index: 0,
+            left: if left.success { 1 } else { 0 },
+            right: if right.success { 1 } else { 0 },
+        )
+    }
+    let data = compare_payload(
+        left: left.returndata,
+        right: right.returndata,
+        length: Category::ReturnLength,
+        byte: Category::ReturnByte,
+        log: 0,
+    )
+    if !is_match(data) {
+        return data
+    }
+    if left.log_count != right.log_count {
+        return differ(
+            category: Category::LogCount,
+            log: 0,
+            index: 0,
+            left: left.log_count as u256,
+            right: right.log_count as u256,
+        )
+    }
+    var i: usize = 0
+    while i < left.log_count {
+        let result = compare_log(left: left.logs[i], right: right.logs[i], log: i)
+        if !is_match(result) {
+            return result
+        }
+        i += 1
+    }
+    matched()
+}
+
+// Streaming sequence comparison: feed each step's pair in order. The first
+// divergence is kept; a malformed step or more than MAX_STEPS steps makes the
+// whole result Malformed (a transport/harness problem, never a behavior verdict).
+pub struct Progress { pub steps: usize, pub result: Mismatch }
+impl Copy for Progress {}
+
+pub fn begin() -> Progress {
+    Progress { steps: 0, result: matched() }
+}
+
+pub fn step(progress: Progress, left: CallObservation, right: CallObservation) -> Progress {
+    var next = progress
+    if next.steps >= MAX_STEPS {
+        next.result = malformed(step: next.steps)
+        return next
+    }
+    let current = compare(left, right)
+    match current.verdict {
+        Verdict::Malformed => {
+            next.result = malformed(step: next.steps)
+        },
+        Verdict::Mismatch => {
+            if is_match(next.result) {
+                next.result = current
+                next.result.step = next.steps
+            }
+        },
+        Verdict::Match => {},
+    }
+    if is_malformed(progress.result) {
+        next.result = progress.result
+    }
+    next.steps += 1
+    next
+}
+
+fn malformed(step: usize) -> Mismatch {
+    var bad = matched()
+    bad.verdict = Verdict::Malformed
+    bad.step = step
+    bad
+}
+
+fn is_malformed(_ m: Mismatch) -> bool {
+    match m.verdict {
+        Verdict::Malformed => true,
+        _ => false,
+    }
+}

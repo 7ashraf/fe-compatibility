@@ -1,0 +1,169 @@
+use super::{
+    CallObservation,
+    Category,
+    Verdict,
+    Mismatch,
+    compare,
+    Progress,
+    begin,
+    step,
+    category_code,
+    empty_observation,
+    empty_payload,
+    empty_log,
+}
+
+// A success that returns uint256 105 and emits one Added-shaped log.
+fn sample() -> CallObservation {
+    var o = empty_observation()
+    o.success = true
+    o.returndata.len = 32
+    o.returndata.words[0] = 105
+    o.log_count = 1
+    var log = empty_log()
+    log.emitter = 0x5fbdb2315678afecb367f032d93f642f64180aa3
+    log.topic_count = 2
+    log.topics[0] = 0xabcdef
+    log.topics[1] = 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+    log.data.len = 64
+    log.data.words[0] = 100
+    log.data.words[1] = 105
+    o.logs[0] = log
+    o
+}
+
+// TooLarge(200, 100): 4-byte selector then two words, 68 bytes.
+fn revert_sample() -> CallObservation {
+    var o = empty_observation()
+    o.returndata.len = 68
+    o.returndata.words[0] = (0x12345678 << 224) | (200 >> 32)
+    o.returndata.words[1] = (200 << 224) | (100 >> 32)
+    o.returndata.words[2] = 100 << 224
+    o
+}
+
+fn code(_ m: Mismatch) -> u256 {
+    match m.verdict {
+        Verdict::Match => 0,
+        Verdict::Malformed => 100,
+        Verdict::Mismatch => category_code(m.category),
+    }
+}
+
+#[test]
+fn identical_observations_match() {
+    assert!(code(compare(left: sample(), right: sample())) == 0)
+    assert!(code(compare(left: revert_sample(), right: revert_sample())) == 0)
+    assert!(code(compare(left: empty_observation(), right: empty_observation())) == 0)
+}
+
+#[test]
+fn one_byte_in_revert_payload_is_located() {
+    var other = revert_sample()
+    other.returndata.words[2] = 101 << 224
+    let m = compare(left: revert_sample(), right: other)
+    assert!(code(m) == 3)
+    assert!(m.index == 67 && m.left == 100 && m.right == 101)
+}
+
+#[test]
+fn status_and_length_differences() {
+    var failed = sample()
+    failed.success = false
+    failed.log_count = 0
+    failed.logs[0] = empty_log()
+    assert!(code(compare(left: sample(), right: failed)) == 1)
+    // Same numeric value, one byte shorter: a lost leading zero is a length mismatch.
+    var short = sample()
+    short.returndata.len = 31
+    short.returndata.words[0] = 105 << 8
+    let m = compare(left: sample(), right: short)
+    assert!(code(m) == 2 && m.left == 32 && m.right == 31)
+    var empty = sample()
+    empty.returndata = empty_payload()
+    assert!(code(compare(left: sample(), right: empty)) == 2)
+}
+
+#[test]
+fn log_differences_are_classified() {
+    var none = sample()
+    none.log_count = 0
+    none.logs[0] = empty_log()
+    assert!(code(compare(left: sample(), right: none)) == 4)
+    var emitter = sample()
+    emitter.logs[0].emitter = 1
+    assert!(code(compare(left: sample(), right: emitter)) == 5)
+    // Indexed field moved to data: topic count changes first.
+    var unindexed = sample()
+    unindexed.logs[0].topic_count = 1
+    unindexed.logs[0].topics[1] = 0
+    assert!(code(compare(left: sample(), right: unindexed)) == 6)
+    var topic = sample()
+    topic.logs[0].topics[1] = topic.logs[0].topics[1] ^ 1
+    let t = compare(left: sample(), right: topic)
+    assert!(code(t) == 7 && t.index == 1)
+    var data = sample()
+    data.logs[0].data.words[1] = 106
+    let d = compare(left: sample(), right: data)
+    assert!(code(d) == 9 && d.index == 63 && d.left == 105 && d.right == 106)
+    var length = sample()
+    length.logs[0].data.len = 32
+    length.logs[0].data.words[1] = 0
+    assert!(code(compare(left: sample(), right: length)) == 8)
+}
+
+#[test]
+fn malformed_observations_are_not_comparable() {
+    var padding = revert_sample()
+    padding.returndata.words[2] = (100 << 224) | 1
+    assert!(code(compare(left: revert_sample(), right: padding)) == 100)
+    var oversized = sample()
+    oversized.returndata.len = 257
+    assert!(code(compare(left: sample(), right: oversized)) == 100)
+    var reverted_with_log = sample()
+    reverted_with_log.success = false
+    assert!(code(compare(left: reverted_with_log, right: reverted_with_log)) == 100)
+    var stray = sample()
+    stray.logs[1].emitter = 7
+    assert!(code(compare(left: stray, right: stray)) == 100)
+    var wide = sample()
+    wide.logs[0].emitter = 1 << 160
+    assert!(code(compare(left: wide, right: wide)) == 100)
+}
+
+fn run(count: usize, diverge_at: usize, malformed_at: usize) -> Mismatch {
+    var progress = begin()
+    var s: usize = 0
+    while s < count {
+        var right = sample()
+        if s == diverge_at {
+            right.returndata.words[0] = right.returndata.words[0] ^ (1 << 255)
+        }
+        if s == malformed_at {
+            right.returndata.len = 300
+        }
+        progress = step(progress, left: sample(), right)
+        s += 1
+    }
+    assert!(progress.steps == count || count > 64)
+    progress.result
+}
+
+#[test]
+fn first_divergent_step_is_reported() {
+    assert!(code(run(count: 3, diverge_at: 99, malformed_at: 99)) == 0)
+    let m = run(count: 5, diverge_at: 1, malformed_at: 99)
+    assert!(code(m) == 3 && m.step == 1 && m.index == 0 && m.left == 0 && m.right == 128)
+    // Later divergences never replace the first one.
+    var progress = begin()
+    var other = revert_sample()
+    other.returndata.words[2] = 101 << 224
+    progress = step(progress, left: revert_sample(), right: other)
+    progress = step(progress, left: sample(), right: revert_sample())
+    assert!(code(progress.result) == 3 && progress.result.step == 0)
+    // A malformed step dominates an earlier behavior mismatch.
+    let bad = run(count: 4, diverge_at: 0, malformed_at: 2)
+    assert!(code(bad) == 100 && bad.step == 2)
+    assert!(code(run(count: 65, diverge_at: 99, malformed_at: 99)) == 100)
+    assert!(code(run(count: 64, diverge_at: 99, malformed_at: 99)) == 0)
+}

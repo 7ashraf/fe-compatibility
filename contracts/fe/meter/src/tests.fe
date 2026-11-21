@@ -1,0 +1,25 @@
+// Phase 0 check of the pinned non-bubbling call API: `try_call` must expose the
+// failure status and exact custom-error bytes without reverting the caller.
+use super::{Meter, MeterMsg, EmptyQuantity, TooLarge}
+use std::evm::{Wei, CallOutcome, encode_error}
+use core::ptr::MemSpan
+
+fn exact(outcome: CallOutcome, success: bool, expected: MemSpan) {
+    assert!(outcome.success() == success)
+    assert!(Bytes::from_payload(source: outcome.returndata()) == Bytes::from_payload(source: expected))
+}
+
+#[test]
+fn try_call_exposes_success_and_custom_error_bytes() uses (evm: mut Evm) {
+    let target = evm.create2<Meter>(value: Wei::zero(), args: (), salt: 1)
+    let ok = evm.try_call(addr: target, gas: 200000, value: Wei::zero(), message: MeterMsg::Add { quantity: 5 })
+    assert!(ok.success())
+    assert!(Bytes::from_payload(source: ok.returndata()).len() == 32)
+    let empty = evm.try_call(addr: target, gas: 200000, value: Wei::zero(), message: MeterMsg::Add { quantity: 0 })
+    exact(outcome: empty, success: false, expected: encode_error(EmptyQuantity {}).span())
+    let large = evm.try_call(addr: target, gas: 200000, value: Wei::zero(), message: MeterMsg::Add { quantity: 200 })
+    exact(outcome: large, success: false, expected: encode_error(TooLarge { quantity: 200, limit: 100 }).span())
+    // The failed calls rolled back; the caller continued and state is 5.
+    let total: u256 = evm.call(addr: target, gas: 100000, value: Wei::zero(), message: MeterMsg::Total {})
+    assert!(total == 5)
+}

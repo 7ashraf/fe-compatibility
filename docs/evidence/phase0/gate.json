@@ -1,0 +1,607 @@
+{
+  "format": "fe-compatibility-phase0-gate-v1",
+  "result": "Phase 0 exit gate passed",
+  "verified_at_utc": "2026-11-21T09:35:03.322784+00:00",
+  "host": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6",
+  "fe": {
+    "version": "fe 26.5.0 (3dab95f)",
+    "sha256": "4968711c5bc02c1a3151cfaea0d81a48dc74803ea208362022af467c2a523fed"
+  },
+  "solc": {
+    "version": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "sha256": "f5a243d6b2dd8fba307e36c5fefa2d8eb3ae74ba81036d1c17c971b5d346ade9"
+  },
+  "foundry": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "targets": {
+    "solidity": {
+      "creation": "solidity/Meter.bin",
+      "runtime": "solidity/Meter.bin-runtime",
+      "abi": "solidity/Meter.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "creation_sha256": "c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf",
+      "runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c"
+    },
+    "fe": {
+      "creation": "fe/Meter.bin",
+      "runtime": "fe/Meter.runtime.bin",
+      "abi": "fe/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "creation_sha256": "c71e325b9d140621f5da1ea9c9478c0ceb60b0065a0241f3d6e193171ac909ee",
+      "runtime_sha256": "3d51abc73cc4ee311d4cf89c241d26e31f5817278ac7d1b0dddb50b939cf4f61"
+    },
+    "fe-faulty": {
+      "creation": "fe-faulty/Meter.bin",
+      "runtime": "fe-faulty/Meter.runtime.bin",
+      "abi": "fe-faulty/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: TooLarge reports limit 101 instead of 100",
+      "mutated_source_sha256": "50047b490eb65b827761b096ac1a8bbd244244a1a188304b16cfa56cc6d2525f",
+      "creation_sha256": "737a04012e4430a7f1ae6f19f67a2d22e51468cd6de08cc9a3647cf0e718dee0",
+      "runtime_sha256": "66516c590d75c1da9663fd641993167e55fb5f314b09a9f2744565af25751c63"
+    }
+  },
+  "reports": {
+    "solidity-vs-fe": {
+      "format": "fe-compatibility-phase0-report-v1",
+      "mode": "behavioral conformance (strict raw bytes)",
+      "corpus": "spec/meter-v0.md Phase 0 sequence (5 calls)",
+      "left": "solidity",
+      "right": "fe",
+      "claim": "No mismatch observed for this corpus under this configuration; this is not an equivalence proof.",
+      "checker": "native Fe compat_checker protocol 1",
+      "frame_words": 74,
+      "steps_compared": 5,
+      "verdict": "match",
+      "gas_used": {
+        "left": [
+          45625,
+          21480,
+          21531,
+          28525,
+          23342
+        ],
+        "right": [
+          45190,
+          21480,
+          21510,
+          28090,
+          23274
+        ],
+        "note": "reported only; gas is not compared"
+      }
+    },
+    "fe-vs-solidity": {
+      "format": "fe-compatibility-phase0-report-v1",
+      "mode": "behavioral conformance (strict raw bytes)",
+      "corpus": "spec/meter-v0.md Phase 0 sequence (5 calls)",
+      "left": "fe",
+      "right": "solidity",
+      "claim": "No mismatch observed for this corpus under this configuration; this is not an equivalence proof.",
+      "checker": "native Fe compat_checker protocol 1",
+      "frame_words": 74,
+      "steps_compared": 5,
+      "verdict": "match",
+      "gas_used": {
+        "left": [
+          45190,
+          21480,
+          21510,
+          28090,
+          23274
+        ],
+        "right": [
+          45625,
+          21480,
+          21531,
+          28525,
+          23342
+        ],
+        "note": "reported only; gas is not compared"
+      }
+    },
+    "solidity-vs-fe-faulty": {
+      "format": "fe-compatibility-phase0-report-v1",
+      "mode": "behavioral conformance (strict raw bytes)",
+      "corpus": "spec/meter-v0.md Phase 0 sequence (5 calls)",
+      "left": "solidity",
+      "right": "fe-faulty",
+      "claim": "Mismatch observed; see first_divergence.",
+      "checker": "native Fe compat_checker protocol 1",
+      "frame_words": 74,
+      "steps_compared": 5,
+      "verdict": "mismatch",
+      "first_divergence": {
+        "step": 2,
+        "call": "add(uint256)",
+        "argument": "200",
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 67,
+        "left": "100",
+        "right": "101",
+        "left_returndata": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000064",
+        "right_returndata": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000065"
+      },
+      "gas_used": {
+        "left": [
+          45625,
+          21480,
+          21531,
+          28525,
+          23342
+        ],
+        "right": [
+          45190,
+          21480,
+          21510,
+          28090,
+          23274
+        ],
+        "note": "reported only; gas is not compared"
+      }
+    }
+  },
+  "perturbations": [
+    {
+      "name": "last returndata byte",
+      "expected": {
+        "step": 0,
+        "category": "returndata-byte",
+        "index": 31
+      },
+      "fe_decision": {
+        "step": 0,
+        "call": "add(uint256)",
+        "argument": "5",
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 31,
+        "left": "5",
+        "right": "4",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000004"
+      },
+      "passed": true
+    },
+    {
+      "name": "lost leading zero byte",
+      "expected": {
+        "step": 0,
+        "category": "returndata-length",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 0,
+        "call": "add(uint256)",
+        "argument": "5",
+        "category": "returndata-length",
+        "log": 0,
+        "index": 0,
+        "left": "32",
+        "right": "31",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005",
+        "right_returndata": "0x00000000000000000000000000000000000000000000000000000000000005"
+      },
+      "passed": true
+    },
+    {
+      "name": "empty returndata",
+      "expected": {
+        "step": 4,
+        "category": "returndata-length",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 4,
+        "call": "total()",
+        "argument": null,
+        "category": "returndata-length",
+        "log": 0,
+        "index": 0,
+        "left": "32",
+        "right": "0",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069",
+        "right_returndata": "0x"
+      },
+      "passed": true
+    },
+    {
+      "name": "extra trailing zero in revert data",
+      "expected": {
+        "step": 1,
+        "category": "returndata-length",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 1,
+        "call": "add(uint256)",
+        "argument": "0",
+        "category": "returndata-length",
+        "log": 0,
+        "index": 0,
+        "left": "4",
+        "right": "5",
+        "left_returndata": "0xbc7bbfc5",
+        "right_returndata": "0xbc7bbfc500"
+      },
+      "passed": true
+    },
+    {
+      "name": "error selector byte",
+      "expected": {
+        "step": 1,
+        "category": "returndata-byte",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 1,
+        "call": "add(uint256)",
+        "argument": "0",
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 0,
+        "left": "188",
+        "right": "189",
+        "left_returndata": "0xbc7bbfc5",
+        "right_returndata": "0xbd7bbfc5"
+      },
+      "passed": true
+    },
+    {
+      "name": "error argument byte",
+      "expected": {
+        "step": 2,
+        "category": "returndata-byte",
+        "index": 35
+      },
+      "fe_decision": {
+        "step": 2,
+        "call": "add(uint256)",
+        "argument": "200",
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 35,
+        "left": "200",
+        "right": "201",
+        "left_returndata": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000064",
+        "right_returndata": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c90000000000000000000000000000000000000000000000000000000000000064"
+      },
+      "passed": true
+    },
+    {
+      "name": "success instead of revert",
+      "expected": {
+        "step": 1,
+        "category": "status",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 1,
+        "call": "add(uint256)",
+        "argument": "0",
+        "category": "status",
+        "log": 0,
+        "index": 0,
+        "left": "0",
+        "right": "1",
+        "left_returndata": "0xbc7bbfc5",
+        "right_returndata": "0xbc7bbfc5"
+      },
+      "passed": true
+    },
+    {
+      "name": "missing event",
+      "expected": {
+        "step": 3,
+        "category": "log-count",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 3,
+        "call": "add(uint256)",
+        "argument": "100",
+        "category": "log-count",
+        "log": 0,
+        "index": 0,
+        "left": "1",
+        "right": "0",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069"
+      },
+      "passed": true
+    },
+    {
+      "name": "extra event",
+      "expected": {
+        "step": 4,
+        "category": "log-count",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 4,
+        "call": "total()",
+        "argument": null,
+        "category": "log-count",
+        "log": 0,
+        "index": 0,
+        "left": "0",
+        "right": "1",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069"
+      },
+      "passed": true
+    },
+    {
+      "name": "different emitter",
+      "expected": {
+        "step": 0,
+        "category": "log-emitter",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 0,
+        "call": "add(uint256)",
+        "argument": "5",
+        "category": "log-emitter",
+        "log": 0,
+        "index": 0,
+        "left": "546584486846459126461364135121053344201067465379",
+        "right": "97433442488726861213578988847752201310395502865",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005"
+      },
+      "passed": true
+    },
+    {
+      "name": "indexed caller moved to data",
+      "expected": {
+        "step": 0,
+        "category": "topic-count",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 0,
+        "call": "add(uint256)",
+        "argument": "5",
+        "category": "topic-count",
+        "log": 0,
+        "index": 0,
+        "left": "2",
+        "right": "1",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005"
+      },
+      "passed": true
+    },
+    {
+      "name": "event signature topic byte",
+      "expected": {
+        "step": 0,
+        "category": "topic",
+        "index": 0
+      },
+      "fe_decision": {
+        "step": 0,
+        "call": "add(uint256)",
+        "argument": "5",
+        "category": "topic",
+        "log": 0,
+        "index": 0,
+        "left": "19250448802654227325110883366441413505757400032784148000909931165132856005573",
+        "right": "19250448802654227325110883366441413505757400032784148000909931165132856005572",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005"
+      },
+      "passed": true
+    },
+    {
+      "name": "indexed caller byte",
+      "expected": {
+        "step": 0,
+        "category": "topic",
+        "index": 1
+      },
+      "fe_decision": {
+        "step": 0,
+        "call": "add(uint256)",
+        "argument": "5",
+        "category": "topic",
+        "log": 0,
+        "index": 1,
+        "left": "1390849295786071768276380950238675083608645509734",
+        "right": "1390849295786071768276380950238675083608645509735",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000005"
+      },
+      "passed": true
+    },
+    {
+      "name": "event data byte",
+      "expected": {
+        "step": 3,
+        "category": "log-data-byte",
+        "index": 63
+      },
+      "fe_decision": {
+        "step": 3,
+        "call": "add(uint256)",
+        "argument": "100",
+        "category": "log-data-byte",
+        "log": 0,
+        "index": 63,
+        "left": "105",
+        "right": "104",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069"
+      },
+      "passed": true
+    },
+    {
+      "name": "state after matching return (total)",
+      "expected": {
+        "step": 4,
+        "category": "returndata-byte",
+        "index": 31
+      },
+      "fe_decision": {
+        "step": 4,
+        "call": "total()",
+        "argument": null,
+        "category": "returndata-byte",
+        "log": 0,
+        "index": 31,
+        "left": "105",
+        "right": "104",
+        "left_returndata": "0x0000000000000000000000000000000000000000000000000000000000000069",
+        "right_returndata": "0x0000000000000000000000000000000000000000000000000000000000000068"
+      },
+      "passed": true
+    }
+  ],
+  "infrastructure_controls": [
+    {
+      "name": "oversized returndata (300 bytes)",
+      "error": "Fe checker rejected the frame (exit 2)"
+    },
+    {
+      "name": "log on a reverted call",
+      "error": "Fe checker: malformed observation at step 1"
+    },
+    {
+      "name": "five logs",
+      "error": "Fe checker rejected the frame (exit 2)"
+    },
+    {
+      "name": "step count differs",
+      "error": "Records have different step counts"
+    },
+    {
+      "name": "modified checker binary",
+      "error": "Modified or missing build artifact host/checker-native/out/compat_checker; run scripts/build.py"
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "fe",
+        "check",
+        "."
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        "."
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.0002s] one_byte_in_revert_payload_is_located\nPASS  [0.0003s] identical_observations_match\nPASS  [0.0003s] status_and_length_differences\nPASS  [0.0003s] log_differences_are_classified\nPASS  [0.0003s] malformed_observations_are_not_comparable\nPASS  [0.0026s] first_divergent_step_is_reported\n\ntest result: ok. 6 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        ".",
+        "--backend",
+        "native"
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.1674s] status_and_length_differences\nPASS  [0.1674s] malformed_observations_are_not_comparable\nPASS  [0.1678s] one_byte_in_revert_payload_is_located\nPASS  [0.1679s] log_differences_are_classified\nPASS  [0.1682s] identical_observations_match\nPASS  [0.1683s] first_divergent_step_is_reported\n\ntest result: ok. 6 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        "contracts/fe/meter"
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.0001s] try_call_exposes_success_and_custom_error_bytes\n\ntest result: ok. 1 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build.py"
+      ],
+      "exit": 0,
+      "stdout": "PASS solc --evm-version osaka --optimize --optimize-runs 200 --bin --bin-runtime --abi -o .tools/build/solidity contracts/solidity/Meter.sol\nPASS fe build contracts/fe/meter --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe\nPASS fe build .tools/build/sources/meter-faulty --backend sonatina --profile release -O 1 --emit bytecode,runtime-bytecode,abi,metadata --out-dir .tools/build/fe-faulty\nPASS fe build host/checker-native --backend native --emit executable -O 1\nPASS build stamp .tools/build/build.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        ".tools/build/sources/meter-faulty"
+      ],
+      "exit": 1,
+      "stdout": "FAIL  [0.0001s] try_call_exposes_success_and_custom_error_bytes\n    Test reverted: 0x4e487b710000000000000000000000000000000000000000000000000000000000000001\n\ntest result: FAILED. 0 passed; 1 failed\n\nfailures:\n    try_call_exposes_success_and_custom_error_bytes\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"format\": \"fe-compatibility-phase0-report-v1\",\n  \"mode\": \"behavioral conformance (strict raw bytes)\",\n  \"corpus\": \"spec/meter-v0.md Phase 0 sequence (5 calls)\",\n  \"left\": \"solidity\",\n  \"right\": \"fe\",\n  \"claim\": \"No mismatch observed for this corpus under this configuration; this is not an equivalence proof.\",\n  \"checker\": \"native Fe compat_checker protocol 1\",\n  \"frame_words\": 74,\n  \"steps_compared\": 5,\n  \"verdict\": \"match\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"right\": [\n      45190,\n      21480,\n      21510,\n      28090,\n      23274\n    ],\n    \"note\": \"reported only; gas is not compared\"\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "fe",
+        "--right",
+        "solidity"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"format\": \"fe-compatibility-phase0-report-v1\",\n  \"mode\": \"behavioral conformance (strict raw bytes)\",\n  \"corpus\": \"spec/meter-v0.md Phase 0 sequence (5 calls)\",\n  \"left\": \"fe\",\n  \"right\": \"solidity\",\n  \"claim\": \"No mismatch observed for this corpus under this configuration; this is not an equivalence proof.\",\n  \"checker\": \"native Fe compat_checker protocol 1\",\n  \"frame_words\": 74,\n  \"steps_compared\": 5,\n  \"verdict\": \"match\",\n  \"gas_used\": {\n    \"left\": [\n      45190,\n      21480,\n      21510,\n      28090,\n      23274\n    ],\n    \"right\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is not compared\"\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-faulty"
+      ],
+      "exit": 1,
+      "stdout": "{\n  \"format\": \"fe-compatibility-phase0-report-v1\",\n  \"mode\": \"behavioral conformance (strict raw bytes)\",\n  \"corpus\": \"spec/meter-v0.md Phase 0 sequence (5 calls)\",\n  \"left\": \"solidity\",\n  \"right\": \"fe-faulty\",\n  \"claim\": \"Mismatch observed; see first_divergence.\",\n  \"checker\": \"native Fe compat_checker protocol 1\",\n  \"frame_words\": 74,\n  \"steps_compared\": 5,\n  \"verdict\": \"mismatch\",\n  \"first_divergence\": {\n    \"step\": 2,\n    \"call\": \"add(uint256)\",\n    \"argument\": \"200\",\n    \"category\": \"returndata-byte\",\n    \"log\": 0,\n    \"index\": 67,\n    \"left\": \"100\",\n    \"right\": \"101\",\n    \"left_returndata\": \"0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000064\",\n    \"right_returndata\": \"0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000065\"\n  },\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"right\": [\n      45190,\n      21480,\n      21510,\n      28090,\n      23274\n    ],\n    \"note\": \"reported only; gas is not compared\"\n  }\n}\n",
+      "stderr": ""
+    }
+  ],
+  "sources": {
+    "fe.toml": "65d983a85187468340f13b9580e64c28d36bfe496d9902a52a7c3c5fab938805",
+    "src/lib.fe": "94ac713e1abdaaac669c5468cc42daf28eb8e66e0144ed6b1d18d9a3a61518b6",
+    "src/observation.fe": "1d8e754eb1d466fb435de657ff6db627eded108ed7a3a804822c8da74f638187",
+    "src/conformance.fe": "5cff8b1134549f1672280d55b5e5e290b8a60a16a3a12d518fa12789993b11bc",
+    "host/checker-native/fe.toml": "5da71135e249735757422288288548dbe45f9b97bde85a7f4c311daefb8c14df",
+    "host/checker-native/src/lib.fe": "98441f6e2b53365050ea802b307e15bcb696d63264011834edaa7bce76c55b07",
+    "contracts/solidity/Meter.sol": "bfafb856bb756df23854a29fdd742705424d8e6d591234c0c8656bb59499c181",
+    "contracts/fe/meter/fe.toml": "45a4eda71bb72570e7e926164d53c0ff472fd4736583f6f17e59264996cf0793",
+    "contracts/fe/meter/src/lib.fe": "557c0c0f57a23f458a2e8467926cd65f4dc030c559e15bee5477904938699223",
+    "contracts/fe/meter/src/tests.fe": "f106c2295ba57e0978cbe736e84f649e7af805c2f56a9a5c2915ae987a1bbf37",
+    "src/tests.fe": "9132318e4113d36f4fbb9b774a815625904f20c08cd4f273cca9f1bc58b39ab1",
+    "scripts/build.py": "53c03e1273b07f09e9b8768e69ea6d75d73021892684dbff7de0445dfe2b395c",
+    "host/common.py": "25bf5b7fc961b10c3ffe132e9859b3045be715e3a81fd30463f116d64c897545"
+  }
+}

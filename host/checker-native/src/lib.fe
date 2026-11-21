@@ -1,0 +1,204 @@
+// Native transport for the Fe conformance checker (protocol version 1).
+//
+// Input: whitespace-separated unsigned decimals, at most 65,536 characters and
+// 78 digits per number, ending at EOF:
+//   1 <steps> then, per step, the left observation followed by the right one.
+// Observation: success(0|1) len word*ceil(len/32) log_count, then per log:
+//   emitter topic_count topic*topic_count data_len word*ceil(data_len/32)
+// Words are big-endian 32-byte chunks with a zero-padded tail.
+// Output: `1 verdict steps step category log index left right` and a newline;
+// verdict 0 match, 1 mismatch, 2 malformed observation. Exit 2 means an
+// invalid frame (nothing written); exit 3 means output failure.
+use std::io::{Read, Write, host}
+use compat::{
+    CallObservation,
+    Payload,
+    Verdict,
+    Mismatch,
+    MAX_PAYLOAD_WORDS,
+    MAX_LOGS,
+    MAX_TOPICS,
+    MAX_STEPS,
+    empty_payload,
+    empty_log,
+    empty_observation,
+    begin,
+    step,
+    category_code,
+}
+
+struct Parser { bad: bool, chars: usize }
+
+fn next_char() -> i32 uses (input: mut Read, parser: mut Parser) {
+    if parser.chars >= 65536 {
+        parser.bad = true
+        return -1
+    }
+    parser.chars += 1
+    input.read_char()
+}
+
+fn whitespace(c: i32) -> bool {
+    c == 32 || c == 10 || c == 13 || c == 9
+}
+
+fn read_number() -> u256 uses (input: mut Read, parser: mut Parser) {
+    if parser.bad {
+        return 0
+    }
+    var c = next_char()
+    while whitespace(c) {
+        c = next_char()
+    }
+    var value: u256 = 0
+    var digits: usize = 0
+    while c >= 48 && c <= 57 {
+        let digit: u256 = (c - 48).downcast().unwrap()
+        if digits >= 78 || value > (!(0 as u256) - digit) / 10 {
+            parser.bad = true
+            return 0
+        }
+        value = value * 10 + digit
+        digits += 1
+        c = next_char()
+    }
+    if digits == 0 || (c != -1 && !whitespace(c)) {
+        parser.bad = true
+    }
+    value
+}
+
+fn read_small(limit: u256) -> usize uses (input: mut Read, parser: mut Parser) {
+    let value = read_number()
+    if value > limit {
+        parser.bad = true
+        return 0
+    }
+    value as usize
+}
+
+fn read_payload() -> Payload uses (input: mut Read, parser: mut Parser) {
+    var payload = empty_payload()
+    payload.len = read_small(limit: (MAX_PAYLOAD_WORDS * 32) as u256)
+    var w: usize = 0
+    while w * 32 < payload.len && !parser.bad {
+        payload.words[w] = read_number()
+        w += 1
+    }
+    payload
+}
+
+fn read_observation() -> CallObservation uses (input: mut Read, parser: mut Parser) {
+    var observation = empty_observation()
+    observation.success = read_small(limit: 1) == 1
+    observation.returndata = read_payload()
+    observation.log_count = read_small(limit: MAX_LOGS as u256)
+    var i: usize = 0
+    while i < observation.log_count && !parser.bad {
+        var log = empty_log()
+        log.emitter = read_number()
+        log.topic_count = read_small(limit: MAX_TOPICS as u256)
+        var t: usize = 0
+        while t < log.topic_count && !parser.bad {
+            log.topics[t] = read_number()
+            t += 1
+        }
+        log.data = read_payload()
+        observation.logs[i] = log
+        i += 1
+    }
+    observation
+}
+
+fn finish_input() uses (input: mut Read, parser: mut Parser) {
+    var c = next_char()
+    while c != -1 {
+        if !whitespace(c) {
+            parser.bad = true
+        }
+        c = next_char()
+    }
+}
+
+struct Reply { steps: usize, result: Mismatch }
+
+fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
+    var progress = begin()
+    if read_number() != 1 {
+        parser.bad = true
+        return Reply { steps: 0, result: progress.result }
+    }
+    let count = read_small(limit: MAX_STEPS as u256)
+    var s: usize = 0
+    while s < count && !parser.bad {
+        let left = read_observation()
+        let right = read_observation()
+        progress = step(progress, left, right)
+        s += 1
+    }
+    finish_input()
+    Reply { steps: progress.steps, result: progress.result }
+}
+
+fn number(_ n: u256) uses (output: mut Write) {
+    var value = n
+    var digits: [u8; 78] = [0; 78]
+    var len: usize = 0
+    if value == 0 {
+        output.write_char(c: 48)
+    }
+    while value != 0 {
+        let digit: u8 = (value % 10).downcast().unwrap()
+        digits[len] = digit + 48
+        len += 1
+        value /= 10
+    }
+    while len > 0 {
+        len -= 1
+        output.write_char(c: digits[len] as i32)
+    }
+    output.write_char(c: 32)
+}
+
+fn write_reply(reply: Reply) uses (output: mut Write) {
+    let m = reply.result
+    number(1)
+    number(
+        match m.verdict {
+            Verdict::Match => 0,
+            Verdict::Mismatch => 1,
+            Verdict::Malformed => 2,
+        },
+    )
+    number(reply.steps as u256)
+    number(m.step as u256)
+    number(
+        match m.verdict {
+            Verdict::Mismatch => category_code(m.category),
+            _ => 0,
+        },
+    )
+    number(m.log as u256)
+    number(m.index as u256)
+    number(m.left)
+    number(m.right)
+    output.write_char(c: 10)
+}
+
+pub fn main() -> i32 {
+    var channel = host()
+    var parser = Parser { bad: false, chars: 0 }
+    let reply = with (Read = mut channel, mut parser) {
+        route()
+    }
+    if parser.bad {
+        return 2
+    }
+    with (Write = mut channel) {
+        write_reply(reply)
+    }
+    if channel.failed() {
+        return 3
+    }
+    0
+}

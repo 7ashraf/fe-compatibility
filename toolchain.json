@@ -35,6 +35,31 @@
     "commit": "b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2"
   },
   "evm_fork": "osaka",
-  "solidity_version": null,
-  "status": "Workspace bootstrap; project-specific execution settings remain Phase 0 work."
+  "solidity_version": "0.8.31+commit.fd3a2265",
+  "status": "Phase 0 exit gate verified on Darwin arm64. Linux assets are pinned but untested.",
+  "solidity": {
+    "version": "0.8.31+commit.fd3a2265",
+    "assets": {
+      "macos": {
+        "url": "https://github.com/argotorg/solidity/releases/download/v0.8.31/solc-macos",
+        "sha256": "f5a243d6b2dd8fba307e36c5fefa2d8eb3ae74ba81036d1c17c971b5d346ade9"
+      },
+      "linux-amd64": {
+        "url": "https://github.com/argotorg/solidity/releases/download/v0.8.31/solc-static-linux",
+        "sha256": "aac9cd0116e9ae0cd3d8f64a8641381845dc9f12e2a52653de36fb619323e557"
+      },
+      "linux-arm64": {
+        "url": "https://github.com/argotorg/solidity/releases/download/v0.8.31/solc-static-linux-arm",
+        "sha256": "acf358d82da7db033debb2f4db11e1c9cfcb02b0cb5b5ddbb9635ad817b41bdd"
+      }
+    }
+  },
+  "execution": {
+    "checker_backend": "native, -O 1 (host/checker-native, protocol 1)",
+    "fe_contract_backend": "sonatina, release profile, -O 1",
+    "solc_settings": "--evm-version osaka --optimize --optimize-runs 200",
+    "evm": "anvil 1.5.1-stable --hardfork osaka, chain 31337, genesis timestamp 1700000000, base fee 0",
+    "dependencies": "Fe bundled core/std at the pinned compiler commit; local compat ingot only",
+    "phase0_formats": "fe-compatibility-raw-execution-v1, fe-compatibility-phase0-report-v1"
+  }
 }

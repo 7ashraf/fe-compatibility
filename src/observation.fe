@@ -1,0 +1,97 @@
+// Raw observations are kept as exact bytes: a payload is a byte length plus
+// big-endian 32-byte words, with the unused tail of the last word zero. The
+// length is explicit, so leading zero bytes and empty payloads cannot be lost.
+
+pub const MAX_PAYLOAD_WORDS: usize = 8
+pub const MAX_LOGS: usize = 4
+pub const MAX_TOPICS: usize = 4
+pub const MAX_STEPS: usize = 64
+
+pub struct Payload { pub len: usize, pub words: [u256; 8] }
+impl Copy for Payload {}
+
+// One log entry: emitter address (as a 160-bit value), ordered topics, raw data.
+pub struct LogRecord { pub emitter: u256, pub topic_count: usize, pub topics: [u256; 4], pub data: Payload }
+impl Copy for LogRecord {}
+
+// What one transaction exposed: execution status, exact returndata (or revert
+// data), and its ordered logs.
+pub struct CallObservation {
+    pub success: bool,
+    pub returndata: Payload,
+    pub log_count: usize,
+    pub logs: [LogRecord; 4],
+}
+impl Copy for CallObservation {}
+
+pub fn empty_payload() -> Payload {
+    Payload { len: 0, words: [0; 8] }
+}
+
+pub fn empty_log() -> LogRecord {
+    LogRecord { emitter: 0, topic_count: 0, topics: [0; 4], data: empty_payload() }
+}
+
+pub fn empty_observation() -> CallObservation {
+    CallObservation { success: false, returndata: empty_payload(), log_count: 0, logs: [empty_log(); 4] }
+}
+
+fn words_for(len: usize) -> usize {
+    (len + 31) / 32
+}
+
+// Bytes past `len` must be zero, so two payloads that differ only in padding
+// cannot compare equal, and an over-long transport is rejected rather than
+// silently truncated.
+pub fn payload_well_formed(payload: Payload) -> bool {
+    if payload.len > MAX_PAYLOAD_WORDS * 32 {
+        return false
+    }
+    let used = words_for(len: payload.len)
+    var i: usize = used
+    while i < MAX_PAYLOAD_WORDS {
+        if payload.words[i] != 0 {
+            return false
+        }
+        i += 1
+    }
+    let tail = payload.len % 32
+    if tail != 0 {
+        let shift: u256 = ((32 - tail) * 8) as u256
+        let mask: u256 = (1 << shift) - 1
+        if payload.words[used - 1] & mask != 0 {
+            return false
+        }
+    }
+    true
+}
+
+pub fn well_formed(observation: CallObservation) -> bool {
+    if !payload_well_formed(payload: observation.returndata) || observation.log_count > MAX_LOGS {
+        return false
+    }
+    if !observation.success && observation.log_count != 0 {
+        return false
+    }
+    var i: usize = 0
+    while i < MAX_LOGS {
+        let log = observation.logs[i]
+        if i >= observation.log_count {
+            if log.emitter != 0 || log.topic_count != 0 || log.data.len != 0 {
+                return false
+            }
+        }
+        if log.topic_count > MAX_TOPICS || log.emitter >= (1 << 160) || !payload_well_formed(payload: log.data) {
+            return false
+        }
+        var t: usize = log.topic_count
+        while t < MAX_TOPICS {
+            if log.topics[t] != 0 {
+                return false
+            }
+            t += 1
+        }
+        i += 1
+    }
+    true
+}

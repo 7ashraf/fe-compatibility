@@ -1,0 +1,51 @@
+// Fe port of spec/meter-v0.md.
+use std::abi::sol
+use std::evm::{Address, Ctx, Log}
+
+pub msg MeterMsg {
+    #[selector = sol("add(uint256)")]
+    Add { quantity: u256 } -> u256,
+    #[selector = sol("total()")]
+    Total -> u256,
+}
+
+#[error]
+pub struct EmptyQuantity {}
+
+#[error]
+pub struct TooLarge { pub quantity: u256, pub limit: u256 }
+
+#[event]
+pub struct Added {
+    #[indexed]
+    pub caller: Address,
+    pub quantity: u256,
+    pub total: u256,
+}
+
+const LIMIT: u256 = 100
+
+pub contract Meter uses (ctx: Ctx, log: mut Log) {
+    mut total: u256,
+
+    init() uses (mut total) {
+        total = 0
+    }
+
+    recv MeterMsg {
+        Add { quantity } -> u256 uses (ctx, mut log, mut total) {
+            if quantity == 0 {
+                revert_error(EmptyQuantity {})
+            }
+            if quantity > LIMIT {
+                revert_error(TooLarge { quantity, limit: LIMIT })
+            }
+            total += quantity
+            log.emit(Added { caller: ctx.caller(), quantity, total })
+            total
+        }
+        Total -> u256 uses (total) {
+            total
+        }
+    }
+}

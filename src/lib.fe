@@ -1,0 +1,16 @@
+// Fe conformance kit: typed raw EVM observations and the comparison that decides
+// whether two implementations' public behavior matched. Pure: no EVM effects.
+pub use observation::{
+    MAX_PAYLOAD_WORDS,
+    MAX_LOGS,
+    MAX_TOPICS,
+    MAX_STEPS,
+    Payload,
+    LogRecord,
+    CallObservation,
+    empty_payload,
+    empty_log,
+    empty_observation,
+    well_formed,
+}
+pub use conformance::{Category, Mismatch, Verdict, Progress, compare, begin, step, category_code}

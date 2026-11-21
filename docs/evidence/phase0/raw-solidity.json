@@ -1,0 +1,118 @@
+{
+  "format": "fe-compatibility-raw-execution-v1",
+  "implementation": "solidity",
+  "target": {
+    "creation": "solidity/Meter.bin",
+    "runtime": "solidity/Meter.bin-runtime",
+    "abi": "solidity/Meter.abi",
+    "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+    "creation_sha256": "c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf",
+    "runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c"
+  },
+  "tools": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "environment": {
+    "hardfork": "osaka",
+    "chain_id": 31337,
+    "genesis_timestamp": 1700000000,
+    "base_fee": 0,
+    "gas_limit_per_tx": 2000000,
+    "gas_price": 1,
+    "sender": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+    "sender_nonce_at_deploy": 0,
+    "mining": "one mined transaction per block, scheduled timestamps"
+  },
+  "deployment": {
+    "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+    "runtime_code_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c"
+  },
+  "returndata_source": "debug_traceTransaction returnValue, cross-checked against eth_call at the parent block",
+  "steps": [
+    {
+      "index": 0,
+      "call": "add(uint256)",
+      "argument": "5",
+      "calldata": "0x1003e2d20000000000000000000000000000000000000000000000000000000000000005",
+      "block": 2,
+      "timestamp": 1700000002,
+      "success": true,
+      "returndata": "0x0000000000000000000000000000000000000000000000000000000000000005",
+      "returndata_via_eth_call": "0x0000000000000000000000000000000000000000000000000000000000000005",
+      "logs": [
+        {
+          "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          "topics": [
+            "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+            "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+          ],
+          "data": "0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005"
+        }
+      ],
+      "gas_used": 45625
+    },
+    {
+      "index": 1,
+      "call": "add(uint256)",
+      "argument": "0",
+      "calldata": "0x1003e2d20000000000000000000000000000000000000000000000000000000000000000",
+      "block": 3,
+      "timestamp": 1700000003,
+      "success": false,
+      "returndata": "0xbc7bbfc5",
+      "returndata_via_eth_call": "0xbc7bbfc5",
+      "logs": [],
+      "gas_used": 21480
+    },
+    {
+      "index": 2,
+      "call": "add(uint256)",
+      "argument": "200",
+      "calldata": "0x1003e2d200000000000000000000000000000000000000000000000000000000000000c8",
+      "block": 4,
+      "timestamp": 1700000004,
+      "success": false,
+      "returndata": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000064",
+      "returndata_via_eth_call": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000064",
+      "logs": [],
+      "gas_used": 21531
+    },
+    {
+      "index": 3,
+      "call": "add(uint256)",
+      "argument": "100",
+      "calldata": "0x1003e2d20000000000000000000000000000000000000000000000000000000000000064",
+      "block": 5,
+      "timestamp": 1700000005,
+      "success": true,
+      "returndata": "0x0000000000000000000000000000000000000000000000000000000000000069",
+      "returndata_via_eth_call": "0x0000000000000000000000000000000000000000000000000000000000000069",
+      "logs": [
+        {
+          "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          "topics": [
+            "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+            "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+          ],
+          "data": "0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069"
+        }
+      ],
+      "gas_used": 28525
+    },
+    {
+      "index": 4,
+      "call": "total()",
+      "argument": null,
+      "calldata": "0x2ddbd13a",
+      "block": 6,
+      "timestamp": 1700000006,
+      "success": true,
+      "returndata": "0x0000000000000000000000000000000000000000000000000000000000000069",
+      "returndata_via_eth_call": "0x0000000000000000000000000000000000000000000000000000000000000069",
+      "logs": [],
+      "gas_used": 23342
+    }
+  ]
+}
