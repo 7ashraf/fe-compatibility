@@ -36,7 +36,7 @@
   },
   "evm_fork": "osaka",
   "solidity_version": "0.8.31+commit.fd3a2265",
-  "status": "Phase 0 and Phase 1 exit gates verified on Darwin arm64. Linux assets are pinned but untested.",
+  "status": "Phase 0-2 exit gates verified on Darwin arm64. Linux assets are pinned but untested.",
   "solidity": {
     "version": "0.8.31+commit.fd3a2265",
     "assets": {
@@ -61,6 +61,7 @@
     "evm": "anvil 1.5.1-stable --hardfork osaka, chain 31337, genesis timestamp 1700000000, base fee 0",
     "dependencies": "Fe bundled core/std at the pinned compiler commit; local compat ingot only",
     "phase0_formats": "fe-compatibility-raw-execution-v1, fe-compatibility-phase0-report-v1",
-    "phase1_formats": "fe-compatibility-abi-vectors v1, fe-compatibility-raw-execution v2, native checker protocol 2, golden encoder cast 1.5.1-stable"
+    "phase1_formats": "fe-compatibility-abi-vectors v1, fe-compatibility-raw-execution v2, native checker protocol 2, golden encoder cast 1.5.1-stable",
+    "phase2_formats": "native checker protocol 3, fe-compatibility-report v1"
   }
 }

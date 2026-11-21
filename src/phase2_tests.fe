@@ -1,0 +1,264 @@
+// Phase 2 engine tests. Every negative case starts from an observation that
+// matches its pair (the positive control) and changes exactly one thing; the
+// assertion names the intended category and location.
+use super::{
+    CallObservation,
+    LogRecord,
+    Mismatch,
+    Verdict,
+    StateKind,
+    StateField,
+    AddressTable,
+    Malformation,
+    category_code,
+    malformation_code,
+    empty_observation,
+    empty_log,
+    empty_table,
+    empty_allowlist,
+    begin,
+    step,
+    step_normalized,
+    compare,
+}
+
+fn code(_ m: Mismatch) -> u256 {
+    match m.verdict {
+        Verdict::Match => 0,
+        Verdict::Mismatch => category_code(m.category),
+        Verdict::Malformed => 100 + malformation_code(m.reason),
+        Verdict::NotComparable => 200,
+    }
+}
+
+fn event(tag: u256, value: u256) -> LogRecord {
+    var log = empty_log()
+    log.emitter = 0xcafe
+    log.topic_count = 2
+    log.topics[0] = 0xe0
+    log.topics[1] = tag
+    log.data.len = 32
+    log.data.words[0] = value
+    log
+}
+
+// A success returning 42 with three events and two typed state fields.
+fn base() -> CallObservation {
+    var o = empty_observation()
+    o.success = true
+    o.returndata.len = 32
+    o.returndata.words[0] = 42
+    o.log_count = 3
+    o.logs[0] = event(tag: 1, value: 10)
+    o.logs[1] = event(tag: 2, value: 20)
+    o.logs[2] = event(tag: 3, value: 30)
+    o.state_count = 2
+    o.state[0] = StateField { kind: StateKind::Uint, value: 105 }
+    o.state[1] = StateField { kind: StateKind::Address, value: 0xabc }
+    o
+}
+
+fn revert(selector: u256, first: u256, second: u256) -> CallObservation {
+    var o = empty_observation()
+    o.returndata.len = 68
+    o.returndata.words[0] = (selector << 224) | (first >> 32)
+    o.returndata.words[1] = (first << 224) | (second >> 32)
+    o.returndata.words[2] = second << 224
+    o
+}
+
+#[test]
+fn positive_controls_match() {
+    assert!(code(compare(left: base(), right: base())) == 0)
+    assert!(code(compare(left: revert(selector: 0x677fd0e3, first: 200, second: 100),
+                         right: revert(selector: 0x677fd0e3, first: 200, second: 100))) == 0)
+}
+
+#[test]
+fn missing_extra_and_reordered_logs() {
+    // Middle event dropped.
+    var missing = base()
+    missing.logs[1] = missing.logs[2]
+    missing.logs[2] = empty_log()
+    missing.log_count = 2
+    let m = compare(left: base(), right: missing)
+    assert!(code(m) == 12 && m.index == 1 && m.left == 3 && m.right == 2)
+    // An extra event appended, and one inserted first.
+    var extra = base()
+    extra.logs[3] = event(tag: 4, value: 40)
+    extra.log_count = 4
+    let e = compare(left: base(), right: extra)
+    assert!(code(e) == 13 && e.index == 3)
+    var first = base()
+    first.logs[3] = first.logs[2]
+    first.logs[2] = first.logs[1]
+    first.logs[1] = first.logs[0]
+    first.logs[0] = event(tag: 9, value: 90)
+    first.log_count = 4
+    let f = compare(left: base(), right: first)
+    assert!(code(f) == 13 && f.index == 0)
+    // Same events, different order.
+    var reordered = base()
+    reordered.logs[0] = base().logs[2]
+    reordered.logs[2] = base().logs[0]
+    let r = compare(left: base(), right: reordered)
+    assert!(code(r) == 14 && r.index == 0)
+    // Two events missing: not a single deletion, so a plain count difference.
+    var two = base()
+    two.logs[1] = empty_log()
+    two.logs[2] = empty_log()
+    two.log_count = 1
+    let t = compare(left: base(), right: two)
+    assert!(code(t) == 4 && t.left == 3 && t.right == 1)
+    // Same count but a different event is a field difference, not a reorder.
+    var changed = base()
+    changed.logs[2] = event(tag: 3, value: 31)
+    let c = compare(left: base(), right: changed)
+    assert!(code(c) == 9 && c.log == 2 && c.index == 31)
+}
+
+#[test]
+fn changed_indexed_value() {
+    var other = base()
+    other.logs[1].topics[1] = 7
+    let m = compare(left: base(), right: other)
+    assert!(code(m) == 7 && m.log == 1 && m.index == 1 && m.left == 2 && m.right == 7)
+}
+
+#[test]
+fn wrong_custom_error_and_payload() {
+    let expected = revert(selector: 0x677fd0e3, first: 200, second: 100)
+    let payload = compare(left: expected, right: revert(selector: 0x677fd0e3, first: 200, second: 101))
+    assert!(code(payload) == 11 && payload.slot == 1 && payload.index == 67 && payload.left == 100
+        && payload.right == 101)
+    let first = compare(left: expected, right: revert(selector: 0x677fd0e3, first: 201, second: 100))
+    assert!(code(first) == 11 && first.slot == 0)
+    let error = compare(left: expected, right: revert(selector: 0xbc7bbfc5, first: 200, second: 100))
+    assert!(code(error) == 10 && error.left == 0x677fd0e3 && error.right == 0xbc7bbfc5)
+    // A different error with a shorter payload is still reported as a different error.
+    var empty = empty_observation()
+    empty.returndata.len = 4
+    empty.returndata.words[0] = 0xbc7bbfc5 << 224
+    assert!(code(compare(left: expected, right: empty)) == 10)
+}
+
+#[test]
+fn success_versus_revert() {
+    let m = compare(left: base(), right: revert(selector: 0x677fd0e3, first: 200, second: 100))
+    assert!(code(m) == 1 && m.left == 1 && m.right == 0)
+}
+
+#[test]
+fn state_mismatch_behind_matching_return_and_logs() {
+    var other = base()
+    other.state[0].value = 106
+    let m = compare(left: base(), right: other)
+    assert!(code(m) == 17 && m.slot == 0 && m.left == 105 && m.right == 106)
+    var kind = base()
+    kind.state[0].kind = StateKind::Int
+    assert!(code(compare(left: base(), right: kind)) == 16)
+    var fewer = base()
+    fewer.state_count = 1
+    fewer.state[1] = StateField { kind: StateKind::Word, value: 0 }
+    assert!(code(compare(left: base(), right: fewer)) == 15)
+}
+
+#[test]
+fn earlier_observation_classes_win_within_a_step() {
+    // Return and state both differ: the return is reported.
+    var both = base()
+    both.returndata.words[0] = 43
+    both.state[0].value = 106
+    assert!(code(compare(left: base(), right: both)) == 3)
+    // Logs and state both differ: the logs are reported.
+    var logs = base()
+    logs.logs[0].data.words[0] = 11
+    logs.state[0].value = 106
+    assert!(code(compare(left: base(), right: logs)) == 9)
+}
+
+fn tables(left: u256, right: u256) -> (AddressTable, AddressTable) {
+    var a = empty_table()
+    a.count = 1
+    a.addresses[0] = left
+    a.roles[0] = 1
+    var b = empty_table()
+    b.count = 1
+    b.addresses[0] = right
+    b.roles[0] = 1
+    (a, b)
+}
+
+#[test]
+fn address_state_is_normalized_by_type_only() {
+    let (a, b) = tables(left: 0xabc, right: 0xdef)
+    var right = base()
+    right.state[1].value = 0xdef
+    let none = empty_allowlist()
+    let ok = step_normalized(progress: begin(), left: base(), right, left_table: a, right_table: b, allowlist: none,
+                             exact_returndata: true).result
+    assert!(code(ok) == 0)
+    // The same address value in a uint state field is not rewritten.
+    var left_uint = base()
+    left_uint.state[0].value = 0xabc
+    var right_uint = right
+    right_uint.state[0].value = 0xdef
+    let u = step_normalized(progress: begin(), left: left_uint, right: right_uint, left_table: a, right_table: b,
+                            allowlist: none, exact_returndata: true).result
+    assert!(code(u) == 17 && u.slot == 0)
+}
+
+#[test]
+fn malformed_reasons_are_specific() {
+    var oversized = base()
+    oversized.returndata.len = 300
+    assert!(code(compare(left: base(), right: oversized)) == 101)
+    var logs = base()
+    logs.log_count = 5
+    assert!(code(compare(left: logs, right: base())) == 104)
+    var reverted = revert(selector: 1, first: 0, second: 0)
+    reverted.log_count = 1
+    reverted.logs[0] = event(tag: 1, value: 1)
+    assert!(code(compare(left: reverted, right: reverted)) == 103)
+    var flag = base()
+    flag.state[0] = StateField { kind: StateKind::Bool, value: 2 }
+    assert!(code(compare(left: flag, right: flag)) == 109)
+    var address = base()
+    address.state[1].value = 1 << 160
+    assert!(code(compare(left: address, right: address)) == 109)
+    var stray = base()
+    stray.state[5].value = 1
+    assert!(code(compare(left: stray, right: stray)) == 107)
+    var topics = base()
+    topics.logs[0].topic_count = 5
+    assert!(code(compare(left: topics, right: topics)) == 105)
+    var data = base()
+    data.logs[1].data.len = 257
+    assert!(code(compare(left: data, right: data)) == 101)
+}
+
+#[test]
+fn listing_is_bounded_ordered_and_counted() {
+    var progress = begin()
+    var s: usize = 0
+    while s < 12 {
+        var right = base()
+        if s != 0 {
+            right.state[0].value = 105 + s as u256
+        }
+        progress = step(progress, left: base(), right)
+        s += 1
+    }
+    assert!(progress.steps == 12 && progress.total == 11 && progress.listed == 8)
+    assert!(code(progress.result) == 17 && progress.result.step == 1)
+    var i: usize = 0
+    while i < 8 {
+        assert!(progress.mismatches[i].step == i + 1 && progress.mismatches[i].right == 106 + i as u256)
+        i += 1
+    }
+    // A later malformed step makes the whole result malformed but keeps the list.
+    var bad = base()
+    bad.returndata.len = 300
+    let after = step(progress, left: base(), right: bad)
+    assert!(code(after.result) == 101 && after.result.step == 12 && after.listed == 8)
+}

@@ -1,0 +1,142 @@
+{
+  "abi_declarations": {
+    "left": {
+      "missing": [],
+      "unexpected": []
+    },
+    "match": true,
+    "right": {
+      "missing": [],
+      "unexpected": []
+    },
+    "spec": "spec/meter-v0.md"
+  },
+  "claim": "1 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+  "configuration": {
+    "left": {
+      "deployed_runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c",
+      "implementation": "solidity",
+      "target": {
+        "abi": "solidity/Meter.abi",
+        "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+        "creation": "solidity/Meter.bin",
+        "creation_sha256": "c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf",
+        "runtime": "solidity/Meter.bin-runtime",
+        "runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c",
+        "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+      },
+      "world": {
+        "caller": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+        "zero": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "right": {
+      "deployed_runtime_sha256": "66516c590d75c1da9663fd641993167e55fb5f314b09a9f2744565af25751c63",
+      "implementation": "fe-faulty",
+      "target": {
+        "abi": "fe-faulty/Meter.abi.json",
+        "compiler": "fe 26.5.0 (3dab95f)",
+        "creation": "fe-faulty/Meter.bin",
+        "creation_sha256": "737a04012e4430a7f1ae6f19f67a2d22e51468cd6de08cc9a3647cf0e718dee0",
+        "fault": "intentional: PHASE 0 FAULT: TooLarge reports limit 101",
+        "mutated_source_sha256": "0f7b81a02ff4ffe62c972e10634e2104f1d5143201425e726a309ef0084473b3",
+        "runtime": "fe-faulty/Meter.runtime.bin",
+        "runtime_sha256": "66516c590d75c1da9663fd641993167e55fb5f314b09a9f2744565af25751c63",
+        "settings": "fe build --backend sonatina --profile release -O 1"
+      },
+      "world": {
+        "caller": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+        "zero": "0x0000000000000000000000000000000000000000"
+      }
+    }
+  },
+  "corpus": "meter-v0 (5 calls)",
+  "decision": {
+    "checker": "native Fe compat_checker protocol 3",
+    "listed": 1,
+    "mismatching_steps": 1,
+    "steps_compared": 5,
+    "truncated": false,
+    "verdict": "mismatch"
+  },
+  "environment": {
+    "base_fee": 0,
+    "chain_id": 31337,
+    "gas_limit_per_tx": 2000000,
+    "gas_price": 1,
+    "genesis_timestamp": 1700000000,
+    "hardfork": "osaka",
+    "mining": "one mined transaction per block, scheduled timestamps",
+    "sender_nonce_at_deploy": 0
+  },
+  "format": "fe-compatibility-report",
+  "gas_used": {
+    "left": [
+      45625,
+      21480,
+      21531,
+      28525,
+      23342
+    ],
+    "note": "reported only; gas is never compared",
+    "right": [
+      45190,
+      21480,
+      21510,
+      28090,
+      23274
+    ]
+  },
+  "mismatches": [
+    {
+      "action": {
+        "argument": "200",
+        "call": "add(uint256)"
+      },
+      "category": "error-argument",
+      "deployment": false,
+      "explanation": {
+        "left": "100",
+        "right": "101",
+        "what": "TooLarge(uint256,uint256): argument 1 `limit` (uint256) differs"
+      },
+      "fe": {
+        "left": "100",
+        "right": "101"
+      },
+      "location": {
+        "index": 67,
+        "log": 0,
+        "slot": 1
+      },
+      "step": 2,
+      "strict": {
+        "left_returndata": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000064",
+        "left_success": false,
+        "right_returndata": "0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000065",
+        "right_success": false
+      }
+    }
+  ],
+  "mode": "behavioral conformance (strict)",
+  "raw_records_sha256": {
+    "left": "6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1",
+    "right": "6469c9c5add9fa2660524e33249771433e5151406222109e3353aa1d516f9561"
+  },
+  "state_declared": [
+    {
+      "getter": "total()",
+      "kind": "uint",
+      "name": "total"
+    }
+  ],
+  "tools": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "version": 1
+}

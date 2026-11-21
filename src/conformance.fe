@@ -1,9 +1,32 @@
-use super::{CallObservation, Payload, LogRecord, MAX_LOGS, MAX_STEPS, well_formed}
+// The Fe conformance engine: strict comparison and mismatch classification.
+//
+// Within one step, observations are compared in a fixed order, so the reported
+// divergence is deterministic:
+//   1. status;
+//   2. returndata: for two reverts, the error selector and then error
+//      arguments; for two successes, exact bytes (word slot reported);
+//   3. logs in emission order, classified as missing, extra, or reordered
+//      when the sequences are a deletion, insertion, or permutation of each
+//      other, otherwise by the first differing field;
+//   4. typed public state, by field index.
+// Across steps, the first divergence decides the verdict. The first divergence
+// of each mismatching step is listed, up to MAX_LISTED in step order, and the
+// total count is kept, so the output stays bounded and is never silently
+// truncated.
+use super::{
+    CallObservation,
+    Payload,
+    LogRecord,
+    StateKind,
+    Malformation,
+    MAX_LOGS,
+    MAX_STEPS,
+    malformation,
+}
 use super::{AddressTable, Allowlist, table_valid, allowlist_valid, normalize}
 
-// Strict-mode mismatch classes, checked in this fixed order so the reported
-// divergence is deterministic: status, returndata, then logs in emission order
-// (count, then per log: emitter, topic count, topics, data length, data bytes).
+pub const MAX_LISTED: usize = 8
+
 pub enum Category {
     Status,
     ReturnLength,
@@ -14,6 +37,14 @@ pub enum Category {
     Topic,
     DataLength,
     DataByte,
+    ErrorSelector,
+    ErrorArgument,
+    LogMissing,
+    LogExtra,
+    LogReordered,
+    StateCount,
+    StateKind,
+    StateValue,
 }
 impl Copy for Category {}
 
@@ -28,8 +59,10 @@ pub enum Verdict {
 }
 impl Copy for Verdict {}
 
-// `log` is the log index (0 when not a log category); `index` is the byte offset,
-// topic index, or 0; `left`/`right` are the differing byte, word, length, or flag.
+// `log` is the log index; `index` is a byte offset, topic index, or log index;
+// `slot` is the 32-byte word, error argument, or state field the difference
+// falls in. `left` and `right` are the differing words, lengths, selectors, or
+// flags. `reason` is set for Malformed.
 pub struct Mismatch {
     pub verdict: Verdict,
     pub deployment: bool,
@@ -37,8 +70,10 @@ pub struct Mismatch {
     pub category: Category,
     pub log: usize,
     pub index: usize,
+    pub slot: usize,
     pub left: u256,
     pub right: u256,
+    pub reason: Malformation,
 }
 impl Copy for Mismatch {}
 
@@ -53,15 +88,50 @@ pub fn category_code(_ category: Category) -> u256 {
         Category::Topic => 7,
         Category::DataLength => 8,
         Category::DataByte => 9,
+        Category::ErrorSelector => 10,
+        Category::ErrorArgument => 11,
+        Category::LogMissing => 12,
+        Category::LogExtra => 13,
+        Category::LogReordered => 14,
+        Category::StateCount => 15,
+        Category::StateKind => 16,
+        Category::StateValue => 17,
     }
 }
 
 fn matched() -> Mismatch {
-    Mismatch { verdict: Verdict::Match, deployment: false, step: 0, category: Category::Status, log: 0, index: 0, left: 0, right: 0 }
+    Mismatch {
+        verdict: Verdict::Match,
+        deployment: false,
+        step: 0,
+        category: Category::Status,
+        log: 0,
+        index: 0,
+        slot: 0,
+        left: 0,
+        right: 0,
+        reason: Malformation::Fine,
+    }
 }
 
-fn differ(category: Category, log: usize, index: usize, left: u256, right: u256) -> Mismatch {
-    Mismatch { verdict: Verdict::Mismatch, deployment: false, step: 0, category, log, index, left, right }
+fn differ(category: Category, log: usize, index: usize, slot: usize, left: u256, right: u256) -> Mismatch {
+    var m = matched()
+    m.verdict = Verdict::Mismatch
+    m.category = category
+    m.log = log
+    m.index = index
+    m.slot = slot
+    m.left = left
+    m.right = right
+    m
+}
+
+fn malformed(step: usize, reason: Malformation) -> Mismatch {
+    var bad = matched()
+    bad.verdict = Verdict::Malformed
+    bad.step = step
+    bad.reason = reason
+    bad
 }
 
 fn is_match(_ m: Mismatch) -> bool {
@@ -71,45 +141,137 @@ fn is_match(_ m: Mismatch) -> bool {
     }
 }
 
+fn is_malformed(_ m: Mismatch) -> bool {
+    match m.verdict {
+        Verdict::Malformed => true,
+        _ => false,
+    }
+}
+
 fn byte_at(word: u256, i: usize) -> u256 {
     (word >> (((31 - i) * 8) as u256)) & 255
 }
 
-// Exact byte comparison of two well-formed payloads; reports the first differing
-// byte offset and both byte values.
-fn compare_payload(left: Payload, right: Payload, length: Category, byte: Category, log: usize) -> Mismatch {
-    if left.len != right.len {
-        return differ(category: length, log, index: 0, left: left.len as u256, right: right.len as u256)
+fn payload_byte(payload: Payload, i: usize) -> u256 {
+    byte_at(word: payload.words[i / 32], i: i % 32)
+}
+
+// 32 bytes from any offset, zero-filled past the payload's end.
+fn word_from(payload: Payload, offset: usize) -> u256 {
+    var value: u256 = 0
+    var i: usize = 0
+    while i < 32 {
+        let b = if offset + i < payload.len { payload_byte(payload, i: offset + i) } else { 0 }
+        value = (value << 8) | b
+        i += 1
     }
+    value
+}
+
+// First differing byte of two equal-length payloads, or `len` if none.
+fn first_difference(left: Payload, right: Payload) -> usize {
     var w: usize = 0
     while w * 32 < left.len {
-        let a = left.words[w]
-        let b = right.words[w]
-        if a != b {
+        if left.words[w] != right.words[w] {
             var i: usize = 0
             while i < 32 {
-                let x = byte_at(word: a, i)
-                let y = byte_at(word: b, i)
-                if x != y {
-                    return differ(category: byte, log, index: w * 32 + i, left: x, right: y)
+                if byte_at(word: left.words[w], i) != byte_at(word: right.words[w], i) {
+                    return w * 32 + i
                 }
                 i += 1
             }
         }
         w += 1
     }
-    matched()
+    left.len
+}
+
+fn compare_payload(left: Payload, right: Payload, length: Category, byte: Category, log: usize) -> Mismatch {
+    if left.len != right.len {
+        return differ(category: length, log, index: 0, slot: 0, left: left.len as u256, right: right.len as u256)
+    }
+    let at = first_difference(left, right)
+    if at == left.len {
+        return matched()
+    }
+    differ(category: byte, log, index: at, slot: at / 32, left: left.words[at / 32], right: right.words[at / 32])
+}
+
+// Two reverts: a different error is reported as such before any byte offset.
+fn compare_revert(left: Payload, right: Payload) -> Mismatch {
+    if left.len >= 4 && right.len >= 4 && (left.words[0] >> 224) != (right.words[0] >> 224) {
+        return differ(
+            category: Category::ErrorSelector,
+            log: 0,
+            index: 0,
+            slot: 0,
+            left: left.words[0] >> 224,
+            right: right.words[0] >> 224,
+        )
+    }
+    if left.len != right.len {
+        return differ(
+            category: Category::ReturnLength,
+            log: 0,
+            index: 0,
+            slot: 0,
+            left: left.len as u256,
+            right: right.len as u256,
+        )
+    }
+    let at = first_difference(left, right)
+    if at == left.len {
+        return matched()
+    }
+    if at < 4 {
+        return differ(
+            category: Category::ReturnByte,
+            log: 0,
+            index: at,
+            slot: 0,
+            left: payload_byte(payload: left, i: at),
+            right: payload_byte(payload: right, i: at),
+        )
+    }
+    let argument = (at - 4) / 32
+    differ(
+        category: Category::ErrorArgument,
+        log: 0,
+        index: at,
+        slot: argument,
+        left: word_from(payload: left, offset: 4 + 32 * argument),
+        right: word_from(payload: right, offset: 4 + 32 * argument),
+    )
+}
+
+fn same_payload(left: Payload, right: Payload) -> bool {
+    left.len == right.len && first_difference(left, right) == left.len
+}
+
+fn same_log(left: LogRecord, right: LogRecord) -> bool {
+    if left.emitter != right.emitter || left.topic_count != right.topic_count {
+        return false
+    }
+    var t: usize = 0
+    while t < left.topic_count {
+        if left.topics[t] != right.topics[t] {
+            return false
+        }
+        t += 1
+    }
+    same_payload(left: left.data, right: right.data)
 }
 
 fn compare_log(left: LogRecord, right: LogRecord, log: usize) -> Mismatch {
     if left.emitter != right.emitter {
-        return differ(category: Category::LogEmitter, log, index: 0, left: left.emitter, right: right.emitter)
+        return differ(category: Category::LogEmitter, log, index: 0, slot: 0, left: left.emitter, right: right.emitter)
     }
     if left.topic_count != right.topic_count {
         return differ(
             category: Category::TopicCount,
             log,
             index: 0,
+            slot: 0,
             left: left.topic_count as u256,
             right: right.topic_count as u256,
         )
@@ -117,77 +279,222 @@ fn compare_log(left: LogRecord, right: LogRecord, log: usize) -> Mismatch {
     var t: usize = 0
     while t < left.topic_count {
         if left.topics[t] != right.topics[t] {
-            return differ(category: Category::Topic, log, index: t, left: left.topics[t], right: right.topics[t])
+            return differ(category: Category::Topic, log, index: t, slot: t, left: left.topics[t], right: right.topics[t])
         }
         t += 1
     }
     compare_payload(left: left.data, right: right.data, length: Category::DataLength, byte: Category::DataByte, log)
 }
 
+// Is `longer` equal to `shorter` with exactly one log inserted at `at`?
+fn inserted_at(longer: CallObservation, shorter: CallObservation, at: usize) -> bool {
+    var i: usize = at
+    while i < shorter.log_count {
+        if !same_log(left: longer.logs[i + 1], right: shorter.logs[i]) {
+            return false
+        }
+        i += 1
+    }
+    true
+}
+
+// Are the two log sequences permutations of each other (equal multisets)?
+fn permutation(left: CallObservation, right: CallObservation) -> bool {
+    var used: [bool; 4] = [false; 4]
+    var i: usize = 0
+    while i < left.log_count {
+        var found = false
+        var j: usize = 0
+        while j < right.log_count && !found {
+            if !used[j] && same_log(left: left.logs[i], right: right.logs[j]) {
+                used[j] = true
+                found = true
+            }
+            j += 1
+        }
+        if !found {
+            return false
+        }
+        i += 1
+    }
+    true
+}
+
+fn compare_logs(left: CallObservation, right: CallObservation) -> Mismatch {
+    var first: usize = 0
+    let common = if left.log_count < right.log_count { left.log_count } else { right.log_count }
+    while first < common && same_log(left: left.logs[first], right: right.logs[first]) {
+        first += 1
+    }
+    if left.log_count == right.log_count {
+        if first == left.log_count {
+            return matched()
+        }
+        if permutation(left, right) {
+            return differ(
+                category: Category::LogReordered,
+                log: first,
+                index: first,
+                slot: 0,
+                left: left.log_count as u256,
+                right: right.log_count as u256,
+            )
+        }
+        return compare_log(left: left.logs[first], right: right.logs[first], log: first)
+    }
+    if left.log_count == right.log_count + 1 && inserted_at(longer: left, shorter: right, at: first) {
+        return differ(
+            category: Category::LogMissing,
+            log: first,
+            index: first,
+            slot: 0,
+            left: left.log_count as u256,
+            right: right.log_count as u256,
+        )
+    }
+    if right.log_count == left.log_count + 1 && inserted_at(longer: right, shorter: left, at: first) {
+        return differ(
+            category: Category::LogExtra,
+            log: first,
+            index: first,
+            slot: 0,
+            left: left.log_count as u256,
+            right: right.log_count as u256,
+        )
+    }
+    differ(
+        category: Category::LogCount,
+        log: first,
+        index: first,
+        slot: 0,
+        left: left.log_count as u256,
+        right: right.log_count as u256,
+    )
+}
+
+fn kind_code(_ kind: StateKind) -> u256 {
+    match kind {
+        StateKind::Uint => 0,
+        StateKind::Int => 1,
+        StateKind::Address => 2,
+        StateKind::Bool => 3,
+        StateKind::Word => 4,
+    }
+}
+
+fn compare_state(left: CallObservation, right: CallObservation) -> Mismatch {
+    if left.state_count != right.state_count {
+        return differ(
+            category: Category::StateCount,
+            log: 0,
+            index: 0,
+            slot: 0,
+            left: left.state_count as u256,
+            right: right.state_count as u256,
+        )
+    }
+    var s: usize = 0
+    while s < left.state_count {
+        let a = left.state[s]
+        let b = right.state[s]
+        if kind_code(a.kind) != kind_code(b.kind) {
+            return differ(category: Category::StateKind, log: 0, index: s, slot: s, left: kind_code(a.kind),
+                          right: kind_code(b.kind))
+        }
+        if a.value != b.value {
+            return differ(category: Category::StateValue, log: 0, index: s, slot: s, left: a.value, right: b.value)
+        }
+        s += 1
+    }
+    matched()
+}
+
 // Strict comparison of one step's observations from two implementations.
 pub fn compare(left: CallObservation, right: CallObservation) -> Mismatch {
-    if !well_formed(observation: left) || !well_formed(observation: right) {
-        return malformed(step: 0)
+    let bad = first_malformation(left, right)
+    if !is_fine_reason(bad) {
+        return malformed(step: 0, reason: bad)
     }
     compare_core(left, right, exact_returndata: true)
 }
 
+fn is_fine_reason(_ m: Malformation) -> bool {
+    match m {
+        Malformation::Fine => true,
+        _ => false,
+    }
+}
+
+fn first_malformation(left: CallObservation, right: CallObservation) -> Malformation {
+    let a = malformation(observation: left)
+    if !is_fine_reason(a) {
+        return a
+    }
+    malformation(observation: right)
+}
+
 // When `exact_returndata` is false, the returndata bytes are outside the claim
-// (for example, a compiler-generated ABI rejection). Status and logs still must match.
+// (for example, a compiler-generated ABI rejection). Status, logs, and state
+// still must match.
 fn compare_core(left: CallObservation, right: CallObservation, exact_returndata: bool) -> Mismatch {
     if left.success != right.success {
         return differ(
             category: Category::Status,
             log: 0,
             index: 0,
+            slot: 0,
             left: if left.success { 1 } else { 0 },
             right: if right.success { 1 } else { 0 },
         )
     }
     if exact_returndata {
-        let data = compare_payload(
-            left: left.returndata,
-            right: right.returndata,
-            length: Category::ReturnLength,
-            byte: Category::ReturnByte,
-            log: 0,
-        )
+        let data = if left.success {
+            compare_payload(
+                left: left.returndata,
+                right: right.returndata,
+                length: Category::ReturnLength,
+                byte: Category::ReturnByte,
+                log: 0,
+            )
+        } else {
+            compare_revert(left: left.returndata, right: right.returndata)
+        }
         if !is_match(data) {
             return data
         }
     }
-    compare_logs(left, right)
+    let logs = compare_logs(left, right)
+    if !is_match(logs) {
+        return logs
+    }
+    compare_state(left, right)
 }
 
-fn compare_logs(left: CallObservation, right: CallObservation) -> Mismatch {
-    if left.log_count != right.log_count {
-        return differ(
-            category: Category::LogCount,
-            log: 0,
-            index: 0,
-            left: left.log_count as u256,
-            right: right.log_count as u256,
-        )
-    }
-    var i: usize = 0
-    while i < left.log_count {
-        let result = compare_log(left: left.logs[i], right: right.logs[i], log: i)
-        if !is_match(result) {
-            return result
-        }
-        i += 1
-    }
-    matched()
+// Streaming sequence comparison: feed each step's pair in order.
+pub struct Progress {
+    pub steps: usize,
+    pub result: Mismatch,
+    pub listed: usize,
+    pub mismatches: [Mismatch; 8],
+    pub total: usize,
 }
-
-// Streaming sequence comparison: feed each step's pair in order. The first
-// divergence is kept; a malformed step or more than MAX_STEPS steps makes the
-// whole result Malformed (a transport/harness problem, never a behavior verdict).
-pub struct Progress { pub steps: usize, pub result: Mismatch }
 impl Copy for Progress {}
 
 pub fn begin() -> Progress {
-    Progress { steps: 0, result: matched() }
+    Progress { steps: 0, result: matched(), listed: 0, mismatches: [matched(); 8], total: 0 }
+}
+
+fn record(progress: Progress, m: Mismatch) -> Progress {
+    var next = progress
+    if next.listed < MAX_LISTED {
+        next.mismatches[next.listed] = m
+        next.listed += 1
+    }
+    next.total += 1
+    if is_match(next.result) {
+        next.result = m
+    }
+    next
 }
 
 // Deployments are compared before any call. Both must succeed, and their logs
@@ -196,9 +503,9 @@ pub fn begin() -> Progress {
 pub fn begin_deployed(left: CallObservation, right: CallObservation, left_table: AddressTable,
                       right_table: AddressTable) -> Progress {
     var progress = begin()
-    if !well_formed(observation: left) || !well_formed(observation: right) || !table_valid(table: left_table)
-        || !table_valid(table: right_table) {
-        progress.result = malformed(step: 0)
+    let bad = first_malformation(left, right)
+    if !is_fine_reason(bad) || !table_valid(table: left_table) || !table_valid(table: right_table) {
+        progress.result = malformed(step: 0, reason: bad)
         progress.result.deployment = true
         return progress
     }
@@ -218,7 +525,7 @@ pub fn begin_deployed(left: CallObservation, right: CallObservation, left_table:
     )
     if !is_match(logs) {
         logs.deployment = true
-        progress.result = logs
+        progress = record(progress, m: logs)
     }
     progress
 }
@@ -230,63 +537,38 @@ pub fn step(progress: Progress, left: CallObservation, right: CallObservation) -
 }
 
 // One step: check that both raw observations are well formed, normalize only the
-// allowlisted address positions through each world's table, then compare.
+// allowlisted address positions (and address-typed state) through each world's
+// table, then compare.
 pub fn step_normalized(progress: Progress, left: CallObservation, right: CallObservation, left_table: AddressTable,
                        right_table: AddressTable, allowlist: Allowlist, exact_returndata: bool) -> Progress {
     var next = progress
     if next.steps >= MAX_STEPS {
-        next.result = malformed(step: next.steps)
+        next.result = malformed(step: next.steps, reason: Malformation::Fine)
         return next
     }
-    var current = matched()
-    if !well_formed(observation: left) || !well_formed(observation: right) || !table_valid(table: left_table)
-        || !table_valid(table: right_table) || !allowlist_valid(allowlist) {
-        current = malformed(step: 0)
-    } else {
-        current = compare_core(
+    let bad = first_malformation(left, right)
+    let blocked = match progress.result.verdict {
+        Verdict::Malformed => true,
+        Verdict::NotComparable => true,
+        _ => false,
+    }
+    if !is_fine_reason(bad) || !table_valid(table: left_table) || !table_valid(table: right_table)
+        || !allowlist_valid(allowlist) {
+        // Malformed input outranks everything, including an earlier mismatch.
+        if !is_malformed(progress.result) {
+            next.result = malformed(step: next.steps, reason: bad)
+        }
+    } else if !blocked {
+        var current = compare_core(
             left: normalize(observation: left, table: left_table, allowlist),
             right: normalize(observation: right, table: right_table, allowlist),
             exact_returndata,
         )
-    }
-    match current.verdict {
-        Verdict::Malformed => {
-            next.result = malformed(step: next.steps)
-        },
-        Verdict::Mismatch => {
-            if is_match(next.result) {
-                next.result = current
-                next.result.step = next.steps
-            }
-        },
-        _ => {},
-    }
-    // Malformed input outranks everything; a failed deployment outranks any step result.
-    match progress.result.verdict {
-        Verdict::Malformed => {
-            next.result = progress.result
-        },
-        Verdict::NotComparable => {
-            if !is_malformed(next.result) {
-                next.result = progress.result
-            }
-        },
-        _ => {},
+        if !is_match(current) {
+            current.step = next.steps
+            next = record(progress: next, m: current)
+        }
     }
     next.steps += 1
     next
-}
-
-fn malformed(step: usize) -> Mismatch {
-    var bad = matched()
-    bad.verdict = Verdict::Malformed
-    bad.step = step
-    bad
-}
-
-fn is_malformed(_ m: Mismatch) -> bool {
-    match m.verdict {
-        Verdict::Malformed => true,
-        _ => false,
-    }
 }

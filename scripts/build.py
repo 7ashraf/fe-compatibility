@@ -11,7 +11,7 @@ import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'host'))
-from common import (ROOT, BUILD, STAMP, CHECKER, MUTATION, InfrastructureError, sha, hex_sha,
+from common import (ROOT, BUILD, STAMP, CHECKER, VARIANTS, InfrastructureError, sha, hex_sha,
                     fe_compiler, solc_compiler, source_manifest)
 
 
@@ -34,15 +34,21 @@ def main():
     solidity = BUILD / 'solidity'
     run([solc, '--evm-version', 'osaka', '--optimize', '--optimize-runs', '200', '--bin', '--bin-runtime', '--abi',
          '-o', solidity, 'contracts/solidity/Meter.sol', 'contracts/solidity/Codec.sol'])
-    faulty_source = BUILD / 'sources/meter-faulty'
-    shutil.copytree(ROOT / 'contracts/fe/meter', faulty_source, ignore=shutil.ignore_patterns('out'))
-    source_file = faulty_source / 'src/lib.fe'
-    text = source_file.read_text()
-    if text.count(MUTATION[0]) != 1:
-        raise InfrastructureError('Seeded mutation no longer applies exactly once')
-    source_file.write_text(text.replace(*MUTATION))
-    for variant, path in (('fe', ROOT / 'contracts/fe/meter'), ('fe-faulty', faulty_source),
-                          ('fe-codec', ROOT / 'contracts/fe/codec')):
+    builds = [('fe', ROOT / 'contracts/fe/meter'), ('fe-codec', ROOT / 'contracts/fe/codec')]
+    mutated = {}
+    for variant, edits in VARIANTS.items():
+        source = BUILD / 'sources' / ('meter-faulty' if variant == 'fe-faulty' else f'meter-{variant[3:]}')
+        shutil.copytree(ROOT / 'contracts/fe/meter', source, ignore=shutil.ignore_patterns('out'))
+        source_file = source / 'src/lib.fe'
+        text = source_file.read_text()
+        for old, new in edits:
+            if text.count(old) != 1:
+                raise InfrastructureError(f'{variant}: seeded mutation no longer applies exactly once')
+            text = text.replace(old, new)
+        source_file.write_text(text)
+        mutated[variant] = sha(source_file)
+        builds.append((variant, source))
+    for variant, path in builds:
         run([fe, 'build', path, '--backend', 'sonatina', '--profile', 'release', '-O', '1',
              '--emit', 'bytecode,runtime-bytecode,abi,metadata', '--out-dir', BUILD / variant])
     run([fe, 'build', 'host/checker-native', '--backend', 'native', '--emit', 'executable', '-O', '1'])
@@ -52,11 +58,12 @@ def main():
                      'compiler': solc_info['version'], 'settings': 'solc --evm-version osaka --optimize --optimize-runs 200'},
         'fe': {'creation': 'fe/Meter.bin', 'runtime': 'fe/Meter.runtime.bin', 'abi': 'fe/Meter.abi.json',
                'compiler': fe_info['version'], 'settings': 'fe build --backend sonatina --profile release -O 1'},
-        'fe-faulty': {'creation': 'fe-faulty/Meter.bin', 'runtime': 'fe-faulty/Meter.runtime.bin',
-                      'abi': 'fe-faulty/Meter.abi.json', 'compiler': fe_info['version'],
-                      'settings': 'fe build --backend sonatina --profile release -O 1',
-                      'fault': 'intentional: TooLarge reports limit 101 instead of 100',
-                      'mutated_source_sha256': sha(source_file)},
+        **{variant: {'creation': f'{variant}/Meter.bin', 'runtime': f'{variant}/Meter.runtime.bin',
+                     'abi': f'{variant}/Meter.abi.json', 'compiler': fe_info['version'],
+                     'settings': 'fe build --backend sonatina --profile release -O 1',
+                     'fault': 'intentional: ' + ' / '.join(new.split('INTENTIONAL ')[1].split('\n')[0]
+                                                         for _, new in edits),
+                     'mutated_source_sha256': mutated[variant]} for variant, edits in VARIANTS.items()},
     }
     targets['solidity-codec'] = {'creation': 'solidity/Codec.bin', 'runtime': 'solidity/Codec.bin-runtime',
                                  'abi': 'solidity/Codec.abi', 'compiler': solc_info['version'],
@@ -71,7 +78,7 @@ def main():
                  if p.is_file() and 'sources' not in p.relative_to(BUILD).parts}
     artifacts[str(CHECKER.relative_to(ROOT))] = sha(CHECKER)
     stamp = {'format': 'fe-compatibility-build-v1', 'fe': fe_info, 'solc': solc_info, 'targets': targets,
-             'sources': source_manifest(), 'artifacts': artifacts, 'mutation': list(MUTATION), 'commands': commands}
+             'sources': source_manifest(), 'artifacts': artifacts, 'mutations': {k: [list(e) for e in v] for k, v in VARIANTS.items()}, 'commands': commands}
     STAMP.write_text(json.dumps(stamp, indent=2) + '\n')
     print(f'PASS build stamp {STAMP.relative_to(ROOT)}', flush=True)
 

@@ -4,7 +4,8 @@
 | --- | --- |
 | 0: Observation path | Passed, 21 November 2026 ([below](#phase-0-feasibility--full-observation-path-21-november-2026)) |
 | 1: Specification, schemas, and golden vectors | Passed, 21 November 2026 ([below](#phase-1--specification-schemas-and-golden-vectors-21-november-2026)) |
-| 2–5 | Not started |
+| 2: Reusable Fe conformance engine | Passed, 21 November 2026 ([below](#phase-2--reusable-fe-conformance-engine-21-november-2026)) |
+| 3–5 | Not started |
 
 # Phase 0 feasibility — full observation path (21 November 2026)
 
@@ -331,3 +332,125 @@ Phase 2: the reusable Fe conformance engine. That means typed state comparisons,
 a decoded explanatory view next to the strict one, deterministic output limits,
 a machine-readable report format, and negative tests for reordered or extra
 logs and mismatched state behind a superficially matching return.
+
+
+# Phase 2 — reusable Fe conformance engine (21 November 2026)
+
+**Result: Phase 2 exit gate passed** (`scripts/verify-phase2.py`, about 26 s,
+including the Phase 1 and Phase 0 gates). It uses the same pinned toolchain.
+
+## What the engine now does (all in Fe)
+
+- **Typed public state.** Observations carry up to 8 declared state fields
+  (`uint`, `int`, `address`, `bool`, `word`), read through getters after every
+  call. They are compared after status, returndata, and logs (`state-count`,
+  `state-kind`, `state-value`). Address-typed state is normalized by its
+  declared type.
+- **Semantic categories (17).** For reverts, a different error
+  (`error-selector`) is reported before a different argument
+  (`error-argument`, with the argument index and both full words). Log
+  sequences are classified as `log-missing` (one deletion), `log-extra` (one
+  insertion), or `log-reordered` (same multiset), before falling back to
+  `log-count` or the first differing field. Byte categories report the
+  containing word as well as the offset.
+- **Deterministic order and output limits.** Within a step the order is fixed:
+  status, returndata, logs, state. Across steps, the first divergence sets the
+  verdict. Every mismatching step's first divergence is listed in step order,
+  up to 8 entries, and `mismatching_steps` counts them all.
+- **Malformed reasons.** Malformed observations now carry a reason. These are
+  `oversized`, `padding`, `logs-on-revert`, `too-many-logs`,
+  `too-many-topics`, `emitter`, `stray-data`, `too-many-state`, and
+  `state-value`.
+  Native protocol 3 reads over-limit payloads and counts up to the frame bound,
+  so Fe reports them as `oversized` or `too-many-*`. It doesn't reject them at
+  the transport. A malformed observation is never a behavior verdict.
+- **Report (`spec/report.md`, `host/report.py`).** It is a machine-readable
+  `fe-compatibility-report` v1, with no timestamps and byte-identical across
+  runs. Each listed mismatch carries Fe's category, location, and values. It
+  also has a **strict** view (the exact raw bytes involved) and an
+  **explanatory** view (ABI names and typed values). For example:
+  `TooLarge(uint256,uint256): argument 1 `limit` (uint256) differs: 100 vs 101`,
+  or `state `total` (total()) differs after the action: 105 vs 106`. ABI
+  declaration differences are reported in `abi_declarations`.
+
+## Exit tests
+
+**Pure Fe tests.** Ten Phase 2 tests in `src/phase2_tests.fe` (24 Fe tests in
+total) pass on the EVM and native backends. Each negative case starts from a
+matching positive control and changes exactly one thing.
+
+**Real EVM corpus.** The Solidity Meter was compared with the correct Fe port
+and with six seeded Fe ports, each with one porting mistake applied at build
+time (`host/common.py` `VARIANTS`). Every listed mismatch had to be the
+intended one, and nothing else could appear:
+
+| Seeded mistake | Fe reports |
+| --- | --- |
+| None (correct port) | `match` over 5 steps |
+| `TooLarge` reports limit 101 | step 2 `error-argument`, argument 1 at byte 67, 100 vs 101 |
+| Stores one extra unit at the limit; return and event correct | step 3 `state-value` `total` 105 vs 106, then step 4 `returndata-byte` (`total()`) |
+| `caller` not indexed | steps 0 and 3 `topic-count` 2 vs 1 |
+| Event emitted twice | steps 0 and 3 `log-extra` at position 1 |
+| Wrong error for zero quantity | step 1 `error-selector` `EmptyQuantity()` vs `TooLarge(uint256,uint256)` |
+| Zero quantity not rejected | step 1 `status` (revert vs success) |
+
+**A finding.** Fe 26.5.0 emits only the custom errors that are actually raised
+into its ABI. The last two ports therefore drop `EmptyQuantity()` from their
+ABI, and the report's `abi_declarations` shows it as missing on the right.
+Before Phase 2 this aborted the run as an infrastructure error. It is now
+reported as a declaration-conformance difference, and the behavioral
+comparison still runs.
+
+**Perturbations of real records.** Eleven perturbations went through the
+native Fe checker, covering what the Meter can't produce:
+
+- two logs swapped → `log-reordered`;
+- first of two logs dropped → `log-missing`;
+- an extra log → `log-extra`;
+- the indexed caller changed → `topic` at index 1;
+- an error argument byte changed → `error-argument` at 67;
+- success instead of a revert → `status`;
+- a state value after an identical return → `state-value`;
+- 300-byte returndata and 257-byte log data → malformed `oversized`;
+- five logs → malformed `too-many-logs`;
+- 15 mismatching steps → 8 listed in step order, all 15 counted, `truncated`.
+
+**Report checks.** The report validates structurally against `spec/report.md`,
+and a rerun produced a byte-identical report.
+
+## Regressions and changed expectations
+
+The Phase 0 and Phase 1 gates still pass. Their expectations were updated only
+where Phase 2 deliberately refines a category:
+
+- the Phase 0 seeded fault is now `error-argument` (argument 1, byte 67,
+  100 vs 101) instead of `returndata-byte` at 67;
+- the "error selector byte" and "wrong error selector" perturbations are now
+  `error-selector`;
+- the missing and extra events are now `log-missing` and `log-extra` instead
+  of `log-count`.
+
+The Phase 0 and Phase 1 evidence files stay as recorded at the time.
+
+Evidence is in [evidence/phase2/](evidence/phase2/): seven reports
+(`report-solidity-vs-*.json`) and `gate.json`, which has the commands, every
+perturbation decision, and the target identities.
+
+## Limitations
+
+- The explanatory view handles static return heads, error arguments, event
+  parameters, and state fields. A difference inside dynamic `bytes` returns is
+  explained only as a byte offset.
+- State is read through declared getters after each call. Raw storage is
+  layout mode (Phase 4).
+- The log-sequence classes cover a single deletion, a single insertion, or a
+  permutation. Anything else is `log-count` with the first divergent position.
+- The seeded corpus is one small contract. The treasury corpus is Phase 3.
+- Verified on macOS arm64 only, and all runs are the implementing agent's own.
+
+## Next gate
+
+Phase 3: differential treasury execution. Both treasury versions are built from
+the frozen v0 spec and run as matching sequences in isolated worlds, with
+negative and boundary cases and seeded faults such as inclusive expiry and a
+missing event index.

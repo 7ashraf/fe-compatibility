@@ -6,7 +6,7 @@ independent eth_call at the parent block. Disagreement is an infrastructure erro
 import hashlib
 
 from common import InfrastructureError, ROOT
-from evm_chain import LocalChain, RpcError
+from evm_chain import LocalChain, RpcError, cast
 
 GENESIS = 1700000000
 LIMIT = 256
@@ -88,10 +88,25 @@ class World:
         observation['address'] = address
         return observation
 
-    def call(self, calldata, sender_role='caller'):
+    def call(self, calldata, sender_role='caller', state=()):
+        """Run one call, then read the declared public state getters (name, signature, kind) at the new block."""
         if 'target' not in self.roles:
             raise InfrastructureError('Call before a successful deployment')
         _, observation = self._transact('call', calldata, to=self.roles['target'], sender=self.roles[sender_role])
         if len(observation['returndata']) > 2 + 2 * LIMIT:
             raise InfrastructureError('Returndata exceeds the 256-byte observation limit')
+        observation['state'] = [self.read_state(name, signature, kind) for name, signature, kind in state]
         return observation
+
+    def read_state(self, name, signature, kind):
+        selector = cast('sig', signature)
+        try:
+            word = self.chain.rpc('eth_call', [{'to': self.roles['target'], 'data': selector}, 'latest'])
+        except RpcError as error:
+            raise InfrastructureError(f'State getter {signature} reverted') from error
+        raw = bytes.fromhex(raw_hex(word)[2:])
+        if len(raw) != 32:
+            raise InfrastructureError(f'State getter {signature} returned {len(raw)} bytes, not one word')
+        value = int.from_bytes(raw, 'big', signed=(kind == 'int'))
+        text = '0x' + raw.hex()[24:] if kind == 'address' else str(value)
+        return {'name': name, 'kind': kind, 'value': text}

@@ -18,11 +18,11 @@ copyright 2026 Fe Compatibility contributors.
 Fe is Apache-2.0 at the pinned source; a copy of its license is in
 [licenses/](licenses/Fe-APACHE-2.0.txt).
 
-The Meter `fe-faulty` variant is a **deliberately seeded** fault for harness
+The Meter `fe-*` variants (`fe-faulty`, `fe-state`, `fe-unindexed`, `fe-extra-log`, `fe-wrong-error`, `fe-no-empty-check`) are **deliberately seeded** faults for harness
 validation.
 
 ## AI assistance
 
-Phases 0 and 1 were implemented, run, and documented by Claude Opus 5.5 in Claude Code,
+Phases 0–2 were implemented, run, and documented by Claude Opus 5.5 in Claude Code,
 directed by the project owner. Commits carry a `Co-Authored-By` trailer. The
 verification runs are the agent's own, not independent review.

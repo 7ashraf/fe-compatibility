@@ -1,0 +1,229 @@
+{
+  "abi_declarations": {
+    "left": {
+      "missing": [],
+      "unexpected": []
+    },
+    "match": true,
+    "right": {
+      "missing": [],
+      "unexpected": []
+    },
+    "spec": "spec/meter-v0.md"
+  },
+  "claim": "2 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).",
+  "configuration": {
+    "left": {
+      "deployed_runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c",
+      "implementation": "solidity",
+      "target": {
+        "abi": "solidity/Meter.abi",
+        "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+        "creation": "solidity/Meter.bin",
+        "creation_sha256": "c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf",
+        "runtime": "solidity/Meter.bin-runtime",
+        "runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c",
+        "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+      },
+      "world": {
+        "caller": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+        "zero": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "right": {
+      "deployed_runtime_sha256": "71e55f8052eb03c3d492d1e497375a542fd7190968fc6b43fd4f62d7e801294f",
+      "implementation": "fe-extra-log",
+      "target": {
+        "abi": "fe-extra-log/Meter.abi.json",
+        "compiler": "fe 26.5.0 (3dab95f)",
+        "creation": "fe-extra-log/Meter.bin",
+        "creation_sha256": "a88fe0c6f586d7fcfced385f5aa0f79c5dc82ef0b137a6b0b310ecd3f52d0cdb",
+        "fault": "intentional: PHASE 2 FAULT: event emitted twice",
+        "mutated_source_sha256": "faa92f94f5de35b3942ecf665a4eca074dd6f5eac6cf11ccb1ab5be79be61263",
+        "runtime": "fe-extra-log/Meter.runtime.bin",
+        "runtime_sha256": "71e55f8052eb03c3d492d1e497375a542fd7190968fc6b43fd4f62d7e801294f",
+        "settings": "fe build --backend sonatina --profile release -O 1"
+      },
+      "world": {
+        "caller": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+        "zero": "0x0000000000000000000000000000000000000000"
+      }
+    }
+  },
+  "corpus": "meter-v0 (5 calls)",
+  "decision": {
+    "checker": "native Fe compat_checker protocol 3",
+    "listed": 2,
+    "mismatching_steps": 2,
+    "steps_compared": 5,
+    "truncated": false,
+    "verdict": "mismatch"
+  },
+  "environment": {
+    "base_fee": 0,
+    "chain_id": 31337,
+    "gas_limit_per_tx": 2000000,
+    "gas_price": 1,
+    "genesis_timestamp": 1700000000,
+    "hardfork": "osaka",
+    "mining": "one mined transaction per block, scheduled timestamps",
+    "sender_nonce_at_deploy": 0
+  },
+  "format": "fe-compatibility-report",
+  "gas_used": {
+    "left": [
+      45625,
+      21480,
+      21531,
+      28525,
+      23342
+    ],
+    "note": "reported only; gas is never compared",
+    "right": [
+      46854,
+      21480,
+      21510,
+      29754,
+      23274
+    ]
+  },
+  "mismatches": [
+    {
+      "action": {
+        "argument": "5",
+        "call": "add(uint256)"
+      },
+      "category": "log-extra",
+      "deployment": false,
+      "explanation": {
+        "left_events": [
+          "Added(address,uint256,uint256)"
+        ],
+        "right_events": [
+          "Added(address,uint256,uint256)",
+          "Added(address,uint256,uint256)"
+        ],
+        "what": "extra log 1 (Added(address,uint256,uint256)) on the right"
+      },
+      "fe": {
+        "left": "1",
+        "right": "2"
+      },
+      "location": {
+        "index": 1,
+        "log": 1,
+        "slot": 0
+      },
+      "step": 0,
+      "strict": {
+        "left_logs": [
+          {
+            "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "data": "0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005",
+            "topics": [
+              "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+              "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+            ]
+          }
+        ],
+        "right_logs": [
+          {
+            "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "data": "0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005",
+            "topics": [
+              "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+              "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+            ]
+          },
+          {
+            "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "data": "0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005",
+            "topics": [
+              "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+              "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "action": {
+        "argument": "100",
+        "call": "add(uint256)"
+      },
+      "category": "log-extra",
+      "deployment": false,
+      "explanation": {
+        "left_events": [
+          "Added(address,uint256,uint256)"
+        ],
+        "right_events": [
+          "Added(address,uint256,uint256)",
+          "Added(address,uint256,uint256)"
+        ],
+        "what": "extra log 1 (Added(address,uint256,uint256)) on the right"
+      },
+      "fe": {
+        "left": "1",
+        "right": "2"
+      },
+      "location": {
+        "index": 1,
+        "log": 1,
+        "slot": 0
+      },
+      "step": 3,
+      "strict": {
+        "left_logs": [
+          {
+            "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "data": "0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069",
+            "topics": [
+              "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+              "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+            ]
+          }
+        ],
+        "right_logs": [
+          {
+            "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "data": "0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069",
+            "topics": [
+              "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+              "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+            ]
+          },
+          {
+            "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+            "data": "0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069",
+            "topics": [
+              "0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5",
+              "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "mode": "behavioral conformance (strict)",
+  "raw_records_sha256": {
+    "left": "6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1",
+    "right": "d6b80506d22f1bbfcc34d3499a9bc56d5ca174a43122a95ed5a152f89b8e057d"
+  },
+  "state_declared": [
+    {
+      "getter": "total()",
+      "kind": "uint",
+      "name": "total"
+    }
+  ],
+  "tools": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "version": 1
+}

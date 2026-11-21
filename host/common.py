@@ -16,9 +16,28 @@ SOURCES = ('fe.toml', 'src/lib.fe', 'src/observation.fe', 'src/conformance.fe', 
            'host/checker-native/fe.toml', 'host/checker-native/src/lib.fe',
            'contracts/solidity/Meter.sol', 'contracts/fe/meter/fe.toml', 'contracts/fe/meter/src/lib.fe', 'contracts/fe/meter/src/tests.fe', 'src/tests.fe',
            'scripts/build.py', 'host/common.py')
-# Phase 0 seeded fault: the Fe port reports limit 101 in TooLarge, one byte off.
-MUTATION = ('revert_error(TooLarge { quantity, limit: LIMIT })',
-            'revert_error(TooLarge { quantity, limit: LIMIT + 1 })  // INTENTIONAL PHASE 0 FAULT')
+EMIT = '            log.emit(Added { caller: ctx.caller(), quantity, total })\n'
+# Seeded faults in copies of contracts/fe/meter, applied at build time. Each one
+# is a single, documented porting mistake. `fe-faulty` is the Phase 0 one-byte fault.
+VARIANTS = {
+    'fe-faulty': [('revert_error(TooLarge { quantity, limit: LIMIT })',
+                   'revert_error(TooLarge { quantity, limit: LIMIT + 1 })  // INTENTIONAL PHASE 0 FAULT: TooLarge reports limit 101')],
+    'fe-state': [('            total += quantity\n' + EMIT + '            total\n',
+                  '            let next = total + quantity\n'
+                  '            // INTENTIONAL PHASE 2 FAULT: stores one extra unit at the limit; return and event stay correct.\n'
+                  '            total = if quantity == LIMIT { next + 1 } else { next }\n'
+                  '            log.emit(Added { caller: ctx.caller(), quantity, total: next })\n'
+                  '            next\n')],
+    'fe-unindexed': [('    #[indexed]\n    pub caller: Address,',
+                      '    pub caller: Address,  // INTENTIONAL PHASE 2 FAULT: caller is not indexed')],
+    'fe-extra-log': [(EMIT, EMIT + '            log.emit(Added { caller: ctx.caller(), quantity, total })'
+                      '  // INTENTIONAL PHASE 2 FAULT: event emitted twice\n')],
+    'fe-wrong-error': [('revert_error(EmptyQuantity {})',
+                        'revert_error(TooLarge { quantity, limit: LIMIT })  // INTENTIONAL PHASE 2 FAULT: wrong error')],
+    'fe-no-empty-check': [('            if quantity == 0 {\n                revert_error(EmptyQuantity {})\n            }\n',
+                           '            // INTENTIONAL PHASE 2 FAULT: zero quantity is not rejected\n')],
+}
+MUTATION = VARIANTS['fe-faulty'][0]
 
 
 class InfrastructureError(RuntimeError):

@@ -1,11 +1,14 @@
 // Raw observations are kept as exact bytes: a payload is a byte length plus
 // big-endian 32-byte words, with the unused tail of the last word zero. The
 // length is explicit, so leading zero bytes and empty payloads cannot be lost.
+// Typed public state (getter values read after the action) comes with each
+// observation, so a mismatch behind a matching return value is still caught.
 
 pub const MAX_PAYLOAD_WORDS: usize = 8
 pub const MAX_LOGS: usize = 4
 pub const MAX_TOPICS: usize = 4
 pub const MAX_STEPS: usize = 64
+pub const MAX_STATE: usize = 8
 
 pub struct Payload { pub len: usize, pub words: [u256; 8] }
 impl Copy for Payload {}
@@ -14,15 +17,62 @@ impl Copy for Payload {}
 pub struct LogRecord { pub emitter: u256, pub topic_count: usize, pub topics: [u256; 4], pub data: Payload }
 impl Copy for LogRecord {}
 
+// Declared type of a public state field. It decides canonical values and
+// whether the field is normalized as an address.
+pub enum StateKind {
+    Uint,
+    Int,
+    Address,
+    Bool,
+    Word,
+}
+impl Copy for StateKind {}
+
+pub struct StateField { pub kind: StateKind, pub value: u256 }
+impl Copy for StateField {}
+
 // What one transaction exposed: execution status, exact returndata (or revert
-// data), and its ordered logs.
+// data), its ordered logs, and the declared public state read afterwards.
 pub struct CallObservation {
     pub success: bool,
     pub returndata: Payload,
     pub log_count: usize,
     pub logs: [LogRecord; 4],
+    pub state_count: usize,
+    pub state: [StateField; 8],
 }
 impl Copy for CallObservation {}
+
+// Why an observation can't be compared. A malformed observation is never a
+// behavior verdict.
+pub enum Malformation {
+    Fine,
+    Oversized,
+    Padding,
+    LogsOnRevert,
+    TooManyLogs,
+    TooManyTopics,
+    Emitter,
+    Stray,
+    TooManyState,
+    StateValue,
+}
+impl Copy for Malformation {}
+
+pub fn malformation_code(_ m: Malformation) -> u256 {
+    match m {
+        Malformation::Fine => 0,
+        Malformation::Oversized => 1,
+        Malformation::Padding => 2,
+        Malformation::LogsOnRevert => 3,
+        Malformation::TooManyLogs => 4,
+        Malformation::TooManyTopics => 5,
+        Malformation::Emitter => 6,
+        Malformation::Stray => 7,
+        Malformation::TooManyState => 8,
+        Malformation::StateValue => 9,
+    }
+}
 
 pub fn empty_payload() -> Payload {
     Payload { len: 0, words: [0; 8] }
@@ -32,26 +82,36 @@ pub fn empty_log() -> LogRecord {
     LogRecord { emitter: 0, topic_count: 0, topics: [0; 4], data: empty_payload() }
 }
 
+pub fn empty_state() -> StateField {
+    StateField { kind: StateKind::Word, value: 0 }
+}
+
 pub fn empty_observation() -> CallObservation {
-    CallObservation { success: false, returndata: empty_payload(), log_count: 0, logs: [empty_log(); 4] }
+    CallObservation {
+        success: false,
+        returndata: empty_payload(),
+        log_count: 0,
+        logs: [empty_log(); 4],
+        state_count: 0,
+        state: [empty_state(); 8],
+    }
 }
 
 fn words_for(len: usize) -> usize {
     (len + 31) / 32
 }
 
-// Bytes past `len` must be zero, so two payloads that differ only in padding
-// cannot compare equal, and an over-long transport is rejected rather than
-// silently truncated.
-pub fn payload_well_formed(payload: Payload) -> bool {
+// Oversized payloads keep their declared length (the transport drops the
+// bytes), so Fe can report them as oversized rather than truncate them.
+fn payload_malformation(payload: Payload) -> Malformation {
     if payload.len > MAX_PAYLOAD_WORDS * 32 {
-        return false
+        return Malformation::Oversized
     }
     let used = words_for(len: payload.len)
     var i: usize = used
     while i < MAX_PAYLOAD_WORDS {
         if payload.words[i] != 0 {
-            return false
+            return Malformation::Padding
         }
         i += 1
     }
@@ -60,38 +120,85 @@ pub fn payload_well_formed(payload: Payload) -> bool {
         let shift: u256 = ((32 - tail) * 8) as u256
         let mask: u256 = (1 << shift) - 1
         if payload.words[used - 1] & mask != 0 {
-            return false
+            return Malformation::Padding
         }
     }
-    true
+    Malformation::Fine
 }
 
-pub fn well_formed(observation: CallObservation) -> bool {
-    if !payload_well_formed(payload: observation.returndata) || observation.log_count > MAX_LOGS {
-        return false
+pub fn payload_well_formed(payload: Payload) -> bool {
+    is_fine(payload_malformation(payload))
+}
+
+fn is_fine(_ m: Malformation) -> bool {
+    match m {
+        Malformation::Fine => true,
+        _ => false,
+    }
+}
+
+fn state_canonical(field: StateField) -> bool {
+    match field.kind {
+        StateKind::Address => field.value < (1 << 160),
+        StateKind::Bool => field.value <= 1,
+        _ => true,
+    }
+}
+
+// Checked in a fixed order, so the reported reason is deterministic.
+pub fn malformation(observation: CallObservation) -> Malformation {
+    let returndata = payload_malformation(payload: observation.returndata)
+    if !is_fine(returndata) {
+        return returndata
+    }
+    if observation.log_count > MAX_LOGS {
+        return Malformation::TooManyLogs
     }
     if !observation.success && observation.log_count != 0 {
-        return false
+        return Malformation::LogsOnRevert
     }
     var i: usize = 0
     while i < MAX_LOGS {
         let log = observation.logs[i]
-        if i >= observation.log_count {
-            if log.emitter != 0 || log.topic_count != 0 || log.data.len != 0 {
-                return false
-            }
+        if i >= observation.log_count && (log.emitter != 0 || log.topic_count != 0 || log.data.len != 0) {
+            return Malformation::Stray
         }
-        if log.topic_count > MAX_TOPICS || log.emitter >= (1 << 160) || !payload_well_formed(payload: log.data) {
-            return false
+        if log.topic_count > MAX_TOPICS {
+            return Malformation::TooManyTopics
+        }
+        if log.emitter >= (1 << 160) {
+            return Malformation::Emitter
+        }
+        let data = payload_malformation(payload: log.data)
+        if !is_fine(data) {
+            return data
         }
         var t: usize = log.topic_count
         while t < MAX_TOPICS {
             if log.topics[t] != 0 {
-                return false
+                return Malformation::Stray
             }
             t += 1
         }
         i += 1
     }
-    true
+    if observation.state_count > MAX_STATE {
+        return Malformation::TooManyState
+    }
+    var s: usize = 0
+    while s < MAX_STATE {
+        if s < observation.state_count {
+            if !state_canonical(field: observation.state[s]) {
+                return Malformation::StateValue
+            }
+        } else if observation.state[s].value != 0 {
+            return Malformation::Stray
+        }
+        s += 1
+    }
+    Malformation::Fine
+}
+
+pub fn well_formed(observation: CallObservation) -> bool {
+    is_fine(malformation(observation))
 }

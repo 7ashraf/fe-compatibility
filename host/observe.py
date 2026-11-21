@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Phase 0: execute the Meter v0 sequence against two implementations, each in
-its own fresh pinned Anvil (Osaka) world, capture raw observations, and let the
-native Fe checker decide whether they match.
+"""Execute the Meter v0 sequence against two implementations, each in its own
+fresh pinned Anvil (Osaka) world, capture raw observations (including the
+public `total()` state after every call), let the native Fe checker decide,
+and print a `fe-compatibility-report` v1 (spec/report.md).
 
 Python only drives the chains and moves bytes. It never decides equality: the
 verdict, the category, and the first divergence come from the Fe checker.
@@ -17,15 +18,19 @@ import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import BUILD, InfrastructureError, load_stamp  # noqa: E402
+from common import BUILD, VARIANTS, InfrastructureError, load_stamp  # noqa: E402
 from evm_chain import RpcError, cast  # noqa: E402
 import fecheck  # noqa: E402
+import report as reporting  # noqa: E402
 from world import World, GENESIS  # noqa: E402
 
 ACTIONS = (('add(uint256)', 5), ('add(uint256)', 0), ('add(uint256)', 200), ('add(uint256)', 100), ('total()', None))
 SIGNATURES = {'function': {'add(uint256)', 'total()'}, 'event': {'Added(address,uint256,uint256)'},
               'error': {'EmptyQuantity()', 'TooLarge(uint256,uint256)'}}
 STRICT = {'return_words': [], 'topics': [], 'data_words': []}
+# Public state read after every call: (name, getter, kind).
+STATE = (('total', 'total()', 'uint'),)
+TARGETS = ('solidity', 'fe', *VARIANTS)
 
 
 def canonical_abi(path):
@@ -48,7 +53,7 @@ def observe(target, stamp):
         steps = []
         for index, (signature, argument) in enumerate(ACTIONS):
             data = cast('calldata', signature, *([] if argument is None else [argument]))
-            observation = world.call(data)
+            observation = world.call(data, state=STATE)
             steps.append({'index': index, 'call': signature, 'argument': None if argument is None else str(argument),
                           'calldata': data, **observation})
         return {'format': 'fe-compatibility-raw-execution', 'version': 2, 'implementation': target,
@@ -63,31 +68,40 @@ def observe(target, stamp):
                 'steps': steps}
 
 
-def check(left, right):
+def check(left, right, raise_malformed=True):
     """Send both raw records to the native Fe checker and return its decision."""
     if len(left['steps']) != len(right['steps']):
         raise InfrastructureError('Records have different step counts')
-    decision = fecheck.sequence(left['deployment'], right['deployment'],
-                                [(STRICT, True, a, b) for a, b in zip(left['steps'], right['steps'])])
-    if 'first_divergence' in decision:
-        d = decision['first_divergence']
-        step = left['steps'][d['step']]
-        d.update(call=step['call'], argument=step['argument'], left_returndata=step['returndata'],
-                 right_returndata=right['steps'][d['step']]['returndata'])
-    return decision, None
+    return fecheck.sequence(left['deployment'], right['deployment'],
+                            [(STRICT, True, a, b) for a, b in zip(left['steps'], right['steps'])],
+                            raise_malformed=raise_malformed), None
+
+
+def declarations(left, right):
+    """ABI declaration conformance against spec/meter-v0.md. A difference is a finding, not a harness error."""
+    out = {'match': left == SIGNATURES and right == SIGNATURES, 'spec': 'spec/meter-v0.md'}
+    for side, abi in (('left', left), ('right', right)):
+        out[side] = {'missing': sorted(s for k in SIGNATURES for s in SIGNATURES[k] - abi[k]),
+                     'unexpected': sorted(s for k in SIGNATURES for s in abi[k] - SIGNATURES[k])}
+    return out
+
+
+def build_report(left, right, decision, stamp):
+    abis = [json.loads((BUILD / stamp['targets'][r['implementation']]['abi']).read_text()) for r in (left, right)]
+    labels = [{'call': s['call'], 'argument': s['argument']} for s in left['steps']]
+    return reporting.build('meter-v0 (5 calls)', 'behavioral conformance (strict)', left, right, decision,
+                           reporting.Interface(*abis), STATE, labels)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--left', default='solidity', choices=('solidity', 'fe', 'fe-faulty'))
-    parser.add_argument('--right', default='fe', choices=('solidity', 'fe', 'fe-faulty'))
+    parser.add_argument('--left', default='solidity', choices=TARGETS)
+    parser.add_argument('--right', default='fe', choices=TARGETS)
     parser.add_argument('--record-dir', type=Path, help='write the two raw execution records here')
     args = parser.parse_args()
     try:
         stamp = load_stamp()
         abis = {t: canonical_abi(BUILD / stamp['targets'][t]['abi']) for t in (args.left, args.right)}
-        if any(abi != SIGNATURES for abi in abis.values()):
-            raise InfrastructureError(f'Compiled ABI differs from spec/meter-v0.md: {abis}')
         left, right = observe(args.left, stamp), observe(args.right, stamp)
         if left['deployment']['address'] != right['deployment']['address']:
             raise InfrastructureError('Worlds are not equivalent: deployment addresses differ')
@@ -96,16 +110,10 @@ def main():
             args.record_dir.mkdir(parents=True, exist_ok=True)
             for record in (left, right):
                 (args.record_dir / f'raw-{record["implementation"]}.json').write_text(json.dumps(record, indent=2) + '\n')
-        report = {'format': 'fe-compatibility-phase0-report-v1', 'mode': 'behavioral conformance (strict raw bytes)',
-                  'corpus': 'spec/meter-v0.md Phase 0 sequence (5 calls)', 'left': args.left, 'right': args.right,
-                  'claim': ('No mismatch observed for this corpus under this configuration; this is not an '
-                            'equivalence proof.' if decision['verdict'] == 'match' else
-                            'Mismatch observed; see first_divergence.'),
-                  **decision, 'gas_used': {'left': [s['gas_used'] for s in left['steps']],
-                                           'right': [s['gas_used'] for s in right['steps']],
-                                           'note': 'reported only; gas is not compared'}}
-        print(json.dumps(report, indent=2))
-        return 0 if decision['verdict'] == 'match' else 1
+        report = build_report(left, right, decision, stamp)
+        report['abi_declarations'] = declarations(abis[args.left], abis[args.right])
+        print(reporting.render(report), end='')
+        return 0 if decision['verdict'] == 'match' and report['abi_declarations']['match'] else 1
     except (InfrastructureError, RpcError, OSError, subprocess.SubprocessError, AssertionError) as error:
         print(json.dumps({'verdict': 'infrastructure', 'error': str(error)}, indent=2))
         return 3

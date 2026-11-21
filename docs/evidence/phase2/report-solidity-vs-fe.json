@@ -1,0 +1,110 @@
+{
+  "abi_declarations": {
+    "left": {
+      "missing": [],
+      "unexpected": []
+    },
+    "match": true,
+    "right": {
+      "missing": [],
+      "unexpected": []
+    },
+    "spec": "spec/meter-v0.md"
+  },
+  "claim": "No mismatch observed for corpus meter-v0 (5 calls) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).",
+  "configuration": {
+    "left": {
+      "deployed_runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c",
+      "implementation": "solidity",
+      "target": {
+        "abi": "solidity/Meter.abi",
+        "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+        "creation": "solidity/Meter.bin",
+        "creation_sha256": "c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf",
+        "runtime": "solidity/Meter.bin-runtime",
+        "runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c",
+        "settings": "solc --evm-version osaka --optimize --optimize-runs 200"
+      },
+      "world": {
+        "caller": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+        "zero": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "right": {
+      "deployed_runtime_sha256": "3d51abc73cc4ee311d4cf89c241d26e31f5817278ac7d1b0dddb50b939cf4f61",
+      "implementation": "fe",
+      "target": {
+        "abi": "fe/Meter.abi.json",
+        "compiler": "fe 26.5.0 (3dab95f)",
+        "creation": "fe/Meter.bin",
+        "creation_sha256": "c71e325b9d140621f5da1ea9c9478c0ceb60b0065a0241f3d6e193171ac909ee",
+        "runtime": "fe/Meter.runtime.bin",
+        "runtime_sha256": "3d51abc73cc4ee311d4cf89c241d26e31f5817278ac7d1b0dddb50b939cf4f61",
+        "settings": "fe build --backend sonatina --profile release -O 1"
+      },
+      "world": {
+        "caller": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "deployer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "target": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+        "zero": "0x0000000000000000000000000000000000000000"
+      }
+    }
+  },
+  "corpus": "meter-v0 (5 calls)",
+  "decision": {
+    "checker": "native Fe compat_checker protocol 3",
+    "listed": 0,
+    "mismatching_steps": 0,
+    "steps_compared": 5,
+    "truncated": false,
+    "verdict": "match"
+  },
+  "environment": {
+    "base_fee": 0,
+    "chain_id": 31337,
+    "gas_limit_per_tx": 2000000,
+    "gas_price": 1,
+    "genesis_timestamp": 1700000000,
+    "hardfork": "osaka",
+    "mining": "one mined transaction per block, scheduled timestamps",
+    "sender_nonce_at_deploy": 0
+  },
+  "format": "fe-compatibility-report",
+  "gas_used": {
+    "left": [
+      45625,
+      21480,
+      21531,
+      28525,
+      23342
+    ],
+    "note": "reported only; gas is never compared",
+    "right": [
+      45190,
+      21480,
+      21510,
+      28090,
+      23274
+    ]
+  },
+  "mismatches": [],
+  "mode": "behavioral conformance (strict)",
+  "raw_records_sha256": {
+    "left": "6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1",
+    "right": "7878bb902395fd5191bcfcb85f931d7b02a98d2ce986c5f386f51dcbe271bfed"
+  },
+  "state_declared": [
+    {
+      "getter": "total()",
+      "kind": "uint",
+      "name": "total"
+    }
+  ],
+  "tools": {
+    "anvil": "anvil Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf",
+    "cast": "cast Version: 1.5.1-stable\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\nBuild Profile: maxperf"
+  },
+  "version": 1
+}

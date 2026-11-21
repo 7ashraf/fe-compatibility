@@ -62,9 +62,10 @@ fn identical_observations_match() {
 fn one_byte_in_revert_payload_is_located() {
     var other = revert_sample()
     other.returndata.words[2] = 101 << 224
+    // Phase 2: a revert payload difference is an error argument (slot 1), not a raw byte.
     let m = compare(left: revert_sample(), right: other)
-    assert!(code(m) == 3)
-    assert!(m.index == 67 && m.left == 100 && m.right == 101)
+    assert!(code(m) == 11)
+    assert!(m.index == 67 && m.slot == 1 && m.left == 100 && m.right == 101)
 }
 
 #[test]
@@ -90,7 +91,8 @@ fn log_differences_are_classified() {
     var none = sample()
     none.log_count = 0
     none.logs[0] = empty_log()
-    assert!(code(compare(left: sample(), right: none)) == 4)
+    let missing = compare(left: sample(), right: none)
+    assert!(code(missing) == 12 && missing.index == 0)
     var emitter = sample()
     emitter.logs[0].emitter = 1
     assert!(code(compare(left: sample(), right: emitter)) == 5)
@@ -106,7 +108,7 @@ fn log_differences_are_classified() {
     var data = sample()
     data.logs[0].data.words[1] = 106
     let d = compare(left: sample(), right: data)
-    assert!(code(d) == 9 && d.index == 63 && d.left == 105 && d.right == 106)
+    assert!(code(d) == 9 && d.index == 63 && d.slot == 1 && d.left == 105 && d.right == 106)
     var length = sample()
     length.logs[0].data.len = 32
     length.logs[0].data.words[1] = 0
@@ -154,14 +156,15 @@ fn run(count: usize, diverge_at: usize, malformed_at: usize) -> Mismatch {
 fn first_divergent_step_is_reported() {
     assert!(code(run(count: 3, diverge_at: 99, malformed_at: 99)) == 0)
     let m = run(count: 5, diverge_at: 1, malformed_at: 99)
-    assert!(code(m) == 3 && m.step == 1 && m.index == 0 && m.left == 0 && m.right == 128)
+    assert!(code(m) == 3 && m.step == 1 && m.index == 0 && m.slot == 0 && m.left == 105
+        && m.right == 105 | (1 << 255))
     // Later divergences never replace the first one.
     var progress = begin()
     var other = revert_sample()
     other.returndata.words[2] = 101 << 224
     progress = step(progress, left: revert_sample(), right: other)
     progress = step(progress, left: sample(), right: revert_sample())
-    assert!(code(progress.result) == 3 && progress.result.step == 0)
+    assert!(code(progress.result) == 11 && progress.result.step == 0)
     // A malformed step dominates an earlier behavior mismatch.
     let bad = run(count: 4, diverge_at: 0, malformed_at: 2)
     assert!(code(bad) == 100 && bad.step == 2)

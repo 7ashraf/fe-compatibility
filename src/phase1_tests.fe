@@ -166,7 +166,7 @@ fn values_beyond_float_precision_are_exact() {
     var right = left
     right.returndata = q
     let m = step(progress: begin(), left, right).result
-    assert!(verdict(m) == 3 && m.index == 31 && m.left == 1 && m.right == 0)
+    assert!(verdict(m) == 3 && m.index == 31 && m.left == 9007199254740993 && m.right == 9007199254740992)
     var over = p
     over.words[0] = 1 << 64
     assert!(code(validate(payload: over, layout: l, selector: 0, with_selector: false)) == 4)
@@ -291,7 +291,7 @@ fn failed_deployment_is_never_a_match() {
     logged.log_count = 1
     logged.logs[0].emitter = A_TARGET
     let d = begin_deployed(left: ok, right: logged, left_table: none, right_table: none).result
-    assert!(verdict(d) == 4 && d.deployment)
+    assert!(verdict(d) == 13 && d.deployment)
 }
 
 #[test]
@@ -307,5 +307,5 @@ fn compiler_rejection_scope_compares_status_and_logs_only() {
     let s = step_normalized(progress: begin(), left: a, right: success, left_table: none, right_table: none,
                             allowlist: empty_allowlist(), exact_returndata: false).result
     assert!(verdict(s) == 1)
-    assert!(verdict(step(progress: begin(), left: a, right: b).result) == 3)
+    assert!(verdict(step(progress: begin(), left: a, right: b).result) == 10)
 }

@@ -5,9 +5,9 @@ raw EVM observations (status, exact returndata or revert bytes, and ordered
 logs), and let a **Fe checker** decide whether they match. When they don't, it
 reports the first divergence.
 
-**Status: Phase 0 and Phase 1 exit gates passed** ([feasibility](docs/feasibility.md)).
-Phases 2–5 (the full Fe engine, the treasury corpus, layout mode, and an
-outside user) are not started. Passing means "no mismatch
+**Status: Phase 0–2 exit gates passed** ([feasibility](docs/feasibility.md)).
+Phases 3–5 (the treasury corpus, layout mode, and an outside user) are not
+started. Passing means "no mismatch
 observed for this corpus under this configuration". It never means the
 contracts are equivalent.
 
@@ -25,7 +25,15 @@ python3 host/observe.py --left solidity --right fe-faulty   # exit 1: Fe locates
 python3 scripts/verify-phase0.py                            # whole Phase 0 gate, about 4 s
 python3 host/vectors.py                                     # Phase 1 ABI conformance on 28 golden vectors
 python3 scripts/verify-phase1.py                            # Phase 1 gate (includes Phase 0), about 10 s
+python3 host/observe.py --right fe-state                    # report: state differs behind a matching return
+python3 scripts/verify-phase2.py                            # Phase 2 gate (includes 0-1), about 26 s
 ```
+
+Reports follow [spec/report.md](spec/report.md). Each listed mismatch has
+Fe's category and location, the exact raw bytes, and a typed explanation. Six
+seeded Fe ports (`--right fe-faulty`, `fe-state`, `fe-unindexed`,
+`fe-extra-log`, `fe-wrong-error`, `fe-no-empty-check`) each show one porting
+mistake caught at the intended step.
 
 The frozen interfaces are indexed in [spec/interface.md](spec/interface.md):
 Codec v1 for ABI conformance, and treasury v0 vendored from Fe Capabilities.
@@ -43,9 +51,12 @@ The seeded `fe-faulty` port reports `TooLarge(200, 101)` instead of
 - `src/observation.fe`: typed raw observations. Payloads are an explicit byte
   length plus 32-byte words, and the module enforces well-formedness rules
   (zero padding, caps, no logs on reverts).
-- `src/conformance.fe`: strict comparison in a fixed order (status, returndata,
-  log count, emitter, topics, data). It assigns one of nine mismatch
-  categories, the byte or topic index, and the first divergent step. A failed
+- `src/conformance.fe`: strict comparison in a fixed order (status, then
+  error selector and arguments or exact returndata, then the log sequence and
+  fields, then typed state). It uses 17 categories, including
+  missing, extra, and reordered logs and state behind a matching return. It
+  reports the first divergence and a bounded, ordered list of up to 8
+  mismatches, with a total count. A failed
   deployment makes the result `not-comparable`, and compiler-generated
   rejections can be compared in a status-only scope.
 - `src/abi.fe`: an ABI conformance validator. It reports `selector`,

@@ -80,13 +80,17 @@ def main():
             reports[f'{left}-vs-{right}'] = json.loads(result.stdout)
             for f in out.glob('raw-*.json'):
                 records[f.stem.removeprefix('raw-')] = json.loads(f.read_text())
-    divergence = reports['solidity-vs-fe-faulty']['first_divergence']
-    expected = {'step': 2, 'category': 'returndata-byte', 'index': 67, 'left': '100', 'right': '101'}
-    if {k: divergence[k] for k in expected} != expected:
+    # Since Phase 2 the revert-payload byte is classified as error argument 1 (`limit`) at byte 67.
+    first = reports['solidity-vs-fe-faulty']['mismatches'][0]
+    divergence = {'step': first['step'], 'category': first['category'], 'index': first['location']['index'],
+                  'slot': first['location']['slot'], **first['fe']}
+    expected = {'step': 2, 'category': 'error-argument', 'index': 67, 'slot': 1, 'left': '100', 'right': '101'}
+    if divergence != expected:
         raise RuntimeError(f'Seeded fault located incorrectly: {divergence}')
-    if reports['solidity-vs-fe']['verdict'] != 'match' or reports['fe-vs-solidity']['verdict'] != 'match':
+    if reports['solidity-vs-fe']['decision']['verdict'] != 'match' or \
+            reports['fe-vs-solidity']['decision']['verdict'] != 'match':
         raise RuntimeError('Correct pair did not match')
-    print('PASS seeded one-byte fault located by Fe: step 2 add(200), returndata byte 67, 0x64 vs 0x65', flush=True)
+    print('PASS seeded one-byte fault located by Fe: step 2 add(200), TooLarge argument 1 at byte 67, 0x64 vs 0x65', flush=True)
 
     # Targeted perturbations of the real Solidity record, one at a time.
     base = records['solidity']
@@ -119,12 +123,12 @@ def main():
     case('empty returndata', lambda s: s[4].update(returndata='0x'), 4, 'returndata-length')
     case('extra trailing zero in revert data', lambda s: s[1].update(returndata=s[1]['returndata'] + '00'), 1,
          'returndata-length')
-    case('error selector byte', lambda s: s[1].update(returndata=flip(s[1]['returndata'], 0)), 1, 'returndata-byte', 0)
+    case('error selector byte', lambda s: s[1].update(returndata=flip(s[1]['returndata'], 0)), 1, 'error-selector', 0)
     case('error argument byte', lambda s: s[2].update(returndata=flip(s[2]['returndata'], 35)), 2,
-         'returndata-byte', 35)
+         'error-argument', 35)
     case('success instead of revert', lambda s: s[1].update(success=True), 1, 'status')
-    case('missing event', lambda s: s[3].update(logs=[]), 3, 'log-count')
-    case('extra event', lambda s: s[4].update(logs=copy.deepcopy(s[3]['logs'])), 4, 'log-count')
+    case('missing event', lambda s: s[3].update(logs=[]), 3, 'log-missing')
+    case('extra event', lambda s: s[4].update(logs=copy.deepcopy(s[3]['logs'])), 4, 'log-extra')
     case('different emitter', lambda s: s[0]['logs'][0].update(address='0x' + '11' * 20), 0, 'log-emitter')
     case('indexed caller moved to data', lambda s: s[0]['logs'][0].update(
         topics=s[0]['logs'][0]['topics'][:1], data='0x' + s[0]['logs'][0]['topics'][1][2:] + s[0]['logs'][0]['data'][2:]),

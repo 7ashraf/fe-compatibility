@@ -1,0 +1,689 @@
+{
+  "format": "fe-compatibility-phase2-gate-v1",
+  "result": "Phase 2 exit gate passed",
+  "verified_at_utc": "2026-11-21T14:50:51.666814+00:00",
+  "host": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6",
+  "fe": {
+    "version": "fe 26.5.0 (3dab95f)",
+    "sha256": "4968711c5bc02c1a3151cfaea0d81a48dc74803ea208362022af467c2a523fed"
+  },
+  "solc": {
+    "version": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+    "sha256": "f5a243d6b2dd8fba307e36c5fefa2d8eb3ae74ba81036d1c17c971b5d346ade9"
+  },
+  "targets": {
+    "solidity": {
+      "creation": "solidity/Meter.bin",
+      "runtime": "solidity/Meter.bin-runtime",
+      "abi": "solidity/Meter.abi",
+      "compiler": "Version: 0.8.31+commit.fd3a2265.Darwin.appleclang",
+      "settings": "solc --evm-version osaka --optimize --optimize-runs 200",
+      "creation_sha256": "c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf",
+      "runtime_sha256": "db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c"
+    },
+    "fe": {
+      "creation": "fe/Meter.bin",
+      "runtime": "fe/Meter.runtime.bin",
+      "abi": "fe/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "creation_sha256": "c71e325b9d140621f5da1ea9c9478c0ceb60b0065a0241f3d6e193171ac909ee",
+      "runtime_sha256": "3d51abc73cc4ee311d4cf89c241d26e31f5817278ac7d1b0dddb50b939cf4f61"
+    },
+    "fe-faulty": {
+      "creation": "fe-faulty/Meter.bin",
+      "runtime": "fe-faulty/Meter.runtime.bin",
+      "abi": "fe-faulty/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 0 FAULT: TooLarge reports limit 101",
+      "mutated_source_sha256": "0f7b81a02ff4ffe62c972e10634e2104f1d5143201425e726a309ef0084473b3",
+      "creation_sha256": "737a04012e4430a7f1ae6f19f67a2d22e51468cd6de08cc9a3647cf0e718dee0",
+      "runtime_sha256": "66516c590d75c1da9663fd641993167e55fb5f314b09a9f2744565af25751c63"
+    },
+    "fe-state": {
+      "creation": "fe-state/Meter.bin",
+      "runtime": "fe-state/Meter.runtime.bin",
+      "abi": "fe-state/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 2 FAULT: stores one extra unit at the limit; return and event stay correct.",
+      "mutated_source_sha256": "9730119787aa14ae59bb59a11880d32e50e00131712b73e6cd2287e168bf5318",
+      "creation_sha256": "2bc43541961db360be3877a6f014e15ee5049ec8b6f3205403f5b5a5c0c0b2e6",
+      "runtime_sha256": "ad89afffdd07dc6c441ebc2385a5f8956849bd0be8c1291c10c9008536e4d94c"
+    },
+    "fe-unindexed": {
+      "creation": "fe-unindexed/Meter.bin",
+      "runtime": "fe-unindexed/Meter.runtime.bin",
+      "abi": "fe-unindexed/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 2 FAULT: caller is not indexed",
+      "mutated_source_sha256": "8816f3823db276d802cd888a812b33aa98d6fd8d14d8238d594e1c783ddd4fdb",
+      "creation_sha256": "62901e92fe1d6e2b6c668fca53fb5f660cfdb3370b278df220b07dfde3795698",
+      "runtime_sha256": "4df36476a802113b830fd34c21667546865c02141ebfc3b09aed43c55ff3ccda"
+    },
+    "fe-extra-log": {
+      "creation": "fe-extra-log/Meter.bin",
+      "runtime": "fe-extra-log/Meter.runtime.bin",
+      "abi": "fe-extra-log/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 2 FAULT: event emitted twice",
+      "mutated_source_sha256": "faa92f94f5de35b3942ecf665a4eca074dd6f5eac6cf11ccb1ab5be79be61263",
+      "creation_sha256": "a88fe0c6f586d7fcfced385f5aa0f79c5dc82ef0b137a6b0b310ecd3f52d0cdb",
+      "runtime_sha256": "71e55f8052eb03c3d492d1e497375a542fd7190968fc6b43fd4f62d7e801294f"
+    },
+    "fe-wrong-error": {
+      "creation": "fe-wrong-error/Meter.bin",
+      "runtime": "fe-wrong-error/Meter.runtime.bin",
+      "abi": "fe-wrong-error/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 2 FAULT: wrong error",
+      "mutated_source_sha256": "e88cf47125f1aaf1b7bd8c18fd5012530b057cd23fb4fcc1e1b13ccf7a098117",
+      "creation_sha256": "7f6c842a83d402b7d16754f761110cc5312d2e78ced07aabc893f19c4e511485",
+      "runtime_sha256": "a63fd170844acf50de0804748db1f9c0f5e3a3f144078ee0ccd68ec1c16c812b"
+    },
+    "fe-no-empty-check": {
+      "creation": "fe-no-empty-check/Meter.bin",
+      "runtime": "fe-no-empty-check/Meter.runtime.bin",
+      "abi": "fe-no-empty-check/Meter.abi.json",
+      "compiler": "fe 26.5.0 (3dab95f)",
+      "settings": "fe build --backend sonatina --profile release -O 1",
+      "fault": "intentional: PHASE 2 FAULT: zero quantity is not rejected",
+      "mutated_source_sha256": "1b340334909aee13162347359d80b45fd37c6e940274e81e20865feb6e7118a9",
+      "creation_sha256": "6ba4c808ef5a88e2439fe542e08fc49ee2239ef356dffa241e511dd38ceb2885",
+      "runtime_sha256": "413ad6ffef48da46e0a1c5f9a97996880c17e56696b7198a50e30acf0d1ee5cd"
+    }
+  },
+  "intended": {
+    "fe": [],
+    "fe-faulty": [
+      [
+        2,
+        "error-argument",
+        0,
+        67,
+        1
+      ]
+    ],
+    "fe-state": [
+      [
+        3,
+        "state-value",
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        "returndata-byte",
+        0,
+        31,
+        0
+      ]
+    ],
+    "fe-unindexed": [
+      [
+        0,
+        "topic-count",
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        "topic-count",
+        0,
+        0,
+        0
+      ]
+    ],
+    "fe-extra-log": [
+      [
+        0,
+        "log-extra",
+        1,
+        1,
+        0
+      ],
+      [
+        3,
+        "log-extra",
+        1,
+        1,
+        0
+      ]
+    ],
+    "fe-wrong-error": [
+      [
+        1,
+        "error-selector",
+        0,
+        0,
+        0
+      ]
+    ],
+    "fe-no-empty-check": [
+      [
+        1,
+        "status",
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "perturbations": [
+    {
+      "name": "reordered logs",
+      "expected": [
+        0,
+        "log-reordered",
+        0
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 139,
+        "steps_compared": 5,
+        "verdict": "mismatch",
+        "mismatching_steps": 1,
+        "listed": 1,
+        "truncated": false,
+        "mismatches": [
+          {
+            "deployment": false,
+            "step": 0,
+            "category": "log-reordered",
+            "log": 0,
+            "index": 0,
+            "slot": 0,
+            "left": "2",
+            "right": "2"
+          }
+        ],
+        "first_divergence": {
+          "deployment": false,
+          "step": 0,
+          "category": "log-reordered",
+          "log": 0,
+          "index": 0,
+          "slot": 0,
+          "left": "2",
+          "right": "2"
+        }
+      }
+    },
+    {
+      "name": "missing first of two logs",
+      "expected": [
+        0,
+        "log-missing",
+        0
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 132,
+        "steps_compared": 5,
+        "verdict": "mismatch",
+        "mismatching_steps": 1,
+        "listed": 1,
+        "truncated": false,
+        "mismatches": [
+          {
+            "deployment": false,
+            "step": 0,
+            "category": "log-missing",
+            "log": 0,
+            "index": 0,
+            "slot": 0,
+            "left": "2",
+            "right": "1"
+          }
+        ],
+        "first_divergence": {
+          "deployment": false,
+          "step": 0,
+          "category": "log-missing",
+          "log": 0,
+          "index": 0,
+          "slot": 0,
+          "left": "2",
+          "right": "1"
+        }
+      }
+    },
+    {
+      "name": "extra log",
+      "expected": [
+        0,
+        "log-extra",
+        1
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 132,
+        "steps_compared": 5,
+        "verdict": "mismatch",
+        "mismatching_steps": 1,
+        "listed": 1,
+        "truncated": false,
+        "mismatches": [
+          {
+            "deployment": false,
+            "step": 0,
+            "category": "log-extra",
+            "log": 1,
+            "index": 1,
+            "slot": 0,
+            "left": "1",
+            "right": "2"
+          }
+        ],
+        "first_divergence": {
+          "deployment": false,
+          "step": 0,
+          "category": "log-extra",
+          "log": 1,
+          "index": 1,
+          "slot": 0,
+          "left": "1",
+          "right": "2"
+        }
+      }
+    },
+    {
+      "name": "changed indexed caller",
+      "expected": [
+        3,
+        "topic",
+        1
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 125,
+        "steps_compared": 5,
+        "verdict": "mismatch",
+        "mismatching_steps": 1,
+        "listed": 1,
+        "truncated": false,
+        "mismatches": [
+          {
+            "deployment": false,
+            "step": 3,
+            "category": "topic",
+            "log": 0,
+            "index": 1,
+            "slot": 1,
+            "left": "1390849295786071768276380950238675083608645509734",
+            "right": "1390849295786071768276380950238675083608645509728"
+          }
+        ],
+        "first_divergence": {
+          "deployment": false,
+          "step": 3,
+          "category": "topic",
+          "log": 0,
+          "index": 1,
+          "slot": 1,
+          "left": "1390849295786071768276380950238675083608645509734",
+          "right": "1390849295786071768276380950238675083608645509728"
+        }
+      }
+    },
+    {
+      "name": "wrong error payload",
+      "expected": [
+        2,
+        "error-argument",
+        67
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 125,
+        "steps_compared": 5,
+        "verdict": "mismatch",
+        "mismatching_steps": 1,
+        "listed": 1,
+        "truncated": false,
+        "mismatches": [
+          {
+            "deployment": false,
+            "step": 2,
+            "category": "error-argument",
+            "log": 0,
+            "index": 67,
+            "slot": 1,
+            "left": "100",
+            "right": "101"
+          }
+        ],
+        "first_divergence": {
+          "deployment": false,
+          "step": 2,
+          "category": "error-argument",
+          "log": 0,
+          "index": 67,
+          "slot": 1,
+          "left": "100",
+          "right": "101"
+        }
+      }
+    },
+    {
+      "name": "success instead of revert",
+      "expected": [
+        1,
+        "status",
+        0
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 125,
+        "steps_compared": 5,
+        "verdict": "mismatch",
+        "mismatching_steps": 1,
+        "listed": 1,
+        "truncated": false,
+        "mismatches": [
+          {
+            "deployment": false,
+            "step": 1,
+            "category": "status",
+            "log": 0,
+            "index": 0,
+            "slot": 0,
+            "left": "0",
+            "right": "1"
+          }
+        ],
+        "first_divergence": {
+          "deployment": false,
+          "step": 1,
+          "category": "status",
+          "log": 0,
+          "index": 0,
+          "slot": 0,
+          "left": "0",
+          "right": "1"
+        }
+      }
+    },
+    {
+      "name": "state after a matching return",
+      "expected": [
+        3,
+        "state-value",
+        0
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 125,
+        "steps_compared": 5,
+        "verdict": "mismatch",
+        "mismatching_steps": 1,
+        "listed": 1,
+        "truncated": false,
+        "mismatches": [
+          {
+            "deployment": false,
+            "step": 3,
+            "category": "state-value",
+            "log": 0,
+            "index": 0,
+            "slot": 0,
+            "left": "105",
+            "right": "106"
+          }
+        ],
+        "first_divergence": {
+          "deployment": false,
+          "step": 3,
+          "category": "state-value",
+          "log": 0,
+          "index": 0,
+          "slot": 0,
+          "left": "105",
+          "right": "106"
+        }
+      }
+    },
+    {
+      "name": "oversized returndata",
+      "expected": [
+        "malformed",
+        "oversized"
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 134,
+        "steps_compared": 5,
+        "verdict": "malformed",
+        "mismatching_steps": 0,
+        "listed": 0,
+        "truncated": false,
+        "mismatches": [],
+        "malformed": {
+          "reason": "oversized",
+          "deployment": false,
+          "step": 0
+        }
+      }
+    },
+    {
+      "name": "five logs",
+      "expected": [
+        "malformed",
+        "too-many-logs"
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 153,
+        "steps_compared": 5,
+        "verdict": "malformed",
+        "mismatching_steps": 0,
+        "listed": 0,
+        "truncated": false,
+        "mismatches": [],
+        "malformed": {
+          "reason": "too-many-logs",
+          "deployment": false,
+          "step": 0
+        }
+      }
+    },
+    {
+      "name": "oversized log data",
+      "expected": [
+        "malformed",
+        "oversized"
+      ],
+      "decision": {
+        "checker": "native Fe compat_checker protocol 3",
+        "frame_words": 132,
+        "steps_compared": 5,
+        "verdict": "malformed",
+        "mismatching_steps": 0,
+        "listed": 0,
+        "truncated": false,
+        "mismatches": [],
+        "malformed": {
+          "reason": "oversized",
+          "deployment": false,
+          "step": 0
+        }
+      }
+    },
+    {
+      "name": "15 mismatching steps",
+      "expected": [
+        "listed 8 of 15, truncated, step order"
+      ],
+      "decision": {
+        "mismatching_steps": 15,
+        "listed": 8,
+        "truncated": true
+      }
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/verify-phase1.py"
+      ],
+      "exit": 0,
+      "stdout": "PASS python3 scripts/verify-phase0.py\nPASS fe test .\nPASS fe test . --backend native\nPASS python3 scripts/make-vectors.py --check\nPASS python3 host/vectors.py: 11/11 expectations\nPASS exit 1: 15 valid + 10 reject vectors match golden on Solidity and Fe; the two implementations match each other\nPASS exit 2: 13 malformed calldata vectors and 9 returndata perturbations get specific Fe categories\nPASS exit 3: differently addressed worlds match only through the allowlist; the target address inside bytes stays raw and differs\nPASS exit 4: constructor revert InvalidOwner() in both worlds is not-comparable, including against a step expecting the same bytes\nPASS exit 5: 10 decimal values up to 2^256-1 and down to -2^255 round-trip exactly\nPASS strict loader rejects 20 invalid fixtures (exit 2, never a verdict)\nPASS Phase 1 exit gate: frozen interfaces, schema, and golden vectors, with every decision made in Fe\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        "."
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.0002s] canonical_payloads_pass\nPASS  [0.0003s] changed_indexed_value\nPASS  [0.0003s] address_state_is_normalized_by_type_only\nPASS  [0.0003s] failed_deployment_is_never_a_match\nPASS  [0.0004s] identical_observations_match\nPASS  [0.0005s] earlier_observation_classes_win_within_a_step\nPASS  [0.0006s] compiler_rejection_scope_compares_status_and_logs_only\nPASS  [0.0003s] log_differences_are_classified\nPASS  [0.0004s] invalid_tables_and_allowlists_are_malformed\nPASS  [0.0009s] dynamic_bytes_rules\nPASS  [0.0004s] malformed_observations_are_not_comparable\nPASS  [0.0003s] one_byte_in_revert_payload_is_located\nPASS  [0.0004s] normalization_touches_only_allowlisted_fields\nPASS  [0.0002s] state_mismatch_behind_matching_return_and_logs\nPASS  [0.0001s] success_versus_revert\nPASS  [0.0006s] malformed_reasons_are_specific\nPASS  [0.0003s] positive_controls_match\nPASS  [0.0006s] missing_extra_and_reordered_logs\nPASS  [0.0002s] values_beyond_float_precision_are_exact\nPASS  [0.0003s] status_and_length_differences\nPASS  [0.0001s] wrong_selector_type_and_length_are_categorized\nPASS  [0.0002s] wrong_custom_error_and_payload\nPASS  [0.0012s] listing_is_bounded_ordered_and_counted\nPASS  [0.0060s] first_divergent_step_is_reported\n\ntest result: ok. 24 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "fe",
+        "test",
+        ".",
+        "--backend",
+        "native"
+      ],
+      "exit": 0,
+      "stdout": "PASS  [0.2389s] canonical_payloads_pass\nPASS  [0.2403s] dynamic_bytes_rules\nPASS  [0.2403s] invalid_tables_and_allowlists_are_malformed\nPASS  [0.2403s] values_beyond_float_precision_are_exact\nPASS  [0.2404s] compiler_rejection_scope_compares_status_and_logs_only\nPASS  [0.2404s] normalization_touches_only_allowlisted_fields\nPASS  [0.2404s] wrong_selector_type_and_length_are_categorized\nPASS  [0.2405s] failed_deployment_is_never_a_match\nPASS  [0.0066s] positive_controls_match\nPASS  [0.0051s] missing_extra_and_reordered_logs\nPASS  [0.0056s] wrong_custom_error_and_payload\nPASS  [0.0063s] changed_indexed_value\nPASS  [0.0095s] address_state_is_normalized_by_type_only\nPASS  [0.0101s] identical_observations_match\nPASS  [0.0106s] malformed_reasons_are_specific\nPASS  [0.0158s] state_mismatch_behind_matching_return_and_logs\nPASS  [0.0158s] success_versus_revert\nPASS  [0.0107s] listing_is_bounded_ordered_and_counted\nPASS  [0.0069s] status_and_length_differences\nPASS  [0.0179s] earlier_observation_classes_win_within_a_step\nPASS  [0.0056s] log_differences_are_classified\nPASS  [0.0056s] malformed_observations_are_not_comparable\nPASS  [0.0074s] first_divergent_step_is_reported\nPASS  [0.0182s] one_byte_in_revert_payload_is_located\n\ntest result: ok. 24 passed; 0 failed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"abi_declarations\": {\n    \"left\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"match\": true,\n    \"right\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"spec\": \"spec/meter-v0.md\"\n  },\n  \"claim\": \"No mismatch observed for corpus meter-v0 (5 calls) under this configuration. This is not an equivalence proof. ABI declarations are compared separately (abi_declarations).\",\n  \"configuration\": {\n    \"left\": {\n      \"deployed_runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n      \"implementation\": \"solidity\",\n      \"target\": {\n        \"abi\": \"solidity/Meter.abi\",\n        \"compiler\": \"Version: 0.8.31+commit.fd3a2265.Darwin.appleclang\",\n        \"creation\": \"solidity/Meter.bin\",\n        \"creation_sha256\": \"c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf\",\n        \"runtime\": \"solidity/Meter.bin-runtime\",\n        \"runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n        \"settings\": \"solc --evm-version osaka --optimize --optimize-runs 200\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    },\n    \"right\": {\n      \"deployed_runtime_sha256\": \"3d51abc73cc4ee311d4cf89c241d26e31f5817278ac7d1b0dddb50b939cf4f61\",\n      \"implementation\": \"fe\",\n      \"target\": {\n        \"abi\": \"fe/Meter.abi.json\",\n        \"compiler\": \"fe 26.5.0 (3dab95f)\",\n        \"creation\": \"fe/Meter.bin\",\n        \"creation_sha256\": \"c71e325b9d140621f5da1ea9c9478c0ceb60b0065a0241f3d6e193171ac909ee\",\n        \"runtime\": \"fe/Meter.runtime.bin\",\n        \"runtime_sha256\": \"3d51abc73cc4ee311d4cf89c241d26e31f5817278ac7d1b0dddb50b939cf4f61\",\n        \"settings\": \"fe build --backend sonatina --profile release -O 1\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 0,\n    \"mismatching_steps\": 0,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"match\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      45190,\n      21480,\n      21510,\n      28090,\n      23274\n    ]\n  },\n  \"mismatches\": [],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"7878bb902395fd5191bcfcb85f931d7b02a98d2ce986c5f386f51dcbe271bfed\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-faulty"
+      ],
+      "exit": 1,
+      "stdout": "{\n  \"abi_declarations\": {\n    \"left\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"match\": true,\n    \"right\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"spec\": \"spec/meter-v0.md\"\n  },\n  \"claim\": \"1 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).\",\n  \"configuration\": {\n    \"left\": {\n      \"deployed_runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n      \"implementation\": \"solidity\",\n      \"target\": {\n        \"abi\": \"solidity/Meter.abi\",\n        \"compiler\": \"Version: 0.8.31+commit.fd3a2265.Darwin.appleclang\",\n        \"creation\": \"solidity/Meter.bin\",\n        \"creation_sha256\": \"c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf\",\n        \"runtime\": \"solidity/Meter.bin-runtime\",\n        \"runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n        \"settings\": \"solc --evm-version osaka --optimize --optimize-runs 200\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    },\n    \"right\": {\n      \"deployed_runtime_sha256\": \"66516c590d75c1da9663fd641993167e55fb5f314b09a9f2744565af25751c63\",\n      \"implementation\": \"fe-faulty\",\n      \"target\": {\n        \"abi\": \"fe-faulty/Meter.abi.json\",\n        \"compiler\": \"fe 26.5.0 (3dab95f)\",\n        \"creation\": \"fe-faulty/Meter.bin\",\n        \"creation_sha256\": \"737a04012e4430a7f1ae6f19f67a2d22e51468cd6de08cc9a3647cf0e718dee0\",\n        \"fault\": \"intentional: PHASE 0 FAULT: TooLarge reports limit 101\",\n        \"mutated_source_sha256\": \"0f7b81a02ff4ffe62c972e10634e2104f1d5143201425e726a309ef0084473b3\",\n        \"runtime\": \"fe-faulty/Meter.runtime.bin\",\n        \"runtime_sha256\": \"66516c590d75c1da9663fd641993167e55fb5f314b09a9f2744565af25751c63\",\n        \"settings\": \"fe build --backend sonatina --profile release -O 1\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 1,\n    \"mismatching_steps\": 1,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"mismatch\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      45190,\n      21480,\n      21510,\n      28090,\n      23274\n    ]\n  },\n  \"mismatches\": [\n    {\n      \"action\": {\n        \"argument\": \"200\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"error-argument\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"100\",\n        \"right\": \"101\",\n        \"what\": \"TooLarge(uint256,uint256): argument 1 `limit` (uint256) differs\"\n      },\n      \"fe\": {\n        \"left\": \"100\",\n        \"right\": \"101\"\n      },\n      \"location\": {\n        \"index\": 67,\n        \"log\": 0,\n        \"slot\": 1\n      },\n      \"step\": 2,\n      \"strict\": {\n        \"left_returndata\": \"0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000064\",\n        \"left_success\": false,\n        \"right_returndata\": \"0x677fd0e300000000000000000000000000000000000000000000000000000000000000c80000000000000000000000000000000000000000000000000000000000000065\",\n        \"right_success\": false\n      }\n    }\n  ],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"6469c9c5add9fa2660524e33249771433e5151406222109e3353aa1d516f9561\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-state"
+      ],
+      "exit": 1,
+      "stdout": "{\n  \"abi_declarations\": {\n    \"left\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"match\": true,\n    \"right\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"spec\": \"spec/meter-v0.md\"\n  },\n  \"claim\": \"2 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).\",\n  \"configuration\": {\n    \"left\": {\n      \"deployed_runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n      \"implementation\": \"solidity\",\n      \"target\": {\n        \"abi\": \"solidity/Meter.abi\",\n        \"compiler\": \"Version: 0.8.31+commit.fd3a2265.Darwin.appleclang\",\n        \"creation\": \"solidity/Meter.bin\",\n        \"creation_sha256\": \"c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf\",\n        \"runtime\": \"solidity/Meter.bin-runtime\",\n        \"runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n        \"settings\": \"solc --evm-version osaka --optimize --optimize-runs 200\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    },\n    \"right\": {\n      \"deployed_runtime_sha256\": \"ad89afffdd07dc6c441ebc2385a5f8956849bd0be8c1291c10c9008536e4d94c\",\n      \"implementation\": \"fe-state\",\n      \"target\": {\n        \"abi\": \"fe-state/Meter.abi.json\",\n        \"compiler\": \"fe 26.5.0 (3dab95f)\",\n        \"creation\": \"fe-state/Meter.bin\",\n        \"creation_sha256\": \"2bc43541961db360be3877a6f014e15ee5049ec8b6f3205403f5b5a5c0c0b2e6\",\n        \"fault\": \"intentional: PHASE 2 FAULT: stores one extra unit at the limit; return and event stay correct.\",\n        \"mutated_source_sha256\": \"9730119787aa14ae59bb59a11880d32e50e00131712b73e6cd2287e168bf5318\",\n        \"runtime\": \"fe-state/Meter.runtime.bin\",\n        \"runtime_sha256\": \"ad89afffdd07dc6c441ebc2385a5f8956849bd0be8c1291c10c9008536e4d94c\",\n        \"settings\": \"fe build --backend sonatina --profile release -O 1\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 2,\n    \"mismatching_steps\": 2,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"mismatch\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      45213,\n      21480,\n      21510,\n      28151,\n      23274\n    ]\n  },\n  \"mismatches\": [\n    {\n      \"action\": {\n        \"argument\": \"100\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"state-value\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"105\",\n        \"right\": \"106\",\n        \"what\": \"state `total` (total()) differs after the action\"\n      },\n      \"fe\": {\n        \"left\": \"105\",\n        \"right\": \"106\"\n      },\n      \"location\": {\n        \"index\": 0,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 3,\n      \"strict\": {\n        \"left_state\": {\n          \"kind\": \"uint\",\n          \"name\": \"total\",\n          \"value\": \"105\"\n        },\n        \"right_state\": {\n          \"kind\": \"uint\",\n          \"name\": \"total\",\n          \"value\": \"106\"\n        }\n      }\n    },\n    {\n      \"action\": {\n        \"argument\": null,\n        \"call\": \"total()\"\n      },\n      \"category\": \"returndata-byte\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"105\",\n        \"right\": \"106\",\n        \"what\": \"return value 0 (uint256) differs at byte 31\"\n      },\n      \"fe\": {\n        \"left\": \"105\",\n        \"right\": \"106\"\n      },\n      \"location\": {\n        \"index\": 31,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 4,\n      \"strict\": {\n        \"left_returndata\": \"0x0000000000000000000000000000000000000000000000000000000000000069\",\n        \"left_success\": true,\n        \"right_returndata\": \"0x000000000000000000000000000000000000000000000000000000000000006a\",\n        \"right_success\": true\n      }\n    }\n  ],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"ab0b3e520d5339138c55ad510c768a18f78d615d7d742f63d7aab8026cf54051\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-unindexed"
+      ],
+      "exit": 1,
+      "stdout": "19a771929f77dcb2330ca41cb21199c\",\n        \"settings\": \"solc --evm-version osaka --optimize --optimize-runs 200\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    },\n    \"right\": {\n      \"deployed_runtime_sha256\": \"4df36476a802113b830fd34c21667546865c02141ebfc3b09aed43c55ff3ccda\",\n      \"implementation\": \"fe-unindexed\",\n      \"target\": {\n        \"abi\": \"fe-unindexed/Meter.abi.json\",\n        \"compiler\": \"fe 26.5.0 (3dab95f)\",\n        \"creation\": \"fe-unindexed/Meter.bin\",\n        \"creation_sha256\": \"62901e92fe1d6e2b6c668fca53fb5f660cfdb3370b278df220b07dfde3795698\",\n        \"fault\": \"intentional: PHASE 2 FAULT: caller is not indexed\",\n        \"mutated_source_sha256\": \"8816f3823db276d802cd888a812b33aa98d6fd8d14d8238d594e1c783ddd4fdb\",\n        \"runtime\": \"fe-unindexed/Meter.runtime.bin\",\n        \"runtime_sha256\": \"4df36476a802113b830fd34c21667546865c02141ebfc3b09aed43c55ff3ccda\",\n        \"settings\": \"fe build --backend sonatina --profile release -O 1\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 2,\n    \"mismatching_steps\": 2,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"mismatch\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      45077,\n      21480,\n      21510,\n      27977,\n      23274\n    ]\n  },\n  \"mismatches\": [\n    {\n      \"action\": {\n        \"argument\": \"5\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"topic-count\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"2\",\n        \"right\": \"1\",\n        \"what\": \"Added(address,uint256,uint256): 2 topics vs 1 (an indexed flag differs)\"\n      },\n      \"fe\": {\n        \"left\": \"2\",\n        \"right\": \"1\"\n      },\n      \"location\": {\n        \"index\": 0,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 0,\n      \"strict\": {\n        \"left_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          }\n        ],\n        \"right_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\"\n            ]\n          }\n        ]\n      }\n    },\n    {\n      \"action\": {\n        \"argument\": \"100\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"topic-count\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"2\",\n        \"right\": \"1\",\n        \"what\": \"Added(address,uint256,uint256): 2 topics vs 1 (an indexed flag differs)\"\n      },\n      \"fe\": {\n        \"left\": \"2\",\n        \"right\": \"1\"\n      },\n      \"location\": {\n        \"index\": 0,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 3,\n      \"strict\": {\n        \"left_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          }\n        ],\n        \"right_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\"\n            ]\n          }\n        ]\n      }\n    }\n  ],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"66ad0df6fa6f3e3d30b8d2bba19bdcdb9474f6b8d9bf7556f82ee11d67f86ce5\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-extra-log"
+      ],
+      "exit": 1,
+      "stdout": "   \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 2,\n    \"mismatching_steps\": 2,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"mismatch\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      46854,\n      21480,\n      21510,\n      29754,\n      23274\n    ]\n  },\n  \"mismatches\": [\n    {\n      \"action\": {\n        \"argument\": \"5\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"log-extra\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left_events\": [\n          \"Added(address,uint256,uint256)\"\n        ],\n        \"right_events\": [\n          \"Added(address,uint256,uint256)\",\n          \"Added(address,uint256,uint256)\"\n        ],\n        \"what\": \"extra log 1 (Added(address,uint256,uint256)) on the right\"\n      },\n      \"fe\": {\n        \"left\": \"1\",\n        \"right\": \"2\"\n      },\n      \"location\": {\n        \"index\": 1,\n        \"log\": 1,\n        \"slot\": 0\n      },\n      \"step\": 0,\n      \"strict\": {\n        \"left_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          }\n        ],\n        \"right_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          },\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          }\n        ]\n      }\n    },\n    {\n      \"action\": {\n        \"argument\": \"100\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"log-extra\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left_events\": [\n          \"Added(address,uint256,uint256)\"\n        ],\n        \"right_events\": [\n          \"Added(address,uint256,uint256)\",\n          \"Added(address,uint256,uint256)\"\n        ],\n        \"what\": \"extra log 1 (Added(address,uint256,uint256)) on the right\"\n      },\n      \"fe\": {\n        \"left\": \"1\",\n        \"right\": \"2\"\n      },\n      \"location\": {\n        \"index\": 1,\n        \"log\": 1,\n        \"slot\": 0\n      },\n      \"step\": 3,\n      \"strict\": {\n        \"left_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          }\n        ],\n        \"right_logs\": [\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          },\n          {\n            \"address\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n            \"data\": \"0x00000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000069\",\n            \"topics\": [\n              \"0x2a8f5e2f05e241e9eed0e8f7a9338ba078a26ed2cfc22913acfd874a2d3093c5\",\n              \"0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266\"\n            ]\n          }\n        ]\n      }\n    }\n  ],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"d6b80506d22f1bbfcc34d3499a9bc56d5ca174a43122a95ed5a152f89b8e057d\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-wrong-error"
+      ],
+      "exit": 1,
+      "stdout": "{\n  \"abi_declarations\": {\n    \"left\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"match\": false,\n    \"right\": {\n      \"missing\": [\n        \"EmptyQuantity()\"\n      ],\n      \"unexpected\": []\n    },\n    \"spec\": \"spec/meter-v0.md\"\n  },\n  \"claim\": \"1 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).\",\n  \"configuration\": {\n    \"left\": {\n      \"deployed_runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n      \"implementation\": \"solidity\",\n      \"target\": {\n        \"abi\": \"solidity/Meter.abi\",\n        \"compiler\": \"Version: 0.8.31+commit.fd3a2265.Darwin.appleclang\",\n        \"creation\": \"solidity/Meter.bin\",\n        \"creation_sha256\": \"c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf\",\n        \"runtime\": \"solidity/Meter.bin-runtime\",\n        \"runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n        \"settings\": \"solc --evm-version osaka --optimize --optimize-runs 200\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    },\n    \"right\": {\n      \"deployed_runtime_sha256\": \"a63fd170844acf50de0804748db1f9c0f5e3a3f144078ee0ccd68ec1c16c812b\",\n      \"implementation\": \"fe-wrong-error\",\n      \"target\": {\n        \"abi\": \"fe-wrong-error/Meter.abi.json\",\n        \"compiler\": \"fe 26.5.0 (3dab95f)\",\n        \"creation\": \"fe-wrong-error/Meter.bin\",\n        \"creation_sha256\": \"7f6c842a83d402b7d16754f761110cc5312d2e78ced07aabc893f19c4e511485\",\n        \"fault\": \"intentional: PHASE 2 FAULT: wrong error\",\n        \"mutated_source_sha256\": \"e88cf47125f1aaf1b7bd8c18fd5012530b057cd23fb4fcc1e1b13ccf7a098117\",\n        \"runtime\": \"fe-wrong-error/Meter.runtime.bin\",\n        \"runtime_sha256\": \"a63fd170844acf50de0804748db1f9c0f5e3a3f144078ee0ccd68ec1c16c812b\",\n        \"settings\": \"fe build --backend sonatina --profile release -O 1\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 1,\n    \"mismatching_steps\": 1,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"mismatch\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      45186,\n      21480,\n      21510,\n      28086,\n      23274\n    ]\n  },\n  \"mismatches\": [\n    {\n      \"action\": {\n        \"argument\": \"0\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"error-selector\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"EmptyQuantity()\",\n        \"right\": \"TooLarge(uint256,uint256)\",\n        \"what\": \"different custom error\"\n      },\n      \"fe\": {\n        \"left\": \"3162226629\",\n        \"right\": \"1736429795\"\n      },\n      \"location\": {\n        \"index\": 0,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 1,\n      \"strict\": {\n        \"left_returndata\": \"0xbc7bbfc5\",\n        \"left_success\": false,\n        \"right_returndata\": \"0x677fd0e300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064\",\n        \"right_success\": false\n      }\n    }\n  ],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"639fe93ca2773636f3a168014ebfe688135549b4dd965cc6bf510a26d3c44fe4\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-no-empty-check"
+      ],
+      "exit": 1,
+      "stdout": "{\n  \"abi_declarations\": {\n    \"left\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"match\": false,\n    \"right\": {\n      \"missing\": [\n        \"EmptyQuantity()\"\n      ],\n      \"unexpected\": []\n    },\n    \"spec\": \"spec/meter-v0.md\"\n  },\n  \"claim\": \"1 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).\",\n  \"configuration\": {\n    \"left\": {\n      \"deployed_runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n      \"implementation\": \"solidity\",\n      \"target\": {\n        \"abi\": \"solidity/Meter.abi\",\n        \"compiler\": \"Version: 0.8.31+commit.fd3a2265.Darwin.appleclang\",\n        \"creation\": \"solidity/Meter.bin\",\n        \"creation_sha256\": \"c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf\",\n        \"runtime\": \"solidity/Meter.bin-runtime\",\n        \"runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n        \"settings\": \"solc --evm-version osaka --optimize --optimize-runs 200\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    },\n    \"right\": {\n      \"deployed_runtime_sha256\": \"413ad6ffef48da46e0a1c5f9a97996880c17e56696b7198a50e30acf0d1ee5cd\",\n      \"implementation\": \"fe-no-empty-check\",\n      \"target\": {\n        \"abi\": \"fe-no-empty-check/Meter.abi.json\",\n        \"compiler\": \"fe 26.5.0 (3dab95f)\",\n        \"creation\": \"fe-no-empty-check/Meter.bin\",\n        \"creation_sha256\": \"6ba4c808ef5a88e2439fe542e08fc49ee2239ef356dffa241e511dd38ceb2885\",\n        \"fault\": \"intentional: PHASE 2 FAULT: zero quantity is not rejected\",\n        \"mutated_source_sha256\": \"1b340334909aee13162347359d80b45fd37c6e940274e81e20865feb6e7118a9\",\n        \"runtime\": \"fe-no-empty-check/Meter.runtime.bin\",\n        \"runtime_sha256\": \"413ad6ffef48da46e0a1c5f9a97996880c17e56696b7198a50e30acf0d1ee5cd\",\n        \"settings\": \"fe build --backend sonatina --profile release -O 1\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 1,\n    \"mismatching_steps\": 1,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"mismatch\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      45173,\n      25261,\n      21510,\n      28073,\n      23274\n    ]\n  },\n  \"mismatches\": [\n    {\n      \"action\": {\n        \"argument\": \"0\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"status\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"revert EmptyQuantity()\",\n        \"right\": \"success\",\n        \"what\": \"one implementation succeeded and the other reverted\"\n      },\n      \"fe\": {\n        \"left\": \"0\",\n        \"right\": \"1\"\n      },\n      \"location\": {\n        \"index\": 0,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 1,\n      \"strict\": {\n        \"left_returndata\": \"0xbc7bbfc5\",\n        \"left_success\": false,\n        \"right_returndata\": \"0x0000000000000000000000000000000000000000000000000000000000000005\",\n        \"right_success\": true\n      }\n    }\n  ],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"344431c83cd81f38fd2da46a96beaa9ae22a898c3affe40a9a02545cd36c7c71\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "host/observe.py",
+        "--left",
+        "solidity",
+        "--right",
+        "fe-state"
+      ],
+      "exit": 1,
+      "stdout": "{\n  \"abi_declarations\": {\n    \"left\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"match\": true,\n    \"right\": {\n      \"missing\": [],\n      \"unexpected\": []\n    },\n    \"spec\": \"spec/meter-v0.md\"\n  },\n  \"claim\": \"2 of 5 steps differ; the first divergence is listed first. ABI declarations are compared separately (abi_declarations).\",\n  \"configuration\": {\n    \"left\": {\n      \"deployed_runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n      \"implementation\": \"solidity\",\n      \"target\": {\n        \"abi\": \"solidity/Meter.abi\",\n        \"compiler\": \"Version: 0.8.31+commit.fd3a2265.Darwin.appleclang\",\n        \"creation\": \"solidity/Meter.bin\",\n        \"creation_sha256\": \"c8ad5b8ad04d0f64146e2e5834468065e68b7ed62c37d190f0c6966635843aaf\",\n        \"runtime\": \"solidity/Meter.bin-runtime\",\n        \"runtime_sha256\": \"db17cda9b0aaa624b6cdd3abab40dd8d419a771929f77dcb2330ca41cb21199c\",\n        \"settings\": \"solc --evm-version osaka --optimize --optimize-runs 200\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    },\n    \"right\": {\n      \"deployed_runtime_sha256\": \"ad89afffdd07dc6c441ebc2385a5f8956849bd0be8c1291c10c9008536e4d94c\",\n      \"implementation\": \"fe-state\",\n      \"target\": {\n        \"abi\": \"fe-state/Meter.abi.json\",\n        \"compiler\": \"fe 26.5.0 (3dab95f)\",\n        \"creation\": \"fe-state/Meter.bin\",\n        \"creation_sha256\": \"2bc43541961db360be3877a6f014e15ee5049ec8b6f3205403f5b5a5c0c0b2e6\",\n        \"fault\": \"intentional: PHASE 2 FAULT: stores one extra unit at the limit; return and event stay correct.\",\n        \"mutated_source_sha256\": \"9730119787aa14ae59bb59a11880d32e50e00131712b73e6cd2287e168bf5318\",\n        \"runtime\": \"fe-state/Meter.runtime.bin\",\n        \"runtime_sha256\": \"ad89afffdd07dc6c441ebc2385a5f8956849bd0be8c1291c10c9008536e4d94c\",\n        \"settings\": \"fe build --backend sonatina --profile release -O 1\"\n      },\n      \"world\": {\n        \"caller\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"deployer\": \"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266\",\n        \"target\": \"0x5fbdb2315678afecb367f032d93f642f64180aa3\",\n        \"zero\": \"0x0000000000000000000000000000000000000000\"\n      }\n    }\n  },\n  \"corpus\": \"meter-v0 (5 calls)\",\n  \"decision\": {\n    \"checker\": \"native Fe compat_checker protocol 3\",\n    \"listed\": 2,\n    \"mismatching_steps\": 2,\n    \"steps_compared\": 5,\n    \"truncated\": false,\n    \"verdict\": \"mismatch\"\n  },\n  \"environment\": {\n    \"base_fee\": 0,\n    \"chain_id\": 31337,\n    \"gas_limit_per_tx\": 2000000,\n    \"gas_price\": 1,\n    \"genesis_timestamp\": 1700000000,\n    \"hardfork\": \"osaka\",\n    \"mining\": \"one mined transaction per block, scheduled timestamps\",\n    \"sender_nonce_at_deploy\": 0\n  },\n  \"format\": \"fe-compatibility-report\",\n  \"gas_used\": {\n    \"left\": [\n      45625,\n      21480,\n      21531,\n      28525,\n      23342\n    ],\n    \"note\": \"reported only; gas is never compared\",\n    \"right\": [\n      45213,\n      21480,\n      21510,\n      28151,\n      23274\n    ]\n  },\n  \"mismatches\": [\n    {\n      \"action\": {\n        \"argument\": \"100\",\n        \"call\": \"add(uint256)\"\n      },\n      \"category\": \"state-value\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"105\",\n        \"right\": \"106\",\n        \"what\": \"state `total` (total()) differs after the action\"\n      },\n      \"fe\": {\n        \"left\": \"105\",\n        \"right\": \"106\"\n      },\n      \"location\": {\n        \"index\": 0,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 3,\n      \"strict\": {\n        \"left_state\": {\n          \"kind\": \"uint\",\n          \"name\": \"total\",\n          \"value\": \"105\"\n        },\n        \"right_state\": {\n          \"kind\": \"uint\",\n          \"name\": \"total\",\n          \"value\": \"106\"\n        }\n      }\n    },\n    {\n      \"action\": {\n        \"argument\": null,\n        \"call\": \"total()\"\n      },\n      \"category\": \"returndata-byte\",\n      \"deployment\": false,\n      \"explanation\": {\n        \"left\": \"105\",\n        \"right\": \"106\",\n        \"what\": \"return value 0 (uint256) differs at byte 31\"\n      },\n      \"fe\": {\n        \"left\": \"105\",\n        \"right\": \"106\"\n      },\n      \"location\": {\n        \"index\": 31,\n        \"log\": 0,\n        \"slot\": 0\n      },\n      \"step\": 4,\n      \"strict\": {\n        \"left_returndata\": \"0x0000000000000000000000000000000000000000000000000000000000000069\",\n        \"left_success\": true,\n        \"right_returndata\": \"0x000000000000000000000000000000000000000000000000000000000000006a\",\n        \"right_success\": true\n      }\n    }\n  ],\n  \"mode\": \"behavioral conformance (strict)\",\n  \"raw_records_sha256\": {\n    \"left\": \"6fac0c48b189adddeb733d8596eb82b633c5049233d788945f57375cb92f95b1\",\n    \"right\": \"ab0b3e520d5339138c55ad510c768a18f78d615d7d742f63d7aab8026cf54051\"\n  },\n  \"state_declared\": [\n    {\n      \"getter\": \"total()\",\n      \"kind\": \"uint\",\n      \"name\": \"total\"\n    }\n  ],\n  \"tools\": {\n    \"anvil\": \"anvil Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\",\n    \"cast\": \"cast Version: 1.5.1-stable\\nCommit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2\\nBuild Timestamp: 2025-12-22T11:41:09.812070000Z (1766403669)\\nBuild Profile: maxperf\"\n  },\n  \"version\": 1\n}\n",
+      "stderr": ""
+    }
+  ],
+  "sources": {
+    "fe.toml": "65d983a85187468340f13b9580e64c28d36bfe496d9902a52a7c3c5fab938805",
+    "src/lib.fe": "662bb26dcff6b6a09b3556a29fce8ac4702cb4564ef9796642384623310a0153",
+    "src/observation.fe": "6133ea52e5597631b569051f0343bd32552fda43eee9060f56db4b87654226de",
+    "src/conformance.fe": "168e8615eb446e5e02942a2cb94b391051f2d8bff4c5d9de245b34838888cbf3",
+    "src/abi.fe": "e9a2b4b0aaaf4ebd6a5f8ebe1d147751bdf77c21feab1d90132d76451db7d3e6",
+    "src/normalize.fe": "44ffeb4e8ff609ce8932a1c1a00ca32c00a426ff05b0e27d8a31564a2eef2ce6",
+    "src/phase1_tests.fe": "3a59ad685758d53e3b6af7aff37f5b7992c2b8fa7c0b217f392e1e32d65220de",
+    "contracts/solidity/Codec.sol": "c116f56721c597f7f4619be2f880911f8e5d6ed116ad326ae6df3b24d9ff8ffd",
+    "contracts/fe/codec/fe.toml": "d39c2f61514bd2d987b7eff897bbdbf316a2f5562cf86321e14a421b61a8ef4c",
+    "contracts/fe/codec/src/lib.fe": "d891d172029f54ddbd62af33f2b62c405fca3f3530c5ad1f41701e9647ff52ab",
+    "host/checker-native/fe.toml": "5da71135e249735757422288288548dbe45f9b97bde85a7f4c311daefb8c14df",
+    "host/checker-native/src/lib.fe": "2201610cdc24339dcf28e2d42ac26c0d02bc498659ccf77efe3fe59743abfdcf",
+    "contracts/solidity/Meter.sol": "bfafb856bb756df23854a29fdd742705424d8e6d591234c0c8656bb59499c181",
+    "contracts/fe/meter/fe.toml": "45a4eda71bb72570e7e926164d53c0ff472fd4736583f6f17e59264996cf0793",
+    "contracts/fe/meter/src/lib.fe": "557c0c0f57a23f458a2e8467926cd65f4dc030c559e15bee5477904938699223",
+    "contracts/fe/meter/src/tests.fe": "f106c2295ba57e0978cbe736e84f649e7af805c2f56a9a5c2915ae987a1bbf37",
+    "src/tests.fe": "2ded4ce41e1bb91b98a1c9fb42a090e7a5c5ec82139b06dd4b7b5f8eee61687d",
+    "scripts/build.py": "ddda40db32847b00e8cb68c8c13bf5b25402394a33035a5f1d12711704a72305",
+    "host/common.py": "3b120a10bdc365d2035e588d036e6d18618f1b2932be7d02b772aa8376da8bee"
+  }
+}

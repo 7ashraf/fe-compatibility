@@ -21,6 +21,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import subprocess
 import sys
 import tempfile
@@ -58,8 +59,9 @@ def main():
     tests = checked([fe, 'test', '.'], ['fe', 'test', '.'])
     native = checked([fe, 'test', '.', '--backend', 'native'], ['fe', 'test', '.', '--backend', 'native'])
     for result in (tests, native):
-        if 'test result: ok. 14 passed; 0 failed' not in result.stdout:
-            raise RuntimeError('Expected 14 Fe checker tests to pass')
+        match = re.search(r'test result: ok\. ([0-9]+) passed; 0 failed', result.stdout)
+        if not match or int(match.group(1)) < 14:
+            raise RuntimeError('Expected at least the 14 Phase 0-1 Fe checker tests to pass, with none failing')
     checked([py, 'scripts/make-vectors.py', '--check'], ['python3', 'scripts/make-vectors.py', '--check'])
 
     with contextlib.redirect_stdout(io.StringIO()):
@@ -106,7 +108,7 @@ def main():
     returndata_case('bytes offset not canonical', 'echo-max', echo[:2] + hex(64)[2:].rjust(64, '0') + echo[66:], 'offset')
     golden_revert = by_id['echo-too-long']['expected']['returndata']
     for name, observed, category, index in (
-            ('wrong error selector', '0xad8e4f3d' + golden_revert[10:], 'returndata-byte', 3),
+            ('wrong error selector', '0xad8e4f3d' + golden_revert[10:], 'error-selector', 0),
             ('error payload missing a word', golden_revert[:-64], 'returndata-length', 0)):
         expected = {'success': False, 'returndata': golden_revert, 'logs': []}
         decision = fecheck.sequence(vectors.EXPECTED_DEPLOYMENT, records['solidity']['deployment'],

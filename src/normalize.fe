@@ -4,7 +4,7 @@
 // (successful calls only), topics, and log-data words. An address-shaped value
 // anywhere else stays raw, so a real mismatch can't be hidden by a byte pattern
 // that happens to equal an actor's address.
-use super::{CallObservation, MAX_LOGS, MAX_TOPICS, MAX_PAYLOAD_WORDS}
+use super::{CallObservation, StateKind, MAX_LOGS, MAX_TOPICS, MAX_PAYLOAD_WORDS}
 
 pub const MAX_ROLES: usize = 8
 pub const MAX_POSITIONS: usize = 16
@@ -90,10 +90,27 @@ fn map_word(table: AddressTable, word: u256) -> u256 {
     word
 }
 
+// Address-typed public state is normalized by its declared type; no allowlist
+// position is needed for it.
+fn normalize_state(observation: CallObservation, table: AddressTable) -> CallObservation {
+    var out = observation
+    var s: usize = 0
+    while s < out.state_count {
+        match out.state[s].kind {
+            StateKind::Address => {
+                out.state[s].value = map_word(table, word: out.state[s].value)
+            },
+            _ => {},
+        }
+        s += 1
+    }
+    out
+}
+
 // The caller has already checked that the observation, table, and allowlist are
 // well formed. Positions beyond the observed data, or on a reverted call, are skipped.
 pub fn normalize(observation: CallObservation, table: AddressTable, allowlist: Allowlist) -> CallObservation {
-    var out = observation
+    var out = normalize_state(observation, table)
     var l: usize = 0
     while l < out.log_count {
         out.logs[l].emitter = map_word(table, word: out.logs[l].emitter)

@@ -1,28 +1,33 @@
-// Native transport for the Fe conformance checker (protocol version 2).
+// Native transport for the Fe conformance checker (protocol version 3).
 //
 // Input: whitespace-separated unsigned decimals, at most 65,536 characters and
-// 78 digits per number, ending at EOF. The first two numbers are `2 <kind>`.
+// 78 digits per number, ending at EOF. The first two numbers are `3 <kind>`.
 //
 // kind 1, sequence comparison:
 //   table(left) table(right) deployment(left) deployment(right) steps,
 //   then per step: allowlist exact(0|1) observation(left) observation(right)
 //   table:       count (address role)*count                    (count <= 8)
 //   allowlist:   count (field log word)*count, field 0 return, 1 topic, 2 data (count <= 16)
-//   observation: success len word*ceil(len/32) log_count, then per log:
-//                emitter topic_count topic*topic_count data_len word*ceil(data_len/32)
-//   reply: `2 1 verdict steps deployment step category log index left right`, where
-//   verdict is 0 match, 1 mismatch, 2 malformed, 3 not comparable (deployment failed).
+//   observation: success payload log_count log* state_count (kind value)*
+//                log:     emitter topic_count topic* payload
+//                payload: len word*ceil(len/32)
+//                state kind: 0 uint, 1 int (two's complement), 2 address, 3 bool, 4 word
+//   Lengths and counts above the observation limits (256-byte payloads, 4 logs,
+//   4 topics, 8 state fields) are still read, up to the frame bound. Fe then
+//   reports them as malformed with a reason, instead of truncating them.
+//   reply: `3 1 verdict steps total listed reason` record, then `listed` more records.
+//   record: deployment step category log index slot left right
+//   verdict: 0 match, 1 mismatch, 2 malformed, 3 not comparable (deployment failed)
 // kind 2, ABI validation:
-//   layout with_selector(0|1) selector payload
-//   layout: count (kind bits)*count, kind 0 uint, 1 int, 2 address, 3 bool, 4 bytes (count <= 8)
-//   payload: len word*ceil(len/32)
-//   reply: `2 2 category index`
-// Words are big-endian 32-byte chunks with a zero-padded tail. Exit 2 means an
-// invalid frame (nothing is written); exit 3 means an output failure.
+//   layout with_selector(0|1) selector payload; layout: count (kind bits)*count,
+//   kind 0 uint, 1 int, 2 address, 3 bool, 4 bytes (count <= 8). reply: `3 2 category index`.
+// Exit 2 means an invalid frame (nothing is written); exit 3 means an output failure.
 use std::io::{Read, Write, host}
 use compat::{
     CallObservation,
     Payload,
+    StateKind,
+    StateField,
     Verdict,
     Mismatch,
     AddressTable,
@@ -40,6 +45,8 @@ use compat::{
     MAX_ROLES,
     MAX_POSITIONS,
     MAX_SLOTS,
+    MAX_STATE,
+    MAX_LISTED,
     empty_payload,
     empty_log,
     empty_observation,
@@ -49,6 +56,7 @@ use compat::{
     begin_deployed,
     step_normalized,
     category_code,
+    malformation_code,
     abi_code,
     validate,
 }
@@ -103,35 +111,75 @@ fn read_small(limit: u256) -> usize uses (input: mut Read, parser: mut Parser) {
     value as usize
 }
 
+// Words beyond the observation limit are consumed but not stored; the declared
+// length is kept, so Fe classifies the payload as oversized.
 fn read_payload() -> Payload uses (input: mut Read, parser: mut Parser) {
     var payload = empty_payload()
-    payload.len = read_small(limit: (MAX_PAYLOAD_WORDS * 32) as u256)
+    payload.len = read_small(limit: 65536)
     var w: usize = 0
     while w * 32 < payload.len && !parser.bad {
-        payload.words[w] = read_number()
+        let word = read_number()
+        if w < MAX_PAYLOAD_WORDS {
+            payload.words[w] = word
+        }
         w += 1
     }
     payload
+}
+
+fn read_log() -> compat::LogRecord uses (input: mut Read, parser: mut Parser) {
+    var log = empty_log()
+    log.emitter = read_number()
+    log.topic_count = read_small(limit: 64)
+    var t: usize = 0
+    while t < log.topic_count && !parser.bad {
+        let topic = read_number()
+        if t < MAX_TOPICS {
+            log.topics[t] = topic
+        }
+        t += 1
+    }
+    log.data = read_payload()
+    log
+}
+
+fn read_kind() -> StateKind uses (input: mut Read, parser: mut Parser) {
+    let tag = read_small(limit: 4)
+    if tag == 0 {
+        StateKind::Uint
+    } else if tag == 1 {
+        StateKind::Int
+    } else if tag == 2 {
+        StateKind::Address
+    } else if tag == 3 {
+        StateKind::Bool
+    } else {
+        StateKind::Word
+    }
 }
 
 fn read_observation() -> CallObservation uses (input: mut Read, parser: mut Parser) {
     var observation = empty_observation()
     observation.success = read_small(limit: 1) == 1
     observation.returndata = read_payload()
-    observation.log_count = read_small(limit: MAX_LOGS as u256)
+    observation.log_count = read_small(limit: 64)
     var i: usize = 0
     while i < observation.log_count && !parser.bad {
-        var log = empty_log()
-        log.emitter = read_number()
-        log.topic_count = read_small(limit: MAX_TOPICS as u256)
-        var t: usize = 0
-        while t < log.topic_count && !parser.bad {
-            log.topics[t] = read_number()
-            t += 1
+        let log = read_log()
+        if i < MAX_LOGS {
+            observation.logs[i] = log
         }
-        log.data = read_payload()
-        observation.logs[i] = log
         i += 1
+    }
+    observation.state_count = read_small(limit: 64)
+    var s: usize = 0
+    while s < observation.state_count && !parser.bad {
+        let kind = read_kind()
+        let value = read_number()
+        if s < MAX_STATE {
+            observation.state[s] = StateField { kind, value }
+        }
+        s += 1
     }
     observation
 }
@@ -203,17 +251,17 @@ fn read_layout() -> Layout uses (input: mut Read, parser: mut Parser) {
     layout
 }
 
-struct Reply { kind: u256, steps: usize, result: Mismatch, abi: AbiResult }
+struct Reply { kind: u256, steps: usize, progress: compat::Progress, abi: AbiResult }
 
 fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
     let left_table = empty_table()
     var reply = Reply {
         kind: 0,
         steps: 0,
-        result: begin_deployed(left: empty_observation(), right: empty_observation(), left_table, right_table: left_table).result,
+        progress: compat::begin(),
         abi: validate(payload: empty_payload(), layout: empty_layout(), selector: 0, with_selector: false),
     }
-    if read_number() != 2 {
+    if read_number() != 3 {
         parser.bad = true
         return reply
     }
@@ -236,7 +284,7 @@ fn route() -> Reply uses (input: mut Read, parser: mut Parser) {
             s += 1
         }
         reply.steps = progress.steps
-        reply.result = progress.result
+        reply.progress = progress
     } else if reply.kind == 2 {
         let layout = read_layout()
         let with_selector = read_small(limit: 1) == 1
@@ -269,25 +317,7 @@ fn number(_ n: u256) uses (output: mut Write) {
     output.write_char(c: 32)
 }
 
-fn write_reply(reply: Reply) uses (output: mut Write) {
-    number(2)
-    number(reply.kind)
-    if reply.kind == 2 {
-        number(abi_code(reply.abi.category))
-        number(reply.abi.index as u256)
-        output.write_char(c: 10)
-        return
-    }
-    let m = reply.result
-    number(
-        match m.verdict {
-            Verdict::Match => 0,
-            Verdict::Mismatch => 1,
-            Verdict::Malformed => 2,
-            Verdict::NotComparable => 3,
-        },
-    )
-    number(reply.steps as u256)
+fn write_record(m: Mismatch) uses (output: mut Write) {
     number(if m.deployment { 1 } else { 0 })
     number(m.step as u256)
     number(
@@ -298,8 +328,40 @@ fn write_reply(reply: Reply) uses (output: mut Write) {
     )
     number(m.log as u256)
     number(m.index as u256)
+    number(m.slot as u256)
     number(m.left)
     number(m.right)
+}
+
+fn write_reply(reply: Reply) uses (output: mut Write) {
+    number(3)
+    number(reply.kind)
+    if reply.kind == 2 {
+        number(abi_code(reply.abi.category))
+        number(reply.abi.index as u256)
+        output.write_char(c: 10)
+        return
+    }
+    let progress = reply.progress
+    let m = progress.result
+    number(
+        match m.verdict {
+            Verdict::Match => 0,
+            Verdict::Mismatch => 1,
+            Verdict::Malformed => 2,
+            Verdict::NotComparable => 3,
+        },
+    )
+    number(reply.steps as u256)
+    number(progress.total as u256)
+    number(progress.listed as u256)
+    number(malformation_code(m.reason))
+    write_record(m)
+    var i: usize = 0
+    while i < progress.listed {
+        write_record(m: progress.mismatches[i])
+        i += 1
+    }
     output.write_char(c: 10)
 }
 
