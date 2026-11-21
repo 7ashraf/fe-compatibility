@@ -26,6 +26,6 @@ validation.
 
 ## AI assistance
 
-Phases 0–4 were implemented, run, and documented by Claude Opus 5.5 in Claude Code,
+Phases 0–5 were implemented, run, and documented by Claude Opus 5.5 in Claude Code,
 directed by the project owner. Commits carry a `Co-Authored-By` trailer. The
 verification runs are the agent's own, not independent review.

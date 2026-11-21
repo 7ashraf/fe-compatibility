@@ -5,9 +5,14 @@ raw EVM observations (status, exact returndata or revert bytes, and ordered
 logs), and let a **Fe checker** decide whether they match. When they don't, it
 reports the first divergence.
 
-**Status: Phase 0–4 exit gates passed** ([feasibility](docs/feasibility.md)).
-Phase 5 (a second integration with an outside user, and the release) is not
-started. Passing means "no mismatch
+**Status: Phase 0–4 exit gates passed. Phase 5 release checks passed. The
+outside-user exercise is pending** ([tester guide](docs/tester-guide.md),
+[feasibility](docs/feasibility.md), [submission summary](docs/submission.md)).
+
+```sh
+python3 scripts/demo.py                       # 3 s: the pair agrees; a seeded port bug and a hidden layout bug are located
+python3 scripts/port-exercise.py start|check  # plant a porting mistake, locate it from the report, fix it
+``` Passing means "no mismatch
 observed for this corpus under this configuration". It never means the
 contracts are equivalent.
 

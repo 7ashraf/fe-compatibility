@@ -36,7 +36,7 @@
   },
   "evm_fork": "osaka",
   "solidity_version": "0.8.31+commit.fd3a2265",
-  "status": "Phase 0-4 exit gates verified on Darwin arm64. Linux assets are pinned but untested.",
+  "status": "Phase 0-4 exit gates and Phase 5 release checks verified on Darwin arm64; outside-user exercise pending. Linux assets pinned but untested.",
   "solidity": {
     "version": "0.8.31+commit.fd3a2265",
     "assets": {

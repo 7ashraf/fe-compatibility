@@ -12,3 +12,6 @@
 __pycache__/
 *.pyc
 failure-report*.tar.gz
+
+# Porting exercise workspace (scripts/port-exercise.py)
+exercise/

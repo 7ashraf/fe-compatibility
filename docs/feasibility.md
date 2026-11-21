@@ -7,7 +7,7 @@
 | 2: Reusable Fe conformance engine | Passed, 21 November 2026 ([below](#phase-2--reusable-fe-conformance-engine-21-november-2026)) |
 | 3: Differential treasury execution | Passed, 21 November 2026 ([below](#phase-3--differential-treasury-execution-21-november-2026)) |
 | 4: Bounded layout adapter and validator | Passed, 21 November 2026 ([below](#phase-4--bounded-layout-adapter-and-validator-21-november-2026)) |
-| 5 | Not started |
+| 5: Second integration, user test, release | Release checks passed, 21 November 2026; **outside-user exercise pending** ([below](#phase-5--second-integration-user-test-and-release-21-november-2026)) |
 
 # Phase 0 feasibility — full observation path (21 November 2026)
 
@@ -706,3 +706,92 @@ another developer introduces a porting mistake and locates it from the
 report, plus a clean-checkout verification and submission materials. An
 outside user is required. If none is available, that limitation must be
 stated, not worked around.
+
+
+# Phase 5 — second integration, user test, and release (21 November 2026)
+
+**Result: the release checks passed. The exit gate is not met.** The exit
+requires *another person* to run the pair, see a deliberate mismatch, apply
+the correction, and get a passing report without editing the checker. No
+outside tester has done this yet. As the plan requires, that limitation is
+stated here rather than worked around. `scripts/verify-phase5.py` reports it
+as **pending** until `docs/reviewer-feedback.md` records real feedback.
+
+## Second fixture family on the same engine
+
+The same Fe engine, transport, and report format now serve four independent
+fixture families, each with its own frozen spec and seeded negatives:
+
+- Meter v0 (Phase 0, Phase 2 seeded ports);
+- Codec v1 (Phase 1 ABI vectors);
+- treasury v0 (Phase 3);
+- the packed layout (Phase 4).
+
+None of them required changing the checker for another.
+
+## Outside-user exercise (prepared, pending)
+
+- **`docs/tester-guide.md`.** About 20 minutes: setup, the demo, then the
+  porting exercise.
+- **`scripts/port-exercise.py`.**
+  - `start` copies the reviewed Fe treasury port into a git-ignored
+    `exercise/`. A helper (or the tester) plants one mistake.
+  - `check` builds the edited port and runs the full treasury corpus against
+    Solidity. It prints the first divergence per scenario (action, category,
+    plain explanation, reference value vs port value) and writes the full
+    report.
+  - `status` gives the time from start to the first mismatch and from there to
+    passing again.
+
+  A port that doesn't compile is reported as a build problem (exit 3), never as
+  a conformance verdict.
+- **`docs/reviewer-feedback.md`.** The record to fill in, with status
+  **pending**.
+
+**The implementing agent's own dry run (not the outside-user test).** I
+planted `amount >= context.available` in place of `>`. This isn't one of the
+seeded faults. `check` reported 1 of 11 scenarios differing, at
+`insufficient-funds-3`:
+
+- category `status` (the reference succeeds; the port reverts with
+  `InsufficientBalance(uint256,uint256)`);
+- 4 of 7 actions differ in that scenario.
+
+Reverting the line gave `PASS` on all 85 actions. The first mismatch came
+3.1 s after `start`, and the passing report 2.6 s later. The person in the
+loop was the agent, so those times measure the tool's turnaround, not a human
+locating the bug.
+
+## Release checks (`scripts/verify-phase5.py`)
+
+- **Licenses and disclosures.** The MIT `LICENSE`, the retained Fe
+  Apache-2.0 license, and the NOTICE disclosures: the vendored inputs and
+  their commit, the seeded faults, the Solidity reference not being a fully
+  independent oracle, and AI assistance.
+- **Provenance and hygiene.** Every vendored file matches its
+  `provenance.json` (treasury spec and Fe treasury). Every Solidity file is
+  SPDX MIT. No tracked file contains an absolute home path.
+- **Fresh clone.** A `git clone` of HEAD, with no `.tools/` or build outputs.
+  Inside it, the gate bootstraps the pinned Fe and solc, builds, and runs:
+  - `verify-phase4.py`, which runs every gate from Phase 0 to 4;
+  - `scripts/demo.py`;
+  - the scripted exercise dry run.
+
+  It then confirms that no tracked file changed.
+- **`scripts/demo.py`** (about 3 s) checks each claim it prints:
+  - the correct treasury pair agrees on 85 actions;
+  - inclusive expiry is located at `expiry-equality-4`;
+  - the shifted layout offset is invisible to a getter-only comparison, while
+    layout mode finds byte 21.
+
+The recorded run is in [evidence/phase5.json](evidence/phase5.json).
+
+## What remains
+
+1. **The outside-user exercise.** A person who didn't build this follows
+   `docs/tester-guide.md`, and their real observations go into
+   `docs/reviewer-feedback.md`.
+2. **Linux.** It is untested.
+3. **Publishing.** A remote, a push, and a contest submission all need the
+   owner. Whether this project can be submitted also depends on its contest
+   registration.

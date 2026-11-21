@@ -197,9 +197,11 @@ def state_decls(corpus, scenario):
              f'balance of {e["balance"]}', e['kind']) for e in state_entries(corpus, scenario)]
 
 
-def run(left, right, only=None, record_dir=None, corpus_path=CORPUS):
+def run(left, right, only=None, record_dir=None, corpus_path=CORPUS, extra_targets=None):
+    """extra_targets: additional target identities (paths relative to .tools/build), e.g. a tester's port."""
     corpus = load(corpus_path)
     stamp = load_stamp()
+    stamp['targets'].update(extra_targets or {})
     abis, events = interface(stamp)
     scenarios = [s for s in corpus['scenarios'] if only is None or s['id'] in only]
     jobs = [(t, s) for s in scenarios for t in dict.fromkeys((left, right))]
