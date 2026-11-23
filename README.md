@@ -9,12 +9,9 @@ reports the first divergence.
 outside-user exercise is pending** ([tester guide](docs/tester-guide.md),
 [feasibility](docs/feasibility.md), [submission summary](docs/submission.md)).
 
-```sh
-python3 scripts/demo.py                       # 3 s: the pair agrees; a seeded port bug and a hidden layout bug are located
-python3 scripts/port-exercise.py start|check  # plant a porting mistake, locate it from the report, fix it
-``` Passing means "no mismatch
-observed for this corpus under this configuration". It never means the
-contracts are equivalent.
+The demo shows agreement on the treasury corpus, then locates a seeded porting
+mistake and an explicit storage layout mismatch. Passing means no mismatch was
+observed for this corpus under this configuration.
 
 ## Quick start
 
@@ -25,6 +22,22 @@ Requires Python 3.10+, curl, and Foundry 1.5.1-stable (Anvil/Cast, commit
 python3 scripts/bootstrap-fe.py && python3 scripts/bootstrap-solc.py
 source scripts/env.sh
 python3 scripts/build.py
+python3 scripts/demo.py
+```
+
+Run the full release check from a clean Git working tree.
+
+```sh
+python3 scripts/verify-phase5.py
+```
+
+The [tester guide](docs/tester-guide.md) walks through creating a separate
+exercise copy with `python3 scripts/port-exercise.py start` and checking it
+with `python3 scripts/port-exercise.py check`.
+
+## Focused checks
+
+```sh
 python3 host/observe.py --left solidity --right fe          # exit 0: no mismatch on 5 calls
 python3 host/observe.py --left solidity --right fe-faulty   # exit 1: Fe locates the one-byte difference
 python3 scripts/verify-phase0.py                            # whole Phase 0 gate, about 4 s
@@ -105,15 +118,7 @@ Python (`host/observe.py`) starts an isolated Anvil world per implementation
 and moves bytes. It doesn't compare them. Returndata comes from
 `debug_traceTransaction`, cross-checked against `eth_call` at the parent block.
 
-License: MIT. Reuse and AI assistance are described in [NOTICE.md](NOTICE.md).
+The project uses the [MIT license](LICENSE). Reuse and AI assistance are described in [NOTICE.md](NOTICE.md).
+See the [project manifest](fe.toml) and [toolchain pins](toolchain.json).
 References: [plan](docs/reference/FE_COMPATIBILITY_PLAN.md) and
 [agent reference](docs/reference/FE_AGENT_REFERENCE.md).
-
-## Independent Git history
-
-This directory is its own repository on `main`, and no remote has been added.
-
-```sh
-git remote add origin <this-project-repository-url>
-git push -u origin main
-```

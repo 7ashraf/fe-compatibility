@@ -27,5 +27,6 @@ validation.
 ## AI assistance
 
 Phases 0–5 were implemented, run, and documented by Claude Opus 5.5 in Claude Code,
-directed by the project owner. Commits carry a `Co-Authored-By` trailer. The
-verification runs are the agent's own, not independent review.
+directed by the project owner. Those commits carry a `Co-Authored-By` trailer.
+OpenAI Codex assisted with contest documentation and release verification.
+The verification runs are the agents' own. Independent review remains pending.
